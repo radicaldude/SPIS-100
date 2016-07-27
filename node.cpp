@@ -11,6 +11,7 @@ public:
   uint8_t pc;
   int16_t acc;
   int16_t bak;
+  
   std::vector<arrow> *arrow;
   std::vector<node>   **neighbours;
   std::vector<string> code;
