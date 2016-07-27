@@ -11,7 +11,7 @@ public:
   uint8_t pc;
   int8_t acc;
   int8_t bak;
-  struct out *out;
+  output *out;
   std::vector<string> code;
 };
 
