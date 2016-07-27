@@ -1,17 +1,18 @@
 #include "spis.h"
 
-typedef struct{
-  bool set;
-  int8_t value;
-} output;
+class arrow{
+  int8_t set[2];
+  int16_t value[2];
+};
   
 class node{
 public:
-  node(int arrows);
+  node(uint8_t arrows);
   uint8_t pc;
-  int8_t acc;
-  int8_t bak;
-  struct out *out;
+  int16_t acc;
+  int16_t bak;
+  std::vector<arrow> *arrow;
+  std::vector<node>   **neighbours;
   std::vector<string> code;
 };
 
@@ -19,6 +20,7 @@ void node::node(int arrows){
   acc=0;
   bak=0;
   pc=0;
-  out = malloc(arrows*sizeof(output));
-  node = malloc(arrows*sizeof(node));  
+  node = malloc(arrows*sizeof(&this));  
 }
+
+
