@@ -25,7 +25,7 @@ void node::runline(){
   
   if(strncmp("NOP", line.c_str(), 3)){
 
-  } else if(strncmp("MOV", line.c_str, 3)){
+  } else if(strncmp("MOV", line.c_str(), 3)){
     int c;
     std::string src, dest;
     
