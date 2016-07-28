@@ -145,17 +145,50 @@ pair<bool, int16_t> node::getFromSrc(string src) {
         return p;
       case "LEFT":
         arrow = arrows[3];
-        
         pair<bool, int16_t> p;
-        p.first = true;
-        p.second = stoi(src);
+        
+        if (arrow.nodeRequest(nodeId)) {
+          p.first = true;
+          p.second = arrow.nodeGet(nodeId);
+        } else {
+          p.first = false;
+        }
         return p;
-    } else if(src == "RIGHT") {
-      
-    } else if(src == "UP") {
-      
-    } else if(src == "DOWN") {
-      
+      case "RIGHT":
+        arrow = arrows[1];
+        pair<bool, int16_t> p;
+        
+        if (arrow.nodeRequest(nodeId)) {
+          p.first = true;
+          p.second = arrow.nodeGet(nodeId);
+        } else {
+          p.first = false;
+        }
+        return p;
+      case "UP":
+        arrow = arrows[0];
+        pair<bool, int16_t> p;
+        
+        if (arrow.nodeRequest(nodeId)) {
+          p.first = true;
+          p.second = arrow.nodeGet(nodeId);
+        } else {
+          p.first = false;
+        }
+        return p;
+      case "DOWN":
+        arrow = arrows[2];
+        pair<bool, int16_t> p;
+        
+        if (arrow.nodeRequest(nodeId)) {
+          p.first = true;
+          p.second = arrow.nodeGet(nodeId);
+        } else {
+          p.first = false;
+        }
+        return p;
+      default:
+        // TODO – Handle error
     }
   // ANY and LAST are for the future (hopefully not)
 }
