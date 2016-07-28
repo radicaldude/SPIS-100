@@ -1,5 +1,7 @@
 #include <cstdint>
 #include <utility>
+#include <string>
+#include <vector>
 #include "spis.h"
 
 using namespace std;
