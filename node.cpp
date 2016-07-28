@@ -1,7 +1,8 @@
 #include "spis.h"
 
 class arrow{
-  int8_t set[2];
+public:
+  int8_t status[2];
   int16_t value[2];
 };
   
@@ -9,11 +10,10 @@ class node{
 public:
   node(uint8_t arrows);
   uint8_t pc;
+  uint8_t arrow_id;
   int16_t acc;
   int16_t bak;
-  
   std::vector<arrow> *arrow;
-  std::vector<node>   **neighbours;
   std::vector<string> code;
 };
 
