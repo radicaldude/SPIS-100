@@ -101,7 +101,7 @@ bool node::runline(){
   } else if(strncmp("MOV", line.c_str(), 3)){
     int c;
     std::string src, dst;
-    pair<bool, int16_t> p
+    pair<bool, int16_t> p;
     int16_t input;
     
     operands = line.sub_str(4);
