@@ -15,7 +15,29 @@ public:
   int16_t bak;
   std::vector<arrow> *arrow;
   std::vector<string> code;
+
+  void runline();  
 };
+
+void node::runline(){
+  string line = sanitize(code[j]);
+  if(strncmp("MOV", line.c_str, 3)){
+    int c;
+    string src, dest;
+    
+    operands = line.sub_str(4);
+    c=operands.find_first_of(' ');
+    src = operands.substr(0,c);
+    dest = operands.substr(c);
+    
+  }
+  if(strncmp("ADD", line.c_str, 3)){
+
+
+    
+  }
+}
+      
 
 void node::node(int arrows){
   acc=0;
