@@ -71,12 +71,12 @@ void arrow::nodeSet(int8_t nodeId, int16_t number) {
 
 class node{
   uint8_t nodeId;
-  arrow arrows[];
+  vector<arrow> arrows;
   
   pair<bool, int16_t> getFromSrc(string src);
   
 public:
-  node(uint8_t nodeId, arrow arrowArray[]);
+  node(uint8_t nodeId, vector<arrow> arrows);
   int16_t acc;
   int16_t bak;
   int8_t  pc;
@@ -85,13 +85,12 @@ public:
   bool runline();  
 };
 
-void node::node(uint8_t nId, arrow arrowArray[]) {
-  nodeId = nId;
-  arrows = arrowArray[]
-  // TODO – Ask Joe how to refer to local variables
+void node::node(uint8_t nodeId, vector<arrow> arrows) {
+  this.nodeId = nodeId;
+  this.arrows = arrows;
+  
   acc = 0;
   bak = 0;
-  // TODO – Not sure how a vector really works :\
 }
 
 bool node::runline(){
