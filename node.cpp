@@ -75,7 +75,7 @@ public:
   node(uint8_t nodeId, arrow arrowArray[]);
   int16_t acc;
   int16_t bak;
-  int8_t codeLine;
+  int8_t  pc;
   std::vector<string> code;
 
   bool runline();  
@@ -91,32 +91,26 @@ void node::node(uint8_t nId, arrow arrowArray[]) {
 }
 
 bool node::runline(){
-  //TODO – Decide code line
-  
-  string line = sanitize(code[j]);
-  // TODO – Remove labels and variations of commas
+  string line = sanitize(code[this.pc]);
+  // TODO – Remove labels and variations of commas, in sanitize function
   
   if(strncmp("NOP", line.c_str(), 3)){
-
-  } else if(strncmp("MOV", line.c_str(), 3)){
+    pc++;
+  }
+  else if(strncmp("MOV", line.c_str(), 3)){
     int c;
     std::string src, dst;
-    pair<bool, int16_t> p;
+    pair<bool, uint16_t> p;
     int16_t input;
     
     operands = line.sub_str(4);
     c=operands.find_first_of(' ');
     src = operands.substr(0,c);
     dst = operands.substr(c);
-    
     p = getFromSrc(src);
-    
-    if (!p.first) {
-      return false;
-    }
-    
+    if (!p.first) 
+      return true;
     input = p.second;
-    
     switch (dst) {
       case "ACC":
         acc = input;
@@ -129,7 +123,7 @@ bool node::runline(){
         if (!a.nodeRequest(nodeId)) {
           a.nodeSet(nodeId, input);
         } else {
-          // TODO – Handle occupied arrows
+          pc--;
         }
         break;
       case "RIGHT":
@@ -138,7 +132,7 @@ bool node::runline(){
         if (!a.nodeRequest(nodeId)) {
           a.nodeSet(nodeId, input);
         } else {
-          // TODO – Handle occupied arrows
+          pc--;
         }
         break;
       case "UP":
@@ -147,7 +141,7 @@ bool node::runline(){
         if (!a.nodeRequest(nodeId)) {
           a.nodeSet(nodeId, input);
         } else {
-          // TODO – Handle occupied arrows
+          pc--;
         }
         break;
       case "DOWN":
@@ -156,15 +150,14 @@ bool node::runline(){
         if (!a.nodeRequest(nodeId)) {
           a.nodeSet(nodeId, input);
         } else {
-          // TODO – Handle occupied arrows
+          pc--;
         }
         break;
       default:
         // TODO – Handle error
         return false;
     }
-    
-    codeLine++;
+    pc++;
     return true;
     
   } else if(strncmp("SWP", line.c_str(), 3)){
@@ -183,11 +176,10 @@ bool node::runline(){
     int16_t input;
     
     if (!p.first) {
-      return false;
+      return true;
     }
     
     input = p.second;
-    
     acc += input;
     return true;
     
