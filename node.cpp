@@ -27,7 +27,7 @@ void node::runline(){
 
   } else if(strncmp("MOV", line.c_str(), 3)){
     int c;
-    std::string src, dest;
+    std::string src, dst;
     
     operands = line.sub_str(4);
     c=operands.find_first_of(' ');
