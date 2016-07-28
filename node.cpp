@@ -23,7 +23,7 @@ void node::runline(){
   string line = sanitize(code[j]);
   if(strncmp("MOV", line.c_str, 3)){
     int c;
-    string src, dest;
+    std::string src, dest;
     
     operands = line.sub_str(4);
     c=operands.find_first_of(' ');
@@ -31,7 +31,7 @@ void node::runline(){
     dest = operands.substr(c);
     
   }
-  if(strncmp("ADD", line.c_str, 3)){
+  if(strncmp("ADD", line.c_str(), 3)){
 
 
     
