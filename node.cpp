@@ -87,7 +87,7 @@ public:
   bool runline();  
 };
 
-void node::node(uint8_t nodeId, vector<arrow> arrows) {
+node::node(uint8_t nodeId, vector<arrow> arrows) {
   this.nodeId = nodeId;
   this.arrows = arrows;
   
