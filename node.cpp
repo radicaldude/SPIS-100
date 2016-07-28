@@ -43,7 +43,7 @@ bool arrow::nodeRequest(int8_t nodeId) {
   if (status[nodeIndex] == 1) {
     return true;
   }
-  return false
+  return false;
 }
 
 int16_t arrow::nodeGet(int8_t nodeId) {
@@ -63,7 +63,7 @@ void arrow::nodeSet(int8_t nodeId, int16_t number) {
   // TODO – Define status values
   status[nodeIndex] = 1;
   
-  return tmpValue
+  return tmpValue;
 }
 
 
