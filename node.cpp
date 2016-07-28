@@ -75,9 +75,10 @@ public:
   node(uint8_t nodeId, arrow arrowArray[]);
   int16_t acc;
   int16_t bak;
+  int8_t codeLine;
   std::vector<string> code;
 
-  void runline();  
+  bool runline();  
 };
 
 void node::node(uint8_t nId, arrow arrowArray[]) {
@@ -89,7 +90,9 @@ void node::node(uint8_t nId, arrow arrowArray[]) {
   // TODO – Not sure how a vector really works :\
 }
 
-void node::runline(){
+bool node::runline(){
+  //TODO – Decide code line
+  
   string line = sanitize(code[j]);
   // TODO – Remove labels and variations of commas
   
@@ -104,16 +107,80 @@ void node::runline(){
     src = operands.substr(0,c);
     dst = operands.substr(c);
     
+    pair<bool, int16_t> p = getFromSrc(src);
+    
+    if (!p.first) {
+      return false;
+    }
+    
+    input = p.second;
+    
+    switch (dst) {
+      case "ACC":
+        acc = input;
+        break;
+      case "NIL":
+        break;
+      case "LEFT":
+        arrow = arrows[3];
+        
+        if (!arrow.nodeRequest(nodeId)) {
+          arrow.nodeSet(nodeId, input);
+        } else {
+          // TODO – Handle occupied arrows
+        }
+        break;
+      case "RIGHT":
+        arrow = arrows[1];
+        
+        if (!arrow.nodeRequest(nodeId)) {
+          arrow.nodeSet(nodeId, input);
+        } else {
+          // TODO – Handle occupied arrows
+        }
+        break;
+      case "UP":
+        arrow = arrows[0];
+        
+        if (!arrow.nodeRequest(nodeId)) {
+          arrow.nodeSet(nodeId, input);
+        } else {
+          // TODO – Handle occupied arrows
+        }
+        break;
+      case "DOWN":
+        arrow = arrows[2];
+        
+        if (!arrow.nodeRequest(nodeId)) {
+          arrow.nodeSet(nodeId, input);
+        } else {
+          // TODO – Handle occupied arrows
+        }
+        break;
+      default:
+        // TODO – Handle error
+        return false;
+    }
+    
+    codeLine++;
+    return true;
+    
   } else if(strncmp("SWP", line.c_str(), 3)){
-
+    int16_t tmpAcc = acc;
+    acc = bak;
+    bak = tmpAcc;
+    return true;
+    
   } else if(strncmp("SAV", line.c_str(), 3)){
-
+    bak = acc;
+    return true;
+    
   } else if(strncmp("ADD", line.c_str(), 3)){
 
   } else if(strncmp("SUB", line.c_str(), 3)){
 
   } else if(strncmp("NEG", line.c_str(), 3)){
-
+    acc = -acc;
   } else if(strncmp("JRO", line.c_str(), 3)){
 
   } else if(strncmp("J", line.c_str(), 1)){
@@ -190,5 +257,6 @@ pair<bool, int16_t> node::getFromSrc(string src) {
       default:
         // TODO – Handle error
     }
+  }
   // ANY and LAST are for the future (hopefully not)
 }
