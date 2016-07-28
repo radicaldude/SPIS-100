@@ -1,17 +1,20 @@
 #include <cstdint>
 #include <utility>
+#include <string>
+#include <vector>
+
 #include "spis.h"
 
 using namespace std;
 
 class arrow{
   uint8_t getNodeIndex(int8_t nodeId);
-  
+
 public:
   int8_t nodeId[2];
   int8_t status[2];
   int16_t value[2];
-  
+
   arrow(int8_t nodeId1, int8_t nodeId2);
   bool nodeRequest(int8_t nodeId);
   int16_t nodeGet(int8_t nodeId);
@@ -21,10 +24,10 @@ public:
 arrow::arrow(int8_t nodeId1, int8_t nodeId2) {
   nodeId[0] = nodeId1;
   nodeId[1] = nodeId2;
-  
+
   status[0] = 0;
   status[1] = 0;
-  
+
   value[0] = 0;
   value[1] = 0;
 }
@@ -34,7 +37,7 @@ uint8_t arrow::getNodeIndex(int8_t nId) {
   if (nId == nodeId[1]) {
     nodeIndex = 1;
   }
-  
+
   return nodeIndex;
 }
 
@@ -50,20 +53,20 @@ bool arrow::nodeRequest(int8_t nodeId) {
 int16_t arrow::nodeGet(int8_t nodeId) {
   uint8_t nodeIndex = getNodeIndex(nodeId);
   int16_t tmpValue = value[nodeIndex];
-  
+
   // TODO – Define status values
   status[nodeIndex] = 0;
-  
+
   return tmpValue;
 }
 
 void arrow::nodeSet(int8_t nodeId, int16_t number) {
   uint8_t nodeIndex = getNodeIndex(nodeId);
-  
+
   value[nodeIndex] = number;
   // TODO – Define status values
   status[nodeIndex] = 1;
-  
+
   return;
 }
 
@@ -71,30 +74,28 @@ void arrow::nodeSet(int8_t nodeId, int16_t number) {
 
 class node{
   uint8_t nodeId;
-  arrow arrows[];
-  
-  pair<int16_t, int16_t> getFromSrc(string src);
-  
+  vector<arrow> arrows;
+  pair<bool, int16_t> getFromSrc(string src);
 public:
-  node(uint8_t nodeId, arrow arrowArray[]);
-  map<string, uint8_t> labels;
+  node(uint8_t nId, vector<arrow> as);
   int16_t acc;
   int16_t bak;
   int8_t  pc;
   std::vector<string> code;
 
-  bool runline();  
+  bool runline();
 };
 
 node::node(uint8_t nId, arrow arrowArray[]) {
-  nodeId = nId;
+  this.nodeId = nId;
   arrows = arrowArray[]
   this.acc = 0;
   this.bak = 0;
 }
 
 bool node::runline(){
-  string line = sanitize(code[this.pc]);
+  //string line = sanitize(code[this.pc]);
+  string line = code[pc];
   // TODO – Remove labels and variations of commas, in sanitize function
   
   if(strncmp("NOP", line.c_str(), 3)){
@@ -105,18 +106,19 @@ bool node::runline(){
     std::string src, dst;
     pair<int8_t, uint16_t> p;
     int16_t input;
-    
-    operands = line.sub_str(4);
-    c=operands.find_first_of(' ');
+
+    string operands = line.substr(4);
+    c = operands.find_first_of(' ');
     src = operands.substr(0,c);
     dst = operands.substr(c);
     p = getFromSrc(src);
-
     if (!p.first) 
+
+>>>>>>> 6bd757468067f58d56f9e4e183635e13a6aed4f5
       return true;
-    
+
     input = p.second;
-    
+
     if(dst == "ACC") {
       acc = input;
     } else if(dst== "NIL") {
@@ -132,7 +134,7 @@ bool node::runline(){
       }
     } else if(dst== "RIGHT") {
       arrow a = arrows[1];
-      
+
       if (!a.nodeRequest(nodeId)) {
         a.nodeSet(nodeId, input);
       } else {
@@ -140,7 +142,7 @@ bool node::runline(){
       }
     } else if(dst== "UP") {
       arrow a = arrows[0];
-      
+
       if (!a.nodeRequest(nodeId)) {
         a.nodeSet(nodeId, input);
       } else {
@@ -148,7 +150,7 @@ bool node::runline(){
       }
     } else if(dst== "DOWN") {
       arrow a = arrows[2];
-      
+
       if (!a.nodeRequest(nodeId)) {
         a.nodeSet(nodeId, input);
       } else {
@@ -166,17 +168,16 @@ bool node::runline(){
     bak = tmpAcc;
     pc++;
     return true;
-    
+
   } else if(strncmp("SAV", line.c_str(), 3)){
     bak = acc;
     pc++;
     return true;
-    
+
   } else if(strncmp("ADD", line.c_str(), 3)){
-    string src = line.sub_str(4);
+    string src = line.substr(4);
     pair<bool, int16_t> p = getFromSrc(src);
     int16_t input;
-    
     if (p.first==WAIT) {
       return true;
     }
@@ -238,12 +239,13 @@ bool node::runline(){
       pc=it->second;
     else if(strncmp("JNZ", line.c_str(),3)**acc!=0)
       pc=it->second;
+    else
+      pc++;
     return true;
   }
-  else {
+  else
     // TODO – Handle error
     return false;
-  }
 }
   
 pair<int8_t, int16_t> node::getFromSrc(string src) {
@@ -251,8 +253,13 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
     // Then src is just a number
     pair<bool, int16_t> p;
     p.first = SET;
-    p.second = stoi(src);
-    
+    try{
+      p.second = stoi(src);
+    }
+    catch(...){
+      p.first = INVALID;
+      return p;
+    }
     return p;
   } else {
     if (src == "ACC") {
@@ -266,12 +273,12 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       p.second = 0;
       return p;
     } else if (src ==  "LEFT") {
-      arrow = arrows[3];
+      arrow a = arrows[3];
       pair<bool, int16_t> p;
-      
-      if (arrow.nodeRequest(nodeId)) {
+
+      if (a.nodeRequest(nodeId)) {
         p.first = true;
-        p.second = arrow.nodeGet(nodeId);
+        p.second = a.nodeGet(nodeId);
       } else {
         p.first = false;
       }
@@ -279,7 +286,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
     } else if (src ==  "RIGHT") {
       arrow a = arrows[1];
       pair<bool, int16_t> p;
-      
+
       if (a.nodeRequest(nodeId)) {
         p.first = true;
         p.second = a.nodeGet(nodeId);
@@ -290,7 +297,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
     } else if (src ==  "UP") {
       arrow a = arrows[0];
       pair<bool, int16_t> p;
-      
+
       if (a.nodeRequest(nodeId)) {
         p.first = true;
         p.second = a.nodeGet(nodeId);
@@ -301,7 +308,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
     } else if (src ==  "DOWN") {
       arrow a = arrows[2];
       pair<bool, int16_t> p;
-      
+
       if (a.nodeRequest(nodeId)) {
         p.first = true;
         p.second = a.nodeGet(nodeId);
