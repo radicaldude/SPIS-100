@@ -7,6 +7,11 @@
 
 using namespace std;
 
+const string SIM_OPS[4] = { "NOP", "SWP", "SAV", "NEG" }  // Operations with no parameters
+const string SRC_OPS[3] = { "ADD", "SUB", "JRO" }  // Operations with only SRC as a parameter
+const string SD_OPS[1] = { "MOV" }  // Operations with both SRC and DST as parameters
+const string LAB_OPS[3] = { "JMP", "JEZ", "JNZ", "JGZ", "JLZ" }  // Operations with only SRC as a parameter
+
 class arrow{
   uint8_t getNodeIndex(int8_t nodeId);
 
@@ -84,6 +89,7 @@ public:
   std::vector<string> code;
 
   bool runline();
+  bool runPrepare();
 };
 
 node::node(uint8_t nId, arrow arrowArray[]) {
@@ -112,9 +118,8 @@ bool node::runline(){
     src = operands.substr(0,c);
     dst = operands.substr(c);
     p = getFromSrc(src);
-    if (!p.first) 
-      return true;
-
+    if(p.first==INVALID)
+      return false;
     input = p.second;
 
     if(dst == "ACC") {
@@ -245,7 +250,21 @@ bool node::runline(){
     // TODO – Handle error
     return false;
 }
+              
+bool node::runPrepare() {
+  // TODO – Sanetize
   
+  // TODO – Debug
+  for (uint8_t i = 0; i < code.size(); a += 1) {
+    
+  }
+  
+  
+  // TODO – Collect labels
+  // TODO – Set properties for run line
+}
+
+
 pair<int8_t, int16_t> node::getFromSrc(string src) {
   if(src.find_first_not_of("0123456789") == std::string::npos) {
     // Then src is just a number
