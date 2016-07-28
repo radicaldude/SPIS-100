@@ -84,6 +84,7 @@ public:
   std::vector<string> code;
 
   bool runline();
+  bool runPrepare();
 };
 
 node::node(uint8_t nId, arrow arrowArray[]) {
@@ -112,10 +113,8 @@ bool node::runline(){
     src = operands.substr(0,c);
     dst = operands.substr(c);
     p = getFromSrc(src);
-    if (!p.first) 
-
->>>>>>> 6bd757468067f58d56f9e4e183635e13a6aed4f5
-      return true;
+    if (!p.first)
+      return false;
 
     input = p.second;
 
@@ -247,7 +246,14 @@ bool node::runline(){
     // TODO – Handle error
     return false;
 }
-  
+              
+bool node::runPrepare() {
+  // TODO – Debug
+  // TODO – Collect labels
+  // TODO – Set properties for run line
+}
+
+
 pair<int8_t, int16_t> node::getFromSrc(string src) {
   if(src.find_first_not_of("0123456789") == std::string::npos) {
     // Then src is just a number
