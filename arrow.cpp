@@ -1,3 +1,5 @@
+#include <cstdint>
+
 #include "spis.h"
 
 using namespace std
