@@ -96,6 +96,7 @@ bool node::runline(){
   
   if(strncmp("NOP", line.c_str(), 3)){
     pc++;
+    return true;
   } else if(strncmp("MOV", line.c_str(), 3)){
     int c;
     std::string src, dst;
@@ -109,50 +110,47 @@ bool node::runline(){
     p = getFromSrc(src);
     if (!p.first) 
       return true;
+    
     input = p.second;
-      if(dst == "ACC") {
-        acc = input;
-        break;
-      } else if(dst== "NIL") {
-        break;
-      } else if(dst== "LEFT":
-        arrow a = arrows[3];
-        
-        if (!a.nodeRequest(nodeId)) {
-          a.nodeSet(nodeId, input);
-        } else {
-          pc--;
-        }
-        break;
-      } else if(dst== "RIGHT":
-        arrow a = arrows[1];
-        
-        if (!a.nodeRequest(nodeId)) {
-          a.nodeSet(nodeId, input);
-        } else {
-          pc--;
-        }
-        break;
-      } else if(dst== "UP":
-        arrow a = arrows[0];
-        
-        if (!a.nodeRequest(nodeId)) {
-          a.nodeSet(nodeId, input);
-        } else {
-          pc--;
-        }
-        break;
-      } else if(dst== "DOWN":
-        arrow a = arrows[2];
-        
-        if (!a.nodeRequest(nodeId)) {
-          a.nodeSet(nodeId, input);
-        } else {
-          pc--;
-        }
-        break;
-        // TODO – Handle error
-        return false;
+    
+    if(dst == "ACC") {
+      acc = input;
+    } else if(dst== "NIL") {
+      // I guess do nothing???
+    } else if(dst== "LEFT":
+      arrow a = arrows[3];
+      
+      if (!a.nodeRequest(nodeId)) {
+        a.nodeSet(nodeId, input);
+      } else {
+        pc--;
+      }
+    } else if(dst== "RIGHT") {
+      arrow a = arrows[1];
+      
+      if (!a.nodeRequest(nodeId)) {
+        a.nodeSet(nodeId, input);
+      } else {
+        pc--;
+      }
+    } else if(dst== "UP") {
+      arrow a = arrows[0];
+      
+      if (!a.nodeRequest(nodeId)) {
+        a.nodeSet(nodeId, input);
+      } else {
+        pc--;
+      }
+    } else if(dst== "DOWN") {
+      arrow a = arrows[2];
+      
+      if (!a.nodeRequest(nodeId)) {
+        a.nodeSet(nodeId, input);
+      } else {
+        pc--;
+      }
+      // TODO – Handle error
+      return false;
     }
     pc++;
     return true;
@@ -173,7 +171,7 @@ bool node::runline(){
     int16_t input;
     
     if (!p.first) {
-      return true;
+      return false;
     }
     
     input = p.second;
@@ -199,7 +197,19 @@ bool node::runline(){
     return true;
     
   } else if(strncmp("JRO", line.c_str(), 3)){
-
+    string src = line.sub_str(4);
+    pair<bool, int16_t> p = getFromSrc(src);
+    int16_t input;
+    
+    if (!p.first) {
+      return false;
+    }
+    
+    input = p.second;
+    
+    pc += input;
+    return true;
+    
   } else if(strncmp("J", line.c_str(), 1)){
     // JMP, JEZ, JNZ, JGZ, JLZ
   } else {
@@ -216,63 +226,62 @@ pair<bool, int16_t> node::getFromSrc(string src) {
     
     return p;
   } else {
-    switch (src) {
-      case "ACC":
-        pair<bool, int16_t> p;
+    if (src == "ACC") {
+      pair<bool, int16_t> p;
+      p.first = true;
+      p.second = acc;
+      return p;
+    } else if (src ==  "NIL") {
+      pair<bool, int16_t> p;
+      p.first = true;
+      p.second = 0;
+      return p;
+    } else if (src ==  "LEFT") {
+      arrow = arrows[3];
+      pair<bool, int16_t> p;
+      
+      if (arrow.nodeRequest(nodeId)) {
         p.first = true;
-        p.second = acc;
-        return p;
-      case "NIL":
-        pair<bool, int16_t> p;
+        p.second = arrow.nodeGet(nodeId);
+      } else {
+        p.first = false;
+      }
+      return p;
+    } else if (src ==  "RIGHT") {
+      arrow a = arrows[1];
+      pair<bool, int16_t> p;
+      
+      if (a.nodeRequest(nodeId)) {
         p.first = true;
-        p.second = 0;
-        return p;
-      case "LEFT":
-        arrow = arrows[3];
-        pair<bool, int16_t> p;
-        
-        if (arrow.nodeRequest(nodeId)) {
-          p.first = true;
-          p.second = arrow.nodeGet(nodeId);
-        } else {
-          p.first = false;
-        }
-        return p;
-      case "RIGHT":
-        arrow a = arrows[1];
-        pair<bool, int16_t> p;
-        
-        if (a.nodeRequest(nodeId)) {
-          p.first = true;
-          p.second = a.nodeGet(nodeId);
-        } else {
-          p.first = false;
-        }
-        return p;
-      case "UP":
-        arrow a = arrows[0];
-        pair<bool, int16_t> p;
-        
-        if (a.nodeRequest(nodeId)) {
-          p.first = true;
-          p.second = a.nodeGet(nodeId);
-        } else {
-          p.first = false;
-        }
-        return p;
-      case "DOWN":
-        arrow a = arrows[2];
-        pair<bool, int16_t> p;
-        
-        if (a.nodeRequest(nodeId)) {
-          p.first = true;
-          p.second = a.nodeGet(nodeId);
-        } else {
-          p.first = false;
-        }
-        return p;
-      default:
-        // TODO – Handle error
+        p.second = a.nodeGet(nodeId);
+      } else {
+        p.first = false;
+      }
+      return p;
+    } else if (src ==  "UP") {
+      arrow a = arrows[0];
+      pair<bool, int16_t> p;
+      
+      if (a.nodeRequest(nodeId)) {
+        p.first = true;
+        p.second = a.nodeGet(nodeId);
+      } else {
+        p.first = false;
+      }
+      return p;
+    } else if (src ==  "DOWN") {
+      arrow a = arrows[2];
+      pair<bool, int16_t> p;
+      
+      if (a.nodeRequest(nodeId)) {
+        p.first = true;
+        p.second = a.nodeGet(nodeId);
+      } else {
+        p.first = false;
+      }
+      return p;
+    } else {
+      // TODO – Handle error
     }
   }
   // ANY and LAST are for the future (hopefully not)
