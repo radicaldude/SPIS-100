@@ -20,7 +20,7 @@ public:
   void nodeSet(int8_t nodeId, int16_t number);
 };
 
-void arrow::arrow(int8_t nodeId1, int8_t nodeId2) {
+arrow::arrow(int8_t nodeId1, int8_t nodeId2) {
   nodeId[0] = nodeId1;
   nodeId[1] = nodeId2;
   
