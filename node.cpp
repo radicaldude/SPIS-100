@@ -256,7 +256,7 @@ bool node::runPrepare() {
   // TODO – Sanetize
   
   // TODO – Debug
-  
+  for (uint8_t i = 0; i < sizeof()
   
   
   // TODO – Collect labels
