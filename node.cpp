@@ -1,7 +1,5 @@
 #include <cstdint>
 #include <utility>
-#include <string>
-#include <vector>
 #include "spis.h"
 
 using namespace std;
@@ -20,7 +18,7 @@ public:
   void nodeSet(int8_t nodeId, int16_t number);
 };
 
-arrow::arrow(int8_t nodeId1, int8_t nodeId2) {
+void arrow::arrow(int8_t nodeId1, int8_t nodeId2) {
   nodeId[0] = nodeId1;
   nodeId[1] = nodeId2;
   
@@ -73,12 +71,12 @@ void arrow::nodeSet(int8_t nodeId, int16_t number) {
 
 class node{
   uint8_t nodeId;
-  vector<arrow> arrows;
+  arrow arrows[];
   
   pair<bool, int16_t> getFromSrc(string src);
   
 public:
-  node(uint8_t nodeId, vector<arrow> arrows);
+  node(uint8_t nodeId, arrow arrowArray[]);
   int16_t acc;
   int16_t bak;
   int8_t  pc;
@@ -87,12 +85,13 @@ public:
   bool runline();  
 };
 
-node::node(uint8_t nId, vector<arrow> as) {
+void node::node(uint8_t nId, arrow arrowArray[]) {
   nodeId = nId;
-  arrows = as;
-
+  arrows = arrowArray[]
+  // TODO – Ask Joe how to refer to local variables
   acc = 0;
   bak = 0;
+  // TODO – Not sure how a vector really works :\
 }
 
 bool node::runline(){
@@ -108,8 +107,8 @@ bool node::runline(){
     pair<bool, uint16_t> p;
     int16_t input;
     
-    operands = line.sub_str(4);
-    c=operands.find_first_of(' ');
+    string operands = line.substr(4);
+    c = operands.find_first_of(' ');
     src = operands.substr(0,c);
     dst = operands.substr(c);
     p = getFromSrc(src);
@@ -122,7 +121,7 @@ bool node::runline(){
       acc = input;
     } else if(dst== "NIL") {
       // I guess do nothing???
-    } else if(dst== "LEFT":
+    } else if(dst== "LEFT") {
       arrow a = arrows[3];
       
       if (!a.nodeRequest(nodeId)) {
