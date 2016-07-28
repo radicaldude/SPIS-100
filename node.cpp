@@ -244,12 +244,12 @@ pair<bool, int16_t> node::getFromSrc(string src) {
       p.second = 0;
       return p;
     } else if (src ==  "LEFT") {
-      arrow = arrows[3];
+      arrow a = arrows[3];
       pair<bool, int16_t> p;
 
-      if (arrow.nodeRequest(nodeId)) {
+      if (a.nodeRequest(nodeId)) {
         p.first = true;
-        p.second = arrow.nodeGet(nodeId);
+        p.second = a.nodeGet(nodeId);
       } else {
         p.first = false;
       }
