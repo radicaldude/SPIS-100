@@ -113,8 +113,6 @@ bool node::runline(){
     dst = operands.substr(c);
     p = getFromSrc(src);
     if (!p.first) 
-
->>>>>>> 6bd757468067f58d56f9e4e183635e13a6aed4f5
       return true;
 
     input = p.second;
@@ -264,12 +262,12 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
   } else {
     if (src == "ACC") {
       pair<bool, int16_t> p;
-      p.first = true;
-      p.second = acc;
+      p.first = SET;
+      p.second = this.acc;
       return p;
     } else if (src ==  "NIL") {
       pair<bool, int16_t> p;
-      p.first = true;
+      p.first = SET;
       p.second = 0;
       return p;
     } else if (src ==  "LEFT") {
@@ -277,10 +275,10 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       pair<bool, int16_t> p;
 
       if (a.nodeRequest(nodeId)) {
-        p.first = true;
+        p.first = SET;
         p.second = a.nodeGet(nodeId);
       } else {
-        p.first = false;
+        p.first = WAIT;
       }
       return p;
     } else if (src ==  "RIGHT") {
@@ -288,21 +286,21 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       pair<bool, int16_t> p;
 
       if (a.nodeRequest(nodeId)) {
-        p.first = true;
+        p.first = SET;
         p.second = a.nodeGet(nodeId);
       } else {
-        p.first = false;
+        p.first = WAIT;
       }
       return p;
     } else if (src ==  "UP") {
       arrow a = arrows[0];
       pair<bool, int16_t> p;
 
-      if (a.nodeRequest(nodeId)) {
-        p.first = true;
+      if (a.nodeRequest(nodeId)){
+        p.first = SET;
         p.second = a.nodeGet(nodeId);
       } else {
-        p.first = false;
+        p.first = WAIT;
       }
       return p;
     } else if (src ==  "DOWN") {
@@ -310,13 +308,14 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       pair<bool, int16_t> p;
 
       if (a.nodeRequest(nodeId)) {
-        p.first = true;
+        p.first = SET;
         p.second = a.nodeGet(nodeId);
       } else {
-        p.first = false;
+        p.first = WAIT;
       }
       return p;
     } else {
+      return p.first = INVALID;
       // TODO – Handle error
     }
   }
