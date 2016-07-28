@@ -96,8 +96,7 @@ bool node::runline(){
   
   if(strncmp("NOP", line.c_str(), 3)){
     pc++;
-  }
-  else if(strncmp("MOV", line.c_str(), 3)){
+  } else if(strncmp("MOV", line.c_str(), 3)){
     int c;
     std::string src, dst;
     pair<bool, uint16_t> p;
@@ -111,13 +110,12 @@ bool node::runline(){
     if (!p.first) 
       return true;
     input = p.second;
-    switch (dst) {
-      case "ACC":
+      if(dst == "ACC") {
         acc = input;
         break;
-      case "NIL":
+      } else if(dst== "NIL") {
         break;
-      case "LEFT":
+      } else if(dst== "LEFT":
         arrow a = arrows[3];
         
         if (!a.nodeRequest(nodeId)) {
@@ -126,7 +124,7 @@ bool node::runline(){
           pc--;
         }
         break;
-      case "RIGHT":
+      } else if(dst== "RIGHT":
         arrow a = arrows[1];
         
         if (!a.nodeRequest(nodeId)) {
@@ -135,7 +133,7 @@ bool node::runline(){
           pc--;
         }
         break;
-      case "UP":
+      } else if(dst== "UP":
         arrow a = arrows[0];
         
         if (!a.nodeRequest(nodeId)) {
@@ -144,7 +142,7 @@ bool node::runline(){
           pc--;
         }
         break;
-      case "DOWN":
+      } else if(dst== "DOWN":
         arrow a = arrows[2];
         
         if (!a.nodeRequest(nodeId)) {
@@ -153,7 +151,6 @@ bool node::runline(){
           pc--;
         }
         break;
-      default:
         // TODO – Handle error
         return false;
     }
