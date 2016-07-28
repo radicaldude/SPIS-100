@@ -101,13 +101,15 @@ bool node::runline(){
   } else if(strncmp("MOV", line.c_str(), 3)){
     int c;
     std::string src, dst;
+    pair<bool, int16_t> p
+    int16_t input;
     
     operands = line.sub_str(4);
     c=operands.find_first_of(' ');
     src = operands.substr(0,c);
     dst = operands.substr(c);
     
-    pair<bool, int16_t> p = getFromSrc(src);
+    p = getFromSrc(src);
     
     if (!p.first) {
       return false;
@@ -122,37 +124,37 @@ bool node::runline(){
       case "NIL":
         break;
       case "LEFT":
-        arrow = arrows[3];
+        arrow a = arrows[3];
         
-        if (!arrow.nodeRequest(nodeId)) {
-          arrow.nodeSet(nodeId, input);
+        if (!a.nodeRequest(nodeId)) {
+          a.nodeSet(nodeId, input);
         } else {
           // TODO – Handle occupied arrows
         }
         break;
       case "RIGHT":
-        arrow = arrows[1];
+        arrow a = arrows[1];
         
-        if (!arrow.nodeRequest(nodeId)) {
-          arrow.nodeSet(nodeId, input);
+        if (!a.nodeRequest(nodeId)) {
+          a.nodeSet(nodeId, input);
         } else {
           // TODO – Handle occupied arrows
         }
         break;
       case "UP":
-        arrow = arrows[0];
+        arrow a = arrows[0];
         
-        if (!arrow.nodeRequest(nodeId)) {
-          arrow.nodeSet(nodeId, input);
+        if (!a.nodeRequest(nodeId)) {
+          a.nodeSet(nodeId, input);
         } else {
           // TODO – Handle occupied arrows
         }
         break;
       case "DOWN":
-        arrow = arrows[2];
+        arrow a = arrows[2];
         
-        if (!arrow.nodeRequest(nodeId)) {
-          arrow.nodeSet(nodeId, input);
+        if (!a.nodeRequest(nodeId)) {
+          a.nodeSet(nodeId, input);
         } else {
           // TODO – Handle occupied arrows
         }
@@ -176,11 +178,37 @@ bool node::runline(){
     return true;
     
   } else if(strncmp("ADD", line.c_str(), 3)){
-
+    string src = line.sub_str(4);
+    pair<bool, int16_t> p = getFromSrc(src);
+    int16_t input;
+    
+    if (!p.first) {
+      return false;
+    }
+    
+    input = p.second;
+    
+    acc += input;
+    return true;
+    
   } else if(strncmp("SUB", line.c_str(), 3)){
-
+    string src = line.sub_str(4);
+    pair<bool, int16_t> p = getFromSrc(src);
+    int16_t input;
+    
+    if (!p.first) {
+      return false;
+    }
+    
+    input = p.second;
+    
+    acc -= input;
+    return true;
+    
   } else if(strncmp("NEG", line.c_str(), 3)){
     acc = -acc;
+    return true;
+    
   } else if(strncmp("JRO", line.c_str(), 3)){
 
   } else if(strncmp("J", line.c_str(), 1)){
@@ -222,34 +250,34 @@ pair<bool, int16_t> node::getFromSrc(string src) {
         }
         return p;
       case "RIGHT":
-        arrow = arrows[1];
+        arrow a = arrows[1];
         pair<bool, int16_t> p;
         
-        if (arrow.nodeRequest(nodeId)) {
+        if (a.nodeRequest(nodeId)) {
           p.first = true;
-          p.second = arrow.nodeGet(nodeId);
+          p.second = a.nodeGet(nodeId);
         } else {
           p.first = false;
         }
         return p;
       case "UP":
-        arrow = arrows[0];
+        arrow a = arrows[0];
         pair<bool, int16_t> p;
         
-        if (arrow.nodeRequest(nodeId)) {
+        if (a.nodeRequest(nodeId)) {
           p.first = true;
-          p.second = arrow.nodeGet(nodeId);
+          p.second = a.nodeGet(nodeId);
         } else {
           p.first = false;
         }
         return p;
       case "DOWN":
-        arrow = arrows[2];
+        arrow a = arrows[2];
         pair<bool, int16_t> p;
         
-        if (arrow.nodeRequest(nodeId)) {
+        if (a.nodeRequest(nodeId)) {
           p.first = true;
-          p.second = arrow.nodeGet(nodeId);
+          p.second = a.nodeGet(nodeId);
         } else {
           p.first = false;
         }
