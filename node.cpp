@@ -21,7 +21,11 @@ public:
 
 void node::runline(){
   string line = sanitize(code[j]);
-  if(strncmp("MOV", line.c_str, 3)){
+  // TODO – Remove labels and variations of commas
+  
+  if(strncmp("NOP", line.c_str(), 3)){
+
+  } else if(strncmp("MOV", line.c_str, 3)){
     int c;
     std::string src, dest;
     
@@ -30,11 +34,20 @@ void node::runline(){
     src = operands.substr(0,c);
     dest = operands.substr(c);
     
-  }
-  if(strncmp("ADD", line.c_str(), 3)){
+  } else if(strncmp("SWP", line.c_str(), 3)){
 
+  } else if(strncmp("SAV", line.c_str(), 3)){
 
-    
+  } else if(strncmp("ADD", line.c_str(), 3)){
+
+  } else if(strncmp("SUB", line.c_str(), 3)){
+
+  } else if(strncmp("NEG", line.c_str(), 3)){
+
+  } else if(strncmp("JRO", line.c_str(), 3)){
+
+  } else if(strncmp("J", line.c_str(), 1)){
+    // JMP, JEZ, JNZ, JGZ, JLZ
   }
 }
       
