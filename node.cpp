@@ -32,7 +32,7 @@ void node::runline(){
     operands = line.sub_str(4);
     c=operands.find_first_of(' ');
     src = operands.substr(0,c);
-    dest = operands.substr(c);
+    dst = operands.substr(c);
     
   } else if(strncmp("SWP", line.c_str(), 3)){
 
@@ -48,6 +48,8 @@ void node::runline(){
 
   } else if(strncmp("J", line.c_str(), 1)){
     // JMP, JEZ, JNZ, JGZ, JLZ
+  } else {
+    // TODO – Handle error
   }
 }
       
