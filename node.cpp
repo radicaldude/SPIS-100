@@ -7,6 +7,11 @@
 
 using namespace std;
 
+const string SIM_OPS[4] = { "NOP", "SWP", "SAV", "NEG" }  // Operations with no parameters
+const string SRC_OPS[3] = { "ADD", "SUB", "JRO" }  // Operations with only SRC as a parameter
+const string SD_OPS[1] = { "MOV" }  // Operations with both SRC and DST as parameters
+const string LAB_OPS[3] = { "JMP", "JEZ", "JNZ", "JGZ", "JLZ" }  // Operations with only SRC as a parameter
+
 class arrow{
   uint8_t getNodeIndex(int8_t nodeId);
 
@@ -248,7 +253,12 @@ bool node::runline(){
 }
               
 bool node::runPrepare() {
+  // TODO – Sanetize
+  
   // TODO – Debug
+  
+  
+  
   // TODO – Collect labels
   // TODO – Set properties for run line
 }
