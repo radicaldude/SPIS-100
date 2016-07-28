@@ -1,4 +1,7 @@
+#include <stdint.h>
 #include "spis.h"
+
+using namespace std;
 
 class arrow{
   uint8_t getNodeIndex(int8_t nodeId);
@@ -25,9 +28,9 @@ void arrow::arrow(int8_t nodeId1, int8_t nodeId2) {
   value[1] = 0;
 }
 
-uint8_t arrow::getNodeIndex(int8_t nodeId) {
+uint8_t arrow::getNodeIndex(int8_t nId) {
   uint8_t nodeIndex = 0;
-  if (nodeId == nodeId[1]) {
+  if (nId == nodeId[1]) {
     nodeIndex = 1;
   }
   
