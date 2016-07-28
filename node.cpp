@@ -79,7 +79,7 @@ class node{
   pair<bool, int16_t> getFromSrc(string src);
 
 public:
-  node(uint8_t nodeId, vector<arrow> arrows);
+  node(uint8_t nId, vector<arrow> as);
   int16_t acc;
   int16_t bak;
   int8_t  pc;
