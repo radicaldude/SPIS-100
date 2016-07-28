@@ -170,7 +170,7 @@ bool node::runline(){
     return true;
     
   } else if(strncmp("ADD", line.c_str(), 3)){
-    string src = line.sub_str(4);
+    string src = line.substr(4);
     pair<bool, int16_t> p = getFromSrc(src);
     int16_t input;
     
@@ -183,7 +183,7 @@ bool node::runline(){
     return true;
     
   } else if(strncmp("SUB", line.c_str(), 3)){
-    string src = line.sub_str(4);
+    string src = line.substr(4);
     pair<bool, int16_t> p = getFromSrc(src);
     int16_t input;
     
@@ -201,7 +201,7 @@ bool node::runline(){
     return true;
     
   } else if(strncmp("JRO", line.c_str(), 3)){
-    string src = line.sub_str(4);
+    string src = line.substr(4);
     pair<bool, int16_t> p = getFromSrc(src);
     int16_t input;
     
