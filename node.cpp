@@ -206,6 +206,8 @@ bool node::runPrepare() {
       labels.insert(pair<string, int8_t>(labelName, i));
     }
   }
+  // TODO – Remove labels from code
+
   
   // TODO – Debug
   codeLoop: for (uint8_t i = 0; i < code.size(); a++) {
