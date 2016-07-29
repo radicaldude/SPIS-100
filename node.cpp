@@ -11,11 +11,15 @@ const string SIM_OPS[4] = { "NOP", "SWP", "SAV", "NEG" }  // Operations with no 
 const string SRC_OPS[3] = { "ADD", "SUB", "JRO" }  // Operations with only SRC as a parameter
 const string SD_OPS[1] = { "MOV" }  // Operations with both SRC and DST as parameters
 const string LAB_OPS[3] = { "JMP", "JEZ", "JNZ", "JGZ", "JLZ" }  // Operations with only SRC as a parameter
+const string REGISTERS[6] = { "ACC", "NIL", "LEFT", "RIGHT", "UP", "DOWN" }
 
 class node{
   uint8_t nodeId;
   vector<arrow> arrows;
-  pair<bool, int16_t> getFromSrc(string src);
+  map<string, int8_t> labels;
+  pair<bool, int16_t> getFromSrc(string input);
+  bool testDst(string input);
+  bool testSrc(string input);
 public:
   node(uint8_t nId, vector<arrow> as);
   int16_t acc;
@@ -189,24 +193,93 @@ bool node::runline(){
 bool node::runPrepare() {
   // TODO – Sanetize
   
-  // TODO – Debug
-  for (uint8_t i = 0; i < code.size(); a += 1) {
-    
+  // TODO – Collect labels
+  for (uint8_t i = 0; i < code.size(); a++) {
+    uint8_t colonIndex = paramDst.find(':');
+    if(colonIndex != string::npos) {
+      
+    }
   }
   
+  // TODO – Debug
+  codeLoop: for (uint8_t i = 0; i < code.size(); a++) {
+    string op = code[i].substr(0, 3);
+    bool opFound = false;
+    
+    for (uint8_t x = 0; x < 4; x++) {
+      if (SIM_OPS[x].compare(op) == 0) {
+        opFound = true;
+      }
+    }
+    if (opFound == true) {
+      if (code[i].length()) {
+        // TODO – Handle error
+      }
+    }
+    
+    
+    for (uint8_t x = 0; x < 3; x++) {
+      if (SRC_OPS[x].compare(op) == 0) {
+        opFound = true;
+      }
+    }
+    if (opFound == true) {
+      string param = code[i].substr(4);
+      if (param.find(' ') != string::npos) {
+        // TODO – Handle error
+      } else if (!testSrc(param)) {
+        // TODO – Handle error
+      }
+    }
+    
+    if (SD_OPS[0].compare(op) == 0) {
+      string param = code[i].substr(4);
+      string paramSrc = param.substr(0, param.find(' '));
+      string paramDst = param.substr(paramSrc.length() + 1)
+      if(paramDst.find(' ') != string::npos) {
+        // TODO – Handle error
+      } else if (!testSrc(paramSrc)) {
+        // TODO – Handle error
+      } else if (!testDst(paramDst)) {
+        // TODO – Handle error
+      }
+    }
+    
+    for (uint8_t x = 0; x < 4; x++) {
+      if (LAB_OPS[x].compare(op) == 0) {
+        opFound = true;
+      }
+    }
+  }
   
-  // TODO – Collect labels
+
   // TODO – Set properties for run line
+}
+          
+bool node::testDst(string input) {
+  for (uint8_t x = 0; x < 6; x++) {
+    if (REGISTERS[x].compare(input) == 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool node::testSrc(string input) {
+  if(input.find_first_not_of("0123456789") == std::string::npos)
+    return true;
+  else if
+    return testDst(input);
 }
 
 
-pair<int8_t, int16_t> node::getFromSrc(string src) {
-  if(src.find_first_not_of("0123456789") == std::string::npos) {
+pair<int8_t, int16_t> node::getFromSrc(string input) {
+  if(input.find_first_not_of("0123456789") == std::string::npos) {
     // Then src is just a number
     pair<bool, int16_t> p;
     p.first = SET;
     try{
-      p.second = stoi(src);
+      p.second = stoi(input);
     }
     catch(...){
       p.first = INVALID;
@@ -214,17 +287,17 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
     }
     return p;
   } else {
-    if (src == "ACC") {
+    if (input == "ACC") {
       pair<bool, int16_t> p;
       p.first = SET;
       p.second = this.acc;
       return p;
-    } else if (src ==  "NIL") {
+    } else if (input ==  "NIL") {
       pair<bool, int16_t> p;
       p.first = SET;
       p.second = 0;
       return p;
-    } else if (src ==  "LEFT") {
+    } else if (input ==  "LEFT") {
       arrow a = arrows[3];
       pair<bool, int16_t> p;
 
@@ -235,7 +308,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
         p.first = WAIT;
       }
       return p;
-    } else if (src ==  "RIGHT") {
+    } else if (input ==  "RIGHT") {
       arrow a = arrows[1];
       pair<bool, int16_t> p;
 
@@ -246,7 +319,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
         p.first = WAIT;
       }
       return p;
-    } else if (src ==  "UP") {
+    } else if (input ==  "UP") {
       arrow a = arrows[0];
       pair<bool, int16_t> p;
 
@@ -257,7 +330,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
         p.first = WAIT;
       }
       return p;
-    } else if (src ==  "DOWN") {
+    } else if (input ==  "DOWN") {
       arrow a = arrows[2];
       pair<bool, int16_t> p;
 
