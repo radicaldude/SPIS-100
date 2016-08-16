@@ -1,6 +1,6 @@
 #include "spis.h"
 
-using namespace std
+using namespace std;
 
 class arrow{
   uint8_t getNodeIndex(int8_t nodeId);
