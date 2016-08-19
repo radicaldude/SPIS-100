@@ -30,7 +30,7 @@ class node{
   bool runline();
   bool runPrepare();
   std::map<uint8_t, uint16_t> labels;
-  std::vector<arrow*> arrows;
+  arrow *arrows[4];
 };
 
 node::node(uint8_t nId){
@@ -231,9 +231,9 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       arrow *a = arrows[3];
       pair<bool, int16_t> p;
 
-      if (a.nodeRequest(nodeId)) {
+      if (a->nodeRequest(nodeId)) {
         p.first = SET;
-        p.second = a.nodeGet(nodeId);
+        p.second = a->nodeGet(nodeId);
       } else {
         p.first = WAIT;
       }
@@ -250,7 +250,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       }
       return p;
     } else if (src ==  "UP") {
-      arrow a = arrows[0];
+      arrow *a = arrows[0];
       pair<bool, int16_t> p;
 
       if (a->nodeRequest(nodeId)){
@@ -261,7 +261,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       }
       return p;
     } else if (src ==  "DOWN") {
-      arrow a = arrows[2];
+      arrow *a = arrows[2];
       pair<bool, int16_t> p;
 
       if (a->nodeRequest(nodeId)) {

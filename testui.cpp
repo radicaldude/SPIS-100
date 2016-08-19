@@ -2,14 +2,18 @@
 
 #define MENU_WIDTH 20
 #define BOX_WIDTH 10
+#define BOX_HEIGHT 20
 #define NODE_HEIGHT 30
 #define ARROW_WIDTH 10
+#define ARROW_HEIGHT 10
 #define GAP_WIDTH 5
 #define NODE_WIDTH 10
 #define CODE_WIDTH 4
 
+
 WINDOW *new_win(int height, int width, int starty, int startx){
   WINDOW *win;
+
   win=newwin(height, width, starty, startx);
   box(win,0,0);
   wrefresh(win);
@@ -23,6 +27,8 @@ int main(){
   int nID=0;
   int grid_size[2] = {4,4};
   std::vector<node> grid;
+
+  initscr();
   getmaxyx(stdscr, y, max_x);
   max_y=y;
   for(int i=0;i<grid_size[0]; i++){
@@ -55,16 +61,16 @@ int main(){
       y=y-NODE_HEIGHT-GAP_WIDTH;
     }
     tmp_node->arrows[1]=new arrow(nID,nID+1);
-    tmp_node->arrows[0].win=new_win(ARROW_HEIGHT, ARROW_WIDTH, y+BOX_HEIGHT/2+ARROW_HEIGHT/2, x+NODE_WIDTH+GAP);
-    arrows[2]=new arrow(nID,nID+grid_size[0]);
-    tmp_node->arrows[2].win=new_win(ARROW_HEIGHT, ARROW_WIDTH, y-GAP, x+NODE_WIDTH/2);
+    tmp_node->arrows[0]->win=new_win(ARROW_HEIGHT, ARROW_WIDTH, y+BOX_HEIGHT/2+ARROW_HEIGHT/2, x+NODE_WIDTH+GAP_WIDTH);
+    tmp_node->arrows[2]=new arrow(nID,nID+grid_size[0]);
+    tmp_node->arrows[2]->win=new_win(ARROW_HEIGHT, ARROW_WIDTH, y-GAP_WIDTH, x+NODE_WIDTH/2);
     if((int) i<grid_size[0]){
-      arrows[0]=new arrow(nID, nID-grid_size[0]);
-      tmp_node->arrow[0]=new_win(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT+GAP,x+NODE_WIDTH/2);
+      tmp_node->arrows[0]=new arrow(nID, nID-grid_size[0]);
+      tmp_node->arrows[0]->win=new_win(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT+GAP_WIDTH,x+NODE_WIDTH/2);
     }
     if(grid_size[0]%i!=0){
-      arrows[3]=new arrow(nID, nID-1);
-      tmp_node->arrows[3]=new_win(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP-NODE_WIDTH);
+      tmp_node->arrows[3]=new arrow(nID, nID-1);
+      tmp_node->arrows[3]->win=new_win(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH-NODE_WIDTH);
     }
   }
   return 0;
