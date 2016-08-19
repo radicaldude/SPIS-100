@@ -60,10 +60,6 @@ int main(){
       x=MENU_WIDTH+GAP_WIDTH;
       y=y-NODE_HEIGHT-GAP_WIDTH;
     }
-    tmp_node->arrows[1]=new arrow(nID,nID+1);
-    tmp_node->arrows[0]->win=new_win(ARROW_HEIGHT, ARROW_WIDTH, y+BOX_HEIGHT/2+ARROW_HEIGHT/2, x+NODE_WIDTH+GAP_WIDTH);
-    tmp_node->arrows[2]=new arrow(nID,nID+grid_size[0]);
-    tmp_node->arrows[2]->win=new_win(ARROW_HEIGHT, ARROW_WIDTH, y-GAP_WIDTH, x+NODE_WIDTH/2);
     if((int) i<grid_size[0]){
       tmp_node->arrows[0]=new arrow(nID, nID-grid_size[0]);
       tmp_node->arrows[0]->win=new_win(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT+GAP_WIDTH,x+NODE_WIDTH/2);
@@ -71,6 +67,14 @@ int main(){
     if(grid_size[0]%i!=0){
       tmp_node->arrows[3]=new arrow(nID, nID-1);
       tmp_node->arrows[3]->win=new_win(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH-NODE_WIDTH);
+    }
+    if((i/grid_size[0]-1)<grid_size[1]){
+      tmp_node->arrows[2]=new arrow(nID, nID+grid_size[0]);
+      tmp_node->arrows[2]->win=new_win(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH-NODE_WIDTH);
+    }
+    if((grid_size[0]+1)%i!=0){
+      tmp_node->arrows[1]=new arrow(nID, nID+1);
+      tmp_node->arrows[1]->win=new_win(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH-NODE_WIDTH);
     }
   }
   return 0;

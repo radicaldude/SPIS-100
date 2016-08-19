@@ -61,7 +61,6 @@ bool node::runline(){
     if(p.first==INVALID)
       return false;
     input = p.second;
-
     if(dst == "ACC") {
       acc = input;
     } else if(dst== "NIL") {

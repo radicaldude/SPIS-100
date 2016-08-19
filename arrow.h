@@ -62,6 +62,5 @@ void arrow::nodeSet(int8_t nodeId, int16_t number) {
   value[nodeIndex] = number;
   // TODO – Define status values
   status[nodeIndex] = 1;
-
   return;
 }
