@@ -21,6 +21,8 @@ std::vector<node> grid;
 void drawContent();
 void *inputLoop(void *ptr);
 
+bool deleteThisDamnVariable = true;
+
 WINDOW *new_bwin(int height, int width, int starty, int startx){
     WINDOW *win;
     win=newwin(height, width, starty, startx);
@@ -37,6 +39,7 @@ int main(){
     WINDOW *menu;
     
     initscr();
+    noecho();
     getmaxyx(stdscr, max_y, max_x);
     y=0;
     refresh();
@@ -81,7 +84,7 @@ int main(){
 
     drawContent();
 
-    while(true) {
+    while(deleteThisDamnVariable) {
     	sleep(1);
     }
     //getch();
@@ -89,22 +92,28 @@ int main(){
     return 0;
 }
 
+void drawNode(int nodeIndex) {
+	node tmp_node = grid[nodeIndex];
+	for(int y = 0; y < tmp_node.inputCode.size(); y++) {
+		mvwprintw(tmp_node.w_code, y, 0, tmp_node.inputCode[y].c_str());
+		wrefresh(tmp_node.w_code);
+	}
+}
+
 void drawContent() {
-    for(int i = 0; i < grid.size(); i++) {
-        node tmp_node = grid[i];
-        for(int y = 0; y < tmp_node.inputCode.size(); y++) {
-            mvwprintw(tmp_node.w_code, y, 0, tmp_node.inputCode[y].c_str());
-            wrefresh(tmp_node.w_code);
-        }
-    }
+	for(int i = 0; i < grid.size(); i++) {
+		drawNode(i);
+	}
 }
 
 void *inputLoop(void *ptr) {
 	while(true) {
 		int input = mvgetch(0, 0);
 		if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122)) {
-			grid[0].inputCode[0] += static_cast<char>(input);
-			drawContent();
+			grid[0].inputChar(0, static_cast<char>(input));
+			drawNode(0);
+		} else {
+					deleteThisDamnVariable = false;
 		}
 	}
 }

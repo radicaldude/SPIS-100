@@ -9,6 +9,8 @@ const string SRC_OPS[] = { "ADD", "SUB", "JRO" };  // Operations with only SRC a
 const string SD_OPS[] = { "MOV" };  // Operations with both SRC and DST as parameters
 const string LAB_OPS[] = { "JMP", "JEZ", "JNZ", "JGZ", "JLZ"}; // Operations with only SRC as a parameter
 
+const int maxLineLength = 18;
+
 class io{
  public:
   arrow Arrow; 
@@ -30,6 +32,7 @@ class node{
   std::vector<string> inputCode;
   bool runline();
   bool runPrepare();
+  void inputChar(int line, char ch);
   std::map<uint8_t, uint16_t> labels;
   arrow *arrows[4];
 };
@@ -275,6 +278,15 @@ bool node::runPrepare(){
   // TODO – Set properties for run line*/
 }
 
+void node::inputChar(int line, char ch) {
+	if (true) {
+		if (inputCode[line].length() < maxLineLength) {
+			inputCode[line] += ch;
+		}
+	} else {
+		inputCode[line] = ch;
+	}
+}
 
 pair<int8_t, int16_t> node::getFromSrc(string src) {
   if(src.find_first_not_of("0123456789") == std::string::npos) {
