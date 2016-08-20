@@ -1,5 +1,5 @@
 #include "node.h"
-
+#include <locale.h>
 #define NODE_HEIGHT 6
 #define ARROW_WIDTH 1
 #define ARROW_HEIGHT 1
