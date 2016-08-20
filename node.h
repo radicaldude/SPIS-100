@@ -27,6 +27,7 @@ class node{
   int16_t bak;
   int8_t  pc;
   std::vector<string> code;
+  std::vector<string> inputCode;
   bool runline();
   bool runPrepare();
   std::map<uint8_t, uint16_t> labels;
