@@ -1,5 +1,8 @@
 #include "node.h"
 #include <locale.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <iostream>
 
 #define NODE_HEIGHT 11
 #define ARROW_WIDTH 1
@@ -10,10 +13,13 @@
 #define CODE_WIDTH 20
 
 
+pthread_t inputThread;
+
 int grid_size[2] = {4,4};
 std::vector<node> grid;
 
 void drawContent();
+void *inputLoop(void *ptr);
 
 WINDOW *new_bwin(int height, int width, int starty, int startx){
     WINDOW *win;
@@ -70,9 +76,15 @@ int main(){
         y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
     }
     grid[0].inputCode.push_back("cucks!");
-    grid[0].inputCode.push_back("Hello, World");
+
+    int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
+
     drawContent();
-    getch();
+
+    while(true) {
+    	sleep(1);
+    }
+    //getch();
     endwin();
     return 0;
 }
@@ -86,3 +98,15 @@ void drawContent() {
         }
     }
 }
+
+void *inputLoop(void *ptr) {
+	while(true) {
+		int input = mvgetch(0, 0);
+		if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122)) {
+			grid[0].inputCode[0] += static_cast<char>(input);
+			drawContent();
+		}
+	}
+}
+
+
