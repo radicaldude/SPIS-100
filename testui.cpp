@@ -38,7 +38,7 @@ int main(){
       tmp_node = new node(nID);
       nID++;
       tmp_node->w_main=new_win(NODE_HEIGHT, NODE_WIDTH, y, x);
-      tmp_node->w_code=new_win(NODE_HEIGHT, CODE_WIDTH, y , x+1);
+      tmp_node->w_code=new_win(NODE_HEIGHT, CODE_WIDTH, y , x);
       tmp_node->w_reg =newwin(NODE_HEIGHT-2,NODE_WIDTH-CODE_WIDTH-2, y+1, x+CODE_WIDTH+1);
       grid.push_back(*tmp_node);
       wprintw(tmp_node->w_reg, "ACC:%d\nBAK:%d", tmp_node->acc, tmp_node->bak);
