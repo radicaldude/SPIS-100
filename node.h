@@ -191,13 +191,86 @@ bool node::runline(){
 }
               
 bool node::runPrepare(){
-  // TODO – Sanetize
-  
-  // TODO – Debug
-  //for (uint8_t i = 0; i < code.size(); i += 1) {}
-  
+    // TODO – Sanetize
   
   // TODO – Collect labels
+  labels.clear();
+  
+  for (int8_t i = 0; i < code.size(); a++) {
+    uint8_t colonIndex = code[i].find(':');
+    if(colonIndex != string::npos) {
+      string labelName = code[i].substr(0, colonIndex);
+      if(input.find_first_not_of(" ,") != std::string::npos) {
+        // TODO – Handle error
+      }
+      labels.insert(pair<string, int8_t>(labelName, i));
+    }
+  }
+  // TODO – Remove labels from code
+
+  
+  // TODO – Debug
+  codeLoop: for (uint8_t i = 0; i < code.size(); a++) {
+    string op = code[i].substr(0, 3);
+    bool opFound = false;
+    
+    for (uint8_t x = 0; x < 4; x++) {
+      if (SIM_OPS[x].compare(op) == 0) {
+        opFound = true;
+      }
+    }
+    if (opFound == true) {
+      if (code[i].length()) {
+        // TODO – Handle error
+      }
+      continue codeLoop;
+    }
+    
+    
+    for (uint8_t x = 0; x < 3; x++) {
+      if (SRC_OPS[x].compare(op) == 0) {
+        opFound = true;
+      }
+    }
+    if (opFound == true) {
+      string param = code[i].substr(4);
+      if (param.find(' ') != string::npos) {
+        // TODO – Handle error
+      } else if (!testSrc(param)) {
+        // TODO – Handle error
+      }
+      continue codeLoop;
+    }
+    
+    if (SD_OPS[0].compare(op) == 0) {
+      string param = code[i].substr(4);
+      string paramSrc = param.substr(0, param.find(' '));
+      string paramDst = param.substr(paramSrc.length() + 1)
+      if(paramDst.find(' ') != string::npos) {
+        // TODO – Handle error
+      } else if (!testSrc(paramSrc)) {
+        // TODO – Handle error
+      } else if (!testDst(paramDst)) {
+        // TODO – Handle error
+      }
+      continue codeLoop;
+    }
+    
+    for (uint8_t x = 0; x < 4; x++) {
+      if (LAB_OPS[x].compare(op) == 0) {
+        opFound = true;
+      }
+    }
+    if (opFound == true) {
+      string param = code[i].substr(4);
+      if (labels.find(param) == map::end) {
+        // TODO - Handle error
+      }
+      continue codeLoop;
+    }
+  }
+  
+
   // TODO – Set properties for run line
 }
 
