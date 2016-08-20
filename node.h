@@ -191,12 +191,12 @@ bool node::runline(){
 }
               
 bool node::runPrepare(){
-    // TODO – Sanetize
+/*    // TODO – Sanitize
   
   // TODO – Collect labels
   labels.clear();
   
-  for (int8_t i = 0; i < code.size(); a++) {
+  for (int8_t i = 0; i < code.size(); i++) {
     uint8_t colonIndex = code[i].find(':');
     if(colonIndex != string::npos) {
       string labelName = code[i].substr(0, colonIndex);
@@ -210,7 +210,7 @@ bool node::runPrepare(){
 
   
   // TODO – Debug
-  codeLoop: for (uint8_t i = 0; i < code.size(); a++) {
+  codeLoop: for (uint8_t i = 0; i < code.size(); i++) {
     string op = code[i].substr(0, 3);
     bool opFound = false;
     
@@ -271,7 +271,7 @@ bool node::runPrepare(){
   }
   
 
-  // TODO – Set properties for run line
+  // TODO – Set properties for run line*/
 }
 
 
