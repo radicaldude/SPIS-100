@@ -1,4 +1,4 @@
-#include "spis.h"
+/*#include "spis.h"
 #include "ui.h"
 #include <cncurses>
   
@@ -89,3 +89,4 @@ void update(){
   
 
 }
+*/
