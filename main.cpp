@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
       tmp_node->w_reg =newwin(NODE_HEIGHT-2,NODE_WIDTH-CODE_WIDTH-2, y+1, x+CODE_WIDTH+1);
       tmp_node->inputCode.push_back("");
       grid.push_back(*tmp_node);
-      
+
       wprintw(tmp_node->w_reg, "ACC%d\nBAK%d", tmp_node->acc, tmp_node->bak);
       wrefresh(tmp_node->w_reg);
       x=x+NODE_WIDTH+ARROW_WIDTH+2*GAP_WIDTH_H;
@@ -85,10 +85,10 @@ int main(int argc, char *argv[]){
     y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
   }
     //int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
-  if(!get_code(&file, grid)){
+  /*if(!get_code(&file, grid)){
     endwin();
     return 1;
-    }
+    }*/
   drawContent();
   inputLoop();
   //getch();
@@ -98,13 +98,11 @@ int main(int argc, char *argv[]){
 
 void drawNode(int nodeIndex) {
 	node tmp_node = grid[nodeIndex];
+	werase(tmp_node.w_code);
 	for(int y = 0; y < tmp_node.inputCode.size(); y++) {
-		for(int i = 0; i < CODE_WIDTH - 2; i++) {
-			mvwdelch(tmp_node.w_code, y, i);
-		}
 		mvwprintw(tmp_node.w_code, y, 0, tmp_node.inputCode[y].c_str());
-		wrefresh(tmp_node.w_code);
 	}
+	wrefresh(tmp_node.w_code);
 }
 
 void drawContent() {
@@ -153,15 +151,28 @@ void inputLoop() {
 				move(y, x);
 				drawNode(selectedNode);
 			}
-		} else if(input = 8) {
+		} else if(input == KEY_BACKSPACE || input == 127) {
 			// BACKSPACE
-		  bool didEraseLine = grid[selectedNode].newLine(selectedLine, selectedIndex);
+			int tmpLength = grid[selectedNode].inputCode[selectedLine].length();
+		  int status = grid[selectedNode].backspace(selectedLine, selectedIndex);
 
-		  if (didEraseLine && selectedLine > 0) {
-		    selectedLine--;
-		    selectedIndex = grid[selectedNode].inputCode[selectedLine].length();
+
+		  switch(status) {
+		  case 1:
+		  	selectedIndex--;
+		  	x--;
+		  	break;
+		  case 2:
+		  	selectedLine--;
+		  	y--;
+				selectedIndex = grid[selectedNode].inputCode[selectedLine].length() - tmpLength;
+				x = getbegx(grid[selectedNode].w_code) + selectedIndex;
+				break;
 		  }
-		  
+
+		  drawNode(selectedNode);
+		  move(y, x);
+
 		} else if (input == KEY_MOUSE && getmouse(&event) == OK) {
 
 		  //if (event.bstate & BUTTON1_RELEASED) {

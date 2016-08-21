@@ -250,21 +250,26 @@ void node::inputChar(int line, int index, char ch) {
 	}
 }
 
-bool node::newLine(int line, int index) {
+void node::newLine(int line, int index) {
   inputCode.insert(inputCode.begin() + line, inputCode[line].substr(0, index));
 	inputCode[line + 1] = inputCode[line + 1].substr(index);
 }
 
-bool node::backspace(int line, int index) {
-  if (inputCode[line].length() != 0) {
-    inputCode[line] = inputCode[line].substr(0, index - 1) + inputCode[line].substr(index);
-    return false;
-  } else if(line > 0) {
+int node::backspace(int line, int index) {
+  if (index > 0) {
+  	if (inputCode[line].length() > index) {
+  		inputCode[line] = inputCode[line].substr(0, index - 1) + inputCode[line].substr(index);
+  	} else if (inputCode[line].length() == index) {
+  		inputCode[line] = inputCode[line].substr(0, index - 1);
+  	}
+		return 1;
+  } else if(line > 0 && inputCode[line - 1].length() + inputCode[line].length() <= MAX_LINE_LENGTH && index == 0) {
+  	inputCode[line - 1] += inputCode[line];
     inputCode.erase(inputCode.begin() + line);
-    return true;
+    return 2;
 	}
   
-  return true;
+  return 0;
 }
 
 pair<int8_t, int16_t> node::getFromSrc(string src) {
