@@ -22,8 +22,6 @@ void drawContent();
 void inputLoop();
 void *runtimeInputLoop(void *ptr);
 
-bool deleteThisDamnVariable = true;
-
 WINDOW *new_bwin(int height, int width, int starty, int startx){
     WINDOW *win;
     win=newwin(height, width, starty, startx);
@@ -32,13 +30,22 @@ WINDOW *new_bwin(int height, int width, int starty, int startx){
     return win;
 }
 
-int main(){
+int main(int argc, char *argv[]){
     int c,x=GAP_WIDTH_H, y=0, id;
     int max_x, max_y;
-    node *tmp_node;
+    node*tmp_node;
     int nID=0;
     WINDOW *menu;
-    
+    std::ifstream file;
+    if(argc!=2){
+      printf("No file specified! Exiting.\n");
+      return 1;
+    }
+    file.open(argv[0]);
+    if(!file.is_open()){
+      printf("Couldn't open file! Exiting.\n");
+      return 1;
+    }
     initscr();
     getmaxyx(stdscr, max_y, max_x);
     y=0;
@@ -79,13 +86,12 @@ int main(){
         y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
     }
     grid[0].inputCode.push_back("cucks!");
-
+    
     //int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
-
+    get_code(&file, grid);
     drawContent();
     inputLoop();
-
-    //getch();
+    	     //getch();
     endwin();
     return 0;
 }
