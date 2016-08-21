@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <ncurses.h>
 
+using namespace std;
 
 const string SIM_OPS[] = { "NOP", "SWP", "SAV", "NEG" };  // Operations with no parameters
 const string SRC_OPS[] = { "ADD", "SUB", "JRO" };  // Operations with only SRC as a parameter
@@ -19,7 +20,6 @@ enum STATUS{
   INVALID
 };
 
-using namespace std;
 
 class arrow{
   uint8_t getNodeIndex(int8_t nodeId);

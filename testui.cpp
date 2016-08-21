@@ -1,4 +1,4 @@
-#include "node.h"
+#include "spis.h"
 #include <locale.h>
 #include <pthread.h>
 #include <unistd.h>
@@ -120,9 +120,11 @@ void inputLoop() {
 			grid[0].inputChar(0, static_cast<char>(input));
 			drawNode(0);
 		} else if (input == KEY_MOUSE && getmouse(&event) == OK) {
-			if (event.bstate & BUTTON1_RELEASED) {
-				move(10, 10);
-			}
+			//if (event.bstate & BUTTON1_RELEASED) {
+			int x, y;
+			getyx(grid[0], y, x);
+			move(y, x);
+			//}
 		} else {
 			return;
 		}
@@ -130,7 +132,7 @@ void inputLoop() {
 }
 
 bool pointInWindow(WINDOW *win) {
-	if (win->)
+	//if (win->)
 }
 
 void *runtimeInputLoop(void *ptr) {
