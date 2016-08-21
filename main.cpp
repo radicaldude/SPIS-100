@@ -39,15 +39,15 @@ int main(int argc, char *argv[]){
     int nID=0;
     WINDOW *menu;
     std::ifstream file;
-    if(argc!=2){
+    /*    if(argc!=2){
       printf("No file specified! Exiting.\n");
       return 1;
-    }
+      }*/
     file.open(argv[0]);
-    if(!file.is_open()){
+    /*if(!file.is_open()){
       printf("Couldn't open file! Exiting.\n");
       return 1;
-    }
+      }*/
     initscr();
     getmaxyx(stdscr, max_y, max_x);
     y=0;
@@ -88,7 +88,6 @@ int main(int argc, char *argv[]){
         }
         y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
     }
-    grid[0].inputCode.push_back("cucks!");
     //int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
     get_code(&file, grid);
     drawContent();
@@ -146,27 +145,27 @@ void inputLoop() {
 			//if (event.bstate & BUTTON1_RELEASED) {
 			for (int i = 0; i < grid.size(); i++) {
 				if (pointInWindow(grid[i].w_code, event.x, event.y)) {
-								int begY, begX = 0;
-								getbegyx(grid[i].w_code, begY, begX);
-
-								selectedNode = i;
-								selectedLine = event.y - begY;
-								selectedIndex = event.x - begX;
-
-								if (selectedLine >= grid[i].inputCode.size()) {
-									selectedLine = grid[i].inputCode.size() - 1;
-
-								}
-
-								if (selectedIndex >= grid[i].inputCode[selectedLine].length()) {
-									selectedIndex = grid[i].inputCode[selectedLine].length();
-								}
-
-								y = selectedLine + begY;
-								x = selectedIndex + begX;
-
-								move(y, x);
-								break;
+				  int begY, begX = 0;
+				  getbegyx(grid[i].w_code, begY, begX);
+				  
+				  selectedNode = i;
+				  selectedLine = event.y - begY;
+				  selectedIndex = event.x - begX;
+				  
+				  if (selectedLine >= grid[i].inputCode.size()) {
+				    selectedLine = grid[i].inputCode.size() - 1;
+				    
+				  }
+				  
+				  if (selectedIndex >= grid[i].inputCode[selectedLine].length()) {
+				    selectedIndex = grid[i].inputCode[selectedLine].length();
+				  }
+				  
+				  y = selectedLine + begY;
+				  x = selectedIndex + begX;
+				  
+				  move(y, x);
+				  break;
 				}
 			}
 			//}
