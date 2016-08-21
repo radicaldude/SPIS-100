@@ -51,6 +51,7 @@ int main(){
             tmp_node->w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
             new_bwin(NODE_HEIGHT, CODE_WIDTH, y, x);
             tmp_node->w_reg =newwin(NODE_HEIGHT-2,NODE_WIDTH-CODE_WIDTH-2, y+1, x+CODE_WIDTH+1);
+            tmp_node->inputCode.push_back("");
             grid.push_back(*tmp_node);
             
             wprintw(tmp_node->w_reg, "ACC%d\nBAK%d", tmp_node->acc, tmp_node->bak);
@@ -77,7 +78,6 @@ int main(){
         }
         y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
     }
-    grid[0].inputCode.push_back("cucks!");
 
     //int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
 
@@ -118,20 +118,23 @@ void inputLoop() {
 	keypad(stdscr, TRUE);
 
 	while(true) {
-		int input = mvgetch(y, x);
-		if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122)) {
-			grid[selectedNode].inputChar(0, selectedIndex, static_cast<char>(input));
-			selectedIndex++;
-			x++;
-			if (selectedIndex > CODE_WIDTH - 2) {
-				selectedIndex = 0;
-				x = getbegx(grid[selectedNode].w_code);
-				selectedLine++;
-				y++;
+		int input = getch();
+		if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122) || (input >= 48 && input <= 57) || input == 44) {
+			if (input >= 97) {
+				input -= 32;
 			}
 
-			drawNode(selectedNode);
+			if (grid[selectedNode].inputCode[selectedLine].length() < 17) {
+				grid[selectedNode].inputChar(selectedLine, selectedIndex, static_cast<char>(input));
+				selectedIndex++;
+				x++;
+				move(y, x);
+				drawNode(selectedNode);
+			}
+		} else if (false) {
+
 		} else if (input == KEY_MOUSE && getmouse(&event) == OK) {
+		}
 			//if (event.bstate & BUTTON1_RELEASED) {
 			for (int i = 0; i < grid.size(); i++) {
 				if (pointInWindow(grid[i].w_code, event.x, event.y)) {
@@ -169,12 +172,12 @@ bool pointInWindow(WINDOW *win, int x, int y) {
 	int begX, begY, maxX, maxY = 0;
 
 	getbegyx(win, begY, begX);
-	if (x < begX && y < begY) {
+	if (x < begX || y < begY) {
 		return false;
 	}
 
 	getmaxyx(win, maxY, maxX);
-	if (x > maxX && y > maxY) {
+	if (x > begX + maxX || y > begY + maxY) {
 		return false;
 	}
 

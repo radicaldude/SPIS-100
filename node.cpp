@@ -240,9 +240,10 @@ bool node::runPrepare(){
 }
 
 void node::inputChar(int line, int index, char ch) {
-	if (true) {
+	if (inputCode.size() > line) {
 	  if (inputCode[line].length() < MAX_LINE_LENGTH) {
-	    inputCode[line] += ch;
+	  	inputCode[line] = inputCode[line].substr(0, index) + ch + inputCode[line].substr(index);
+	    //inputCode[line] += ch;
 	  }
 	} else {
 		inputCode[line] = ch;
