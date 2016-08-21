@@ -5,7 +5,13 @@
 #include <vector>
 #include <stdint.h>
 #include <ncurses.h>
+#include <string.h>
+#include <map>
+#include <stdlib.h>
 
+#define MAX_LINE_LENGTH 10
+
+using namespace std;
 
 const string SIM_OPS[] = { "NOP", "SWP", "SAV", "NEG" };  // Operations with no parameters
 const string SRC_OPS[] = { "ADD", "SUB", "JRO" };  // Operations with only SRC as a parameter
@@ -18,8 +24,6 @@ enum STATUS{
   WAIT,
   INVALID
 };
-
-using namespace std;
 
 class arrow{
   uint8_t getNodeIndex(int8_t nodeId);
@@ -57,6 +61,7 @@ class node{
   std::vector<string> inputCode;
   bool runline();
   bool runPrepare();
+  void inputChar(int line, char ch);
   std::map<uint8_t, uint16_t> labels;
   arrow *arrows[4];
 };

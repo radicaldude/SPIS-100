@@ -1,5 +1,8 @@
-#include "node.h"
+#include "spis.h"
 #include <locale.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <iostream>
 
 #define NODE_HEIGHT 11
 #define ARROW_WIDTH 1
@@ -10,10 +13,16 @@
 #define CODE_WIDTH 20
 
 
+pthread_t inputThread;
+
 int grid_size[2] = {4,4};
 std::vector<node> grid;
 
 void drawContent();
+void inputLoop();
+void *runtimeInputLoop(void *ptr);
+
+bool deleteThisDamnVariable = true;
 
 WINDOW *new_bwin(int height, int width, int starty, int startx){
     WINDOW *win;
@@ -70,19 +79,62 @@ int main(){
         y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
     }
     grid[0].inputCode.push_back("cucks!");
-    grid[0].inputCode.push_back("Hello, World");
+
+    //int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
+
     drawContent();
-    getch();
+    inputLoop();
+
+    //getch();
     endwin();
     return 0;
 }
 
+void drawNode(int nodeIndex) {
+	node tmp_node = grid[nodeIndex];
+	for(int y = 0; y < tmp_node.inputCode.size(); y++) {
+		mvwprintw(tmp_node.w_code, y, 0, tmp_node.inputCode[y].c_str());
+		wrefresh(tmp_node.w_code);
+	}
+}
+
 void drawContent() {
-    for(int i = 0; i < grid.size(); i++) {
-        node tmp_node = grid[i];
-        for(int y = 0; y < tmp_node.inputCode.size(); y++) {
-            mvwprintw(tmp_node.w_code, y, 0, tmp_node.inputCode[y].c_str());
-            wrefresh(tmp_node.w_code);
-        }
-    }
+	for(int i = 0; i < grid.size(); i++) {
+		drawNode(i);
+	}
+}
+
+void inputLoop() {
+	MEVENT event;
+	int cursorX = 0;
+	int cursorY = 0;
+
+  noecho();
+  cbreak();
+	mousemask(ALL_MOUSE_EVENTS, NULL);
+	keypad(stdscr, TRUE);
+
+	while(true) {
+		int input = getch();
+		if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122)) {
+			grid[0].inputChar(0, static_cast<char>(input));
+			drawNode(0);
+		} else if (input == KEY_MOUSE && getmouse(&event) == OK) {
+			//if (event.bstate & BUTTON1_RELEASED) {
+			int x, y;
+			//getyx(grid[0], y, x);
+			move(y, x);
+			//}
+		} else {
+		        return;
+		}
+	}
+}
+
+bool pointInWindow(WINDOW *win) {
+	//if (win->)
+}
+
+void *runtimeInputLoop(void *ptr) {
+	// TODO
 }

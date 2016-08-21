@@ -1,4 +1,4 @@
-#include "arrow.h"
+#include "spis.h"
 
 arrow::arrow(int8_t nodeId1, int8_t nodeId2) {
   nodeId[0] = nodeId1;

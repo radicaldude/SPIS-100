@@ -1,4 +1,4 @@
-#include "node.h"
+#include "spis.h"
 
 node::node(uint8_t nId){
   this->nodeId = nId;
@@ -174,7 +174,6 @@ bool node::runPrepare(){
     }
   }
   // TODO – Remove labels from code
-
   
   // TODO – Debug
   codeLoop: for (uint8_t i = 0; i < code.size(); i++) {
@@ -237,10 +236,18 @@ bool node::runPrepare(){
     }
   }
   
-
   // TODO – Set properties for run line*/
 }
 
+void node::inputChar(int line, char ch) {
+	if (true) {
+	  if (inputCode[line].length() < MAX_LINE_LENGTH) {
+	    inputCode[line] += ch;
+	  }
+	} else {
+		inputCode[line] = ch;
+	}
+}
 
 pair<int8_t, int16_t> node::getFromSrc(string src) {
   if(src.find_first_not_of("0123456789") == std::string::npos) {
