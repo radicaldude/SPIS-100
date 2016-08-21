@@ -88,12 +88,7 @@ int main(int argc, char *argv[]){
         }
         y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
     }
-<<<<<<< HEAD
     grid[0].inputCode.push_back("cucks!");
-    
-=======
-
->>>>>>> c91fbf48ada0185a7d40816df1f8cd45d6e0f28e
     //int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
     get_code(&file, grid);
     drawContent();
