@@ -154,7 +154,17 @@ void inputLoop() {
 				move(y, x);
 				drawNode(selectedNode);
 			}
+		} else if(input = 8) {
+			// BACKSPACE
+			bool didEraseLine = grid[selectedNode].newLine(selectedLine, selectedIndex);
+
+			if (didEraseLine && selectedLine > 0) {
+				selectedLine--;
+				selectedIndex = grid[selectedNode].inputCode[selectedLine].length();
+			}
+
 		} else if (input == KEY_MOUSE && getmouse(&event) == OK) {
+
 			//if (event.bstate & BUTTON1_RELEASED) {
 			for (int i = 0; i < grid.size(); i++) {
 				if (pointInWindow(grid[i].w_code, event.x, event.y)) {
