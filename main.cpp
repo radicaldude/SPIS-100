@@ -21,8 +21,7 @@ std::vector<node> grid;
 void drawContent();
 void inputLoop();
 void *runtimeInputLoop(void *ptr);
-
-bool deleteThisDamnVariable = true;
+bool pointInWindow(WINDOW *win, int x, int y);
 
 WINDOW *new_bwin(int height, int width, int starty, int startx){
     WINDOW *win;
@@ -106,8 +105,12 @@ void drawContent() {
 
 void inputLoop() {
 	MEVENT event;
-	int cursorX = 0;
-	int cursorY = 0;
+	int y = 0;
+	int x = 0;
+
+	int selectedNode = 0;
+	int selectedLine = 0;
+	int selectedIndex = 0;
 
   noecho();
   cbreak();
@@ -115,15 +118,46 @@ void inputLoop() {
 	keypad(stdscr, TRUE);
 
 	while(true) {
-		int input = getch();
+		int input = mvgetch(y, x);
 		if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122)) {
-			grid[0].inputChar(0, static_cast<char>(input));
-			drawNode(0);
+			grid[selectedNode].inputChar(0, selectedIndex, static_cast<char>(input));
+			selectedIndex++;
+			x++;
+			if (selectedIndex > CODE_WIDTH - 2) {
+				selectedIndex = 0;
+				x = getbegx(grid[selectedNode].w_code);
+				selectedLine++;
+				y++;
+			}
+
+			drawNode(selectedNode);
 		} else if (input == KEY_MOUSE && getmouse(&event) == OK) {
 			//if (event.bstate & BUTTON1_RELEASED) {
-			int x, y;
-			//getyx(grid[0], y, x);
-			move(y, x);
+			for (int i = 0; i < grid.size(); i++) {
+				if (pointInWindow(grid[i].w_code, event.x, event.y)) {
+								int begY, begX = 0;
+								getbegyx(grid[i].w_code, begY, begX);
+
+								selectedNode = i;
+								selectedLine = event.y - begY;
+								selectedIndex = event.x - begX;
+
+								if (selectedLine >= grid[i].inputCode.size()) {
+									selectedLine = grid[i].inputCode.size() - 1;
+
+								}
+
+								if (selectedIndex >= grid[i].inputCode[selectedLine].length()) {
+									selectedIndex = grid[i].inputCode[selectedLine].length();
+								}
+
+								y = selectedLine + begY;
+								x = selectedIndex + begX;
+
+								move(y, x);
+								break;
+				}
+			}
 			//}
 		} else {
 		        return;
@@ -131,8 +165,20 @@ void inputLoop() {
 	}
 }
 
-bool pointInWindow(WINDOW *win) {
-	//if (win->)
+bool pointInWindow(WINDOW *win, int x, int y) {
+	int begX, begY, maxX, maxY = 0;
+
+	getbegyx(win, begY, begX);
+	if (x < begX && y < begY) {
+		return false;
+	}
+
+	getmaxyx(win, maxY, maxX);
+	if (x > maxX && y > maxY) {
+		return false;
+	}
+
+	return true;
 }
 
 void *runtimeInputLoop(void *ptr) {

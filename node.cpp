@@ -239,7 +239,7 @@ bool node::runPrepare(){
   // TODO – Set properties for run line*/
 }
 
-void node::inputChar(int line, char ch) {
+void node::inputChar(int line, int index, char ch) {
 	if (true) {
 	  if (inputCode[line].length() < MAX_LINE_LENGTH) {
 	    inputCode[line] += ch;

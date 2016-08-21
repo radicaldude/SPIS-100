@@ -9,7 +9,7 @@
 #include <map>
 #include <stdlib.h>
 
-#define MAX_LINE_LENGTH 10
+#define MAX_LINE_LENGTH 17
 
 using namespace std;
 
@@ -61,7 +61,7 @@ class node{
   std::vector<string> inputCode;
   bool runline();
   bool runPrepare();
-  void inputChar(int line, char ch);
+  void inputChar(int line, int index, char ch);
   std::map<uint8_t, uint16_t> labels;
   arrow *arrows[4];
 };
