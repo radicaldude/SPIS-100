@@ -19,7 +19,8 @@ int grid_size[2] = {4,4};
 std::vector<node> grid;
 
 void drawContent();
-void *inputLoop(void *ptr);
+void inputLoop();
+void *runtimeInputLoop(void *ptr);
 
 bool deleteThisDamnVariable = true;
 
@@ -39,7 +40,6 @@ int main(){
     WINDOW *menu;
     
     initscr();
-    noecho();
     getmaxyx(stdscr, max_y, max_x);
     y=0;
     refresh();
@@ -80,13 +80,11 @@ int main(){
     }
     grid[0].inputCode.push_back("cucks!");
 
-    int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
+    //int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
 
     drawContent();
+    inputLoop();
 
-    while(deleteThisDamnVariable) {
-    	sleep(1);
-    }
     //getch();
     endwin();
     return 0;
@@ -106,16 +104,37 @@ void drawContent() {
 	}
 }
 
-void *inputLoop(void *ptr) {
+void inputLoop() {
+	MEVENT event;
+	int cursorX = 0;
+	int cursorY = 0;
+
+  noecho();
+  cbreak();
+	mousemask(ALL_MOUSE_EVENTS, NULL);
+	keypad(stdscr, TRUE);
+
 	while(true) {
-		int input = mvgetch(0, 0);
+		int input = getch();
 		if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122)) {
 			grid[0].inputChar(0, static_cast<char>(input));
 			drawNode(0);
+		} else if (input == KEY_MOUSE && getmouse(&event) == OK) {
+			if (event.bstate & BUTTON1_RELEASED) {
+				move(10, 10);
+			}
 		} else {
-					deleteThisDamnVariable = false;
+			return;
 		}
 	}
+}
+
+bool pointInWindow(WINDOW *win) {
+	if (win->)
+}
+
+void *runtimeInputLoop(void *ptr) {
+	// TODO
 }
 
 
