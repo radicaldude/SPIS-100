@@ -239,10 +239,11 @@ bool node::runPrepare(){
   // TODO – Set properties for run line*/
 }
 
-void node::inputChar(int line, char ch) {
-	if (true) {
+void node::inputChar(int line, int index, char ch) {
+	if (inputCode.size() > line) {
 	  if (inputCode[line].length() < MAX_LINE_LENGTH) {
-	    inputCode[line] += ch;
+	  	inputCode[line] = inputCode[line].substr(0, index) + ch + inputCode[line].substr(index);
+	    //inputCode[line] += ch;
 	  }
 	} else {
 		inputCode[line] = ch;

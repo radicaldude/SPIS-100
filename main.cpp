@@ -21,6 +21,8 @@ std::vector<node> grid;
 void drawContent();
 void inputLoop();
 void *runtimeInputLoop(void *ptr);
+bool pointInWindow(WINDOW *win, int x, int y);
+
 
 WINDOW *new_bwin(int height, int width, int starty, int startx){
     WINDOW *win;
@@ -59,6 +61,7 @@ int main(int argc, char *argv[]){
             tmp_node->w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
             new_bwin(NODE_HEIGHT, CODE_WIDTH, y, x);
             tmp_node->w_reg =newwin(NODE_HEIGHT-2,NODE_WIDTH-CODE_WIDTH-2, y+1, x+CODE_WIDTH+1);
+            tmp_node->inputCode.push_back("");
             grid.push_back(*tmp_node);
             
             wprintw(tmp_node->w_reg, "ACC%d\nBAK%d", tmp_node->acc, tmp_node->bak);
@@ -85,8 +88,12 @@ int main(int argc, char *argv[]){
         }
         y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
     }
+<<<<<<< HEAD
     grid[0].inputCode.push_back("cucks!");
     
+=======
+
+>>>>>>> c91fbf48ada0185a7d40816df1f8cd45d6e0f28e
     //int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
     get_code(&file, grid);
     drawContent();
@@ -112,8 +119,12 @@ void drawContent() {
 
 void inputLoop() {
 	MEVENT event;
-	int cursorX = 0;
-	int cursorY = 0;
+	int y = 0;
+	int x = 0;
+
+	int selectedNode = 0;
+	int selectedLine = 0;
+	int selectedIndex = 0;
 
   noecho();
   cbreak();
@@ -122,14 +133,48 @@ void inputLoop() {
 
 	while(true) {
 		int input = getch();
-		if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122)) {
-			grid[0].inputChar(0, static_cast<char>(input));
-			drawNode(0);
+		if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122) || (input >= 48 && input <= 57) || input == 44) {
+			if (input >= 97) {
+				input -= 32;
+			}
+
+			if (grid[selectedNode].inputCode[selectedLine].length() < 17) {
+				grid[selectedNode].inputChar(selectedLine, selectedIndex, static_cast<char>(input));
+				selectedIndex++;
+				x++;
+				move(y, x);
+				drawNode(selectedNode);
+			}
+		} else if (false) {
+
 		} else if (input == KEY_MOUSE && getmouse(&event) == OK) {
+		}
 			//if (event.bstate & BUTTON1_RELEASED) {
-			int x, y;
-			//getyx(grid[0], y, x);
-			move(y, x);
+			for (int i = 0; i < grid.size(); i++) {
+				if (pointInWindow(grid[i].w_code, event.x, event.y)) {
+								int begY, begX = 0;
+								getbegyx(grid[i].w_code, begY, begX);
+
+								selectedNode = i;
+								selectedLine = event.y - begY;
+								selectedIndex = event.x - begX;
+
+								if (selectedLine >= grid[i].inputCode.size()) {
+									selectedLine = grid[i].inputCode.size() - 1;
+
+								}
+
+								if (selectedIndex >= grid[i].inputCode[selectedLine].length()) {
+									selectedIndex = grid[i].inputCode[selectedLine].length();
+								}
+
+								y = selectedLine + begY;
+								x = selectedIndex + begX;
+
+								move(y, x);
+								break;
+				}
+			}
 			//}
 		} else {
 		        return;
@@ -137,8 +182,20 @@ void inputLoop() {
 	}
 }
 
-bool pointInWindow(WINDOW *win) {
-	//if (win->)
+bool pointInWindow(WINDOW *win, int x, int y) {
+	int begX, begY, maxX, maxY = 0;
+
+	getbegyx(win, begY, begX);
+	if (x < begX || y < begY) {
+		return false;
+	}
+
+	getmaxyx(win, maxY, maxX);
+	if (x > begX + maxX || y > begY + maxY) {
+		return false;
+	}
+
+	return true;
 }
 
 void *runtimeInputLoop(void *ptr) {
