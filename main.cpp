@@ -143,7 +143,6 @@ void inputLoop() {
 		} else if (false) {
 
 		} else if (input == KEY_MOUSE && getmouse(&event) == OK) {
-		}
 			//if (event.bstate & BUTTON1_RELEASED) {
 			for (int i = 0; i < grid.size(); i++) {
 				if (pointInWindow(grid[i].w_code, event.x, event.y)) {
