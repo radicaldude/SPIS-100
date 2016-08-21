@@ -103,6 +103,9 @@ int main(int argc, char *argv[]){
 void drawNode(int nodeIndex) {
 	node tmp_node = grid[nodeIndex];
 	for(int y = 0; y < tmp_node.inputCode.size(); y++) {
+		for(int i = 0; i < CODE_WIDTH - 2; i++) {
+			mvwdelch(tmp_node.w_code, y, i);
+		}
 		mvwprintw(tmp_node.w_code, y, 0, tmp_node.inputCode[y].c_str());
 		wrefresh(tmp_node.w_code);
 	}
@@ -130,7 +133,9 @@ void inputLoop() {
 
 	while(true) {
 		int input = getch();
-		if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122) || (input >= 48 && input <= 57) || input == 44) {
+		if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122)
+				|| (input >= 48 && input <= 57) || input == 44
+				|| input == 32) {
 			if (input >= 97) {
 				input -= 32;
 			}
@@ -142,9 +147,27 @@ void inputLoop() {
 				move(y, x);
 				drawNode(selectedNode);
 			}
-		} else if (false) {
+		} else if (input == KEY_ENTER || input == 11 || input == 10) {
+			if (grid[selectedNode].inputCode.size() < NODE_HEIGHT - 2) {
+				grid[selectedNode].newLine(selectedLine, selectedIndex);
+				x -= selectedIndex;
+				y++;
+				selectedIndex = 0;
+				selectedLine++;
+				move(y, x);
+				drawNode(selectedNode);
+			}
+		} else if(input = 8) {
+			// BACKSPACE
+			bool didEraseLine = grid[selectedNode].newLine(selectedLine, selectedIndex);
+
+			if (didEraseLine && selectedLine > 0) {
+				selectedLine--;
+				selectedIndex = grid[selectedNode].inputCode[selectedLine].length();
+			}
 
 		} else if (input == KEY_MOUSE && getmouse(&event) == OK) {
+
 			//if (event.bstate & BUTTON1_RELEASED) {
 			for (int i = 0; i < grid.size(); i++) {
 				if (pointInWindow(grid[i].w_code, event.x, event.y)) {
@@ -173,7 +196,8 @@ void inputLoop() {
 			}
 			//}
 		} else {
-		        return;
+			//mvwprintw(stdscr, 0, 0, to_string(input).c_str());
+			return;
 		}
 	}
 }

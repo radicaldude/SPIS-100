@@ -64,6 +64,8 @@ class node{
   bool runline();
   bool runPrepare();
   void inputChar(int line, int index, char ch);
+  void newLine(int line, int index);
+  bool backspace(int line, int index) {
   std::map<uint8_t, uint16_t> labels;
   arrow *arrows[4];
 };

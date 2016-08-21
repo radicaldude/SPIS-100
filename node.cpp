@@ -250,6 +250,23 @@ void node::inputChar(int line, int index, char ch) {
 	}
 }
 
+void node::newLine(int line, int index) {
+	inputCode.insert(inputCode.begin() + line, inputCode[line].substr(0, index));
+	inputCode[line + 1] = inputCode[line + 1].substr(index);
+}
+
+bool node::backspace(int line, int index) {
+	if (inputCode[line].length != 0) {
+		inputCode[line] = inputCode[line].substr(0, index - 1) + inputCode[line].substr(index);
+		return false;
+	} else if(line > 0) {
+		inputCode.erase(inputCode.begin() + line);
+		return true;
+	}
+
+	return true;
+}
+
 pair<int8_t, int16_t> node::getFromSrc(string src) {
   if(src.find_first_not_of("0123456789") == std::string::npos) {
     // Then src is just a number
