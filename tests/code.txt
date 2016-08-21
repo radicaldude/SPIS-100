@@ -1,3 +1,6 @@
 1{
-CUCKS!CUCKS!
+AAA
+}
+2{BBB
+B
 }

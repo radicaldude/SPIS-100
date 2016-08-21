@@ -89,7 +89,10 @@ int main(int argc, char *argv[]){
         y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
     }
     //int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
-    get_code(&file, grid);
+    if(!get_code(&file, grid)){
+      endwin();
+      return 1;
+    }
     drawContent();
     inputLoop();
     	     //getch();
