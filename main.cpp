@@ -1,4 +1,5 @@
 #include "spis.h"
+#include <signal.h>
 
 #define NODE_HEIGHT 11
 #define ARROW_WIDTH 1
@@ -27,7 +28,10 @@ WINDOW *new_bwin(int height, int width, int starty, int startx){
   wrefresh(win);
   return win;
 }
-
+void resize(int n){
+  drawContent();
+  return;
+}
 int main(int argc, char *argv[]){
   int c,x=GAP_WIDTH_H, y=0, id;
   int max_x, max_y;
@@ -39,12 +43,14 @@ int main(int argc, char *argv[]){
 	printf("No file specified! Exiting.\n");
 	return 1;
 	}*/
-  file.open(argv[0]);
+  file.open(argv[1]);
+  
   /*if(!file.is_open()){
     printf("Couldn't open file! Exiting.\n");
     return 1;
     }*/
   initscr();
+  signal(SIGWINCH, resize);
   getmaxyx(stdscr, max_y, max_x);
   y=0;
   refresh();
@@ -85,13 +91,14 @@ int main(int argc, char *argv[]){
     y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
   }
     //int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
-  /*if(!get_code(&file, grid)){
-    endwin();
+  endwin();
+  if(get_code(&file, grid)){
+    printf("%d\n", get_code(&file, grid));
     return 1;
-    }*/
+  }
   drawContent();
   inputLoop();
-  //getch();
+  getch();
   endwin();
   return 0;
 }
