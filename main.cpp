@@ -102,8 +102,6 @@ int main(int argc, char *argv[]){
       tmp_node->w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
       new_bwin(NODE_HEIGHT, CODE_WIDTH, y, x);
       tmp_node->w_reg =newwin(NODE_HEIGHT-2,NODE_WIDTH-CODE_WIDTH-2, y+1, x+CODE_WIDTH+1);
-      if(tmp_node->inputCode.size()==0)
-	tmp_node->inputCode.push_back("");
       grid.push_back(*tmp_node);
 
       wprintw(tmp_node->w_reg, "ACC%d\nBAK%d", tmp_node->acc, tmp_node->bak);
@@ -131,14 +129,20 @@ int main(int argc, char *argv[]){
     y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
   }
     //int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
-  endwin();
+
   if(get_code(&file, grid)){
     printf("%d\n", get_code(&file, grid));
     return 1;
   }
+
+  for(int i=0; i < grid.size(); i++){
+		if(grid[i].inputCode.size() == 0)
+				grid[i].inputCode.push_back("");
+  }
+
   drawContent();
   inputLoop();
-  getch();
+
   endwin();
   return 0;
 }
@@ -147,10 +151,7 @@ void drawNode(int nodeIndex) {
 	node tmp_node = grid[nodeIndex];
 	werase(tmp_node.w_code);
 	for(int y = 0; y < tmp_node.inputCode.size(); y++) {
-	  if(tmp_node.w_code)
-	    mvwprintw(tmp_node.w_code, y, 0, tmp_node.inputCode[y].c_str());
-	  else
-	    return;
+		mvwprintw(tmp_node.w_code, y, 0, tmp_node.inputCode[y].c_str());
 	}
 	wrefresh(tmp_node.w_code);
 }
