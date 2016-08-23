@@ -13,12 +13,14 @@
 pthread_t inputThread;
 
 int grid_size[2] = {4,4};
-std::vector<node> grid;
-
+std::vector<io> inputs;
+std::vector<io> outputs;
 void drawContent();
 void inputLoop();
 void *runtimeInputLoop(void *ptr);
 bool pointInWindow(WINDOW *win, int x, int y);
+bool stop = FALSE;
+std::vector<node> grid;
 
 
 WINDOW *new_bwin(int height, int width, int starty, int startx){
@@ -28,9 +30,8 @@ WINDOW *new_bwin(int height, int width, int starty, int startx){
   wrefresh(win);
   return win;
 }
-
 void redraw(int n){
-  int x, y=0, max_x, max_y;
+  int x=GAP_WIDTH_H, y=0, max_x, max_y;
   int nID=0;
 
   werase(stdscr);
@@ -90,7 +91,7 @@ int main(int argc, char *argv[]){
     return 1;
     }*/
   initscr();
-  signal(SIGWINCH, redraw);
+  signal(SIGWINCH, NULL);
   getmaxyx(stdscr, max_y, max_x);
   y=0;
   refresh();
@@ -172,8 +173,8 @@ void inputLoop() {
 	int selectedLine = 0;
 	int selectedIndex = 0;
 
-  noecho();
-  cbreak();
+	noecho();
+	cbreak();
 	mousemask(ALL_MOUSE_EVENTS, NULL);
 	keypad(stdscr, TRUE);
 

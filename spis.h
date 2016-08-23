@@ -44,8 +44,8 @@ public:
 
 class io{
  public:
-  arrow Arrow; 
-  std::vector<string> io;
+  arrow *arr; 
+  std::vector<int> values;
 };
 
 class node{
@@ -70,3 +70,7 @@ class node{
   arrow *arrows[4];
 };
 int get_code(ifstream *file, std::vector<node> &grid);
+extern bool stop;
+extern std::vector<node> grid;
+extern std::vector<io> inputs;
+extern std::vector<io> outputs;

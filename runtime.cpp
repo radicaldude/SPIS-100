@@ -1,36 +1,31 @@
-/*#include "spis.h"
-#include "ui.h"
-#include <cncurses>
-  
-int compute_tick(std::vector<node> nodes, std::vector<io> inputs, std::vector<io> outputs){
-  int i;
-  
-  for(i=0;i<inputs.size();i++){
-    if(inputs[0].arrow[0].status==WAIT){ //get next input
+#include "spis.h"
 
+void compute_tick(){
+  int i;
+  for(i=0;i<grid.size();i++){
+    if(stop==TRUE)
+      return;
+    if(inputs[i].arr->status[0]==SET){ //get next input
+      continue;
+    }
+    else if(inputs[i].values[0]){
+      inputs[i].arr->value[0]=inputs[i].values.back();
+      inputs[i].values.pop_back();
+      inputs[i].arr->status[0]=SET;
     }
   }
-  for(i=0; i<nodes.size();i++){
-    node[i].runline();
+  for(i=0; i<grid.size();i++){
+    grid[i].runline();
   }
   for(i=0;i<outputs.size();i++){
-    //get output
+    if(outputs[i].arr->status[0]==SET){
+      outputs[i].values.push_back(outputs[i].arr->value[0]);
+      outputs[i].arr->status[0]=WAIT;
+    }
   }
+  return;
 }
-
-int main(int argc, char **argv){
-  WINDOW *menu_win;
-  std::vector<WINDOW*> grid;
-  int max_y, max_x;
-
-  grid = malloc(sizeof(WINDOW)*grid_size[0]*grid_size[1]);
-  initscr();
-  curs_set(TRUE);
-  getmaxyx(stdscr, max_y, max_x);  
-  menu_win = new_win(max_y, menu_width, starty, startx);
-  init_level(&grid, grid_size, inputs, outputs);
-}
-
+/*
 void init_level(std::vector<node> grid, int *grid_size, std::vector<io> inputs, std::vector<io> outputs){
   int c,x=MENU_WIDTH+BOX_WIDTH, y=0, id;
   int max_x;
@@ -83,10 +78,6 @@ void init_level(std::vector<node> grid, int *grid_size, std::vector<io> inputs, 
   }
   return;
 }
-
-void update(){
-  
-  
-
-}
 */
+
+
