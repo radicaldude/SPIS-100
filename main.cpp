@@ -29,15 +29,13 @@ WINDOW *new_bwin(int height, int width, int starty, int startx){
   return win;
 }
 void redraw(int n){
-  int x, y, max_x, max_y;
+  int x, y=0, max_x, max_y;
   int nID=0;
 
   endwin();
   refresh();
   clear();
   
-  getbegyx(stdscr, y, x);
-  getmaxyx(stdscr, max_y, max_x);
   printf("%d %d %d %d\n", x,y,max_x,max_y);
   for(int i=0;i<grid_size[0]; i++){
     x=GAP_WIDTH_H;
@@ -144,15 +142,15 @@ int main(int argc, char *argv[]){
 }
 
 void drawNode(int nodeIndex) {
-	node tmp_node = grid[nodeIndex];
-	werase(tmp_node.w_code);
-	for(int y = 0; y < tmp_node.inputCode.size(); y++) {
-	  if(tmp_node.w_code)
-	    mvwprintw(tmp_node.w_code, y, 0, tmp_node.inputCode[y].c_str());
+	node *tmp_node = &grid[nodeIndex];
+	werase(tmp_node->w_code);
+	for(int y = 0; y < tmp_node->inputCode.size(); y++) {
+	  if(tmp_node->w_code)
+	    mvwprintw(tmp_node->w_code, y, 0, tmp_node->inputCode[y].c_str());
 	  else
 	    return;
 	}
-	wrefresh(tmp_node.w_code);
+	wrefresh(tmp_node->w_code);
 }
 
 void drawContent() {
