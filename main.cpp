@@ -30,15 +30,13 @@ WINDOW *new_bwin(int height, int width, int starty, int startx){
 }
 
 void redraw(int n){
-  int x, y, max_x, max_y;
+  int x, y=0, max_x, max_y;
   int nID=0;
 
   werase(stdscr);
   refresh();
   clear();
   
-  getbegyx(stdscr, y, x);
-  getmaxyx(stdscr, max_y, max_x);
   printf("%d %d %d %d\n", x,y,max_x,max_y);
   for(int i=0;i<grid_size[0]; i++){
     x=GAP_WIDTH_H;
@@ -49,10 +47,10 @@ void redraw(int n){
 
       refresh();
       for(int k =0; k<4;k++){
-				if(grid[nID].arrows[k]){
-					werase(grid[nID].arrows[k]->win);
-					grid[nID].arrows[k]->win=newwin(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH_H-NODE_WIDTH);
-				}
+	if(grid[nID].arrows[k]){
+	  werase(grid[nID].arrows[k]->win);
+	  grid[nID].arrows[k]->win=newwin(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH_H-NODE_WIDTH);
+	}
       }
       grid[nID].w_main=new_bwin(NODE_HEIGHT, NODE_WIDTH, y, x);
       grid[nID].w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
@@ -151,19 +149,19 @@ int main(int argc, char *argv[]){
 }
 
 void drawNode(int nodeIndex) {
-	node tmp_node = grid[nodeIndex];
-	werase(tmp_node.w_code);
-	for(int y = 0; y < tmp_node.inputCode.size(); y++) {
-		mvwprintw(tmp_node.w_code, y, 0, tmp_node.inputCode[y].c_str());
-	}
-	wrefresh(tmp_node.w_code);
+  node *tmp_node =&grid[nodeIndex];
+  werase(tmp_node->w_code);
+  for(int y = 0; y < tmp_node->inputCode.size(); y++) {
+    mvwprintw(tmp_node->w_code, y, 0, tmp_node->inputCode[y].c_str());
+  }
+  wrefresh(tmp_node->w_code);
 }
 
 void drawContent() {
-	for(int i = 0; i < grid.size(); i++) {
-		drawNode(i);
-	}
-}
+  for(int i = 0; i < grid.size(); i++) {
+    drawNode(i);
+  }
+ }
 
 void inputLoop() {
 	MEVENT event;
