@@ -69,4 +69,4 @@ class node{
   std::map<uint8_t, uint16_t> labels;
   arrow *arrows[4];
 };
-int get_code(ifstream *file, std::vector<node> grid);
+int get_code(ifstream *file, std::vector<node> &grid);
