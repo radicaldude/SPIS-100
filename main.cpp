@@ -28,11 +28,12 @@ WINDOW *new_bwin(int height, int width, int starty, int startx){
   wrefresh(win);
   return win;
 }
+
 void redraw(int n){
   int x, y, max_x, max_y;
   int nID=0;
 
-  endwin();
+  werase(stdscr);
   refresh();
   clear();
   
@@ -45,18 +46,18 @@ void redraw(int n){
       werase(grid[nID].w_main);
       werase(grid[nID].w_code);
       werase(grid[nID].w_reg);
+
       refresh();
       for(int k =0; k<4;k++){
-	if(grid[nID].arrows[k]){
-	  werase(grid[nID].arrows[k]->win);
-	  grid[nID].arrows[k]->win=newwin(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH_H-NODE_WIDTH);
-	}
-	}
+				if(grid[nID].arrows[k]){
+					werase(grid[nID].arrows[k]->win);
+					grid[nID].arrows[k]->win=newwin(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH_H-NODE_WIDTH);
+				}
+      }
       grid[nID].w_main=new_bwin(NODE_HEIGHT, NODE_WIDTH, y, x);
       grid[nID].w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
       new_bwin(NODE_HEIGHT, CODE_WIDTH, y, x);
       grid[nID].w_reg =newwin(NODE_HEIGHT-2,NODE_WIDTH-CODE_WIDTH-2, y+1, x+CODE_WIDTH+1);
-      grid[nID].inputCode.push_back("");
       
       wprintw(grid[nID].w_reg, "ACC%d\nBAK%d", grid[nID].acc, grid[nID].bak);
       wrefresh(grid[nID].w_reg);
@@ -68,9 +69,11 @@ void redraw(int n){
     nID++;
   }
   refresh();
+  sleep(0.5);
   drawContent();
   return;
 }
+
 int main(int argc, char *argv[]){
   int c,x=GAP_WIDTH_H, y=0, id;
   int max_x, max_y;
