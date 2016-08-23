@@ -14,7 +14,7 @@ int get_code(ifstream *file, std::vector<node> &grid){
   char ch;
   char nID_buf[4];
   string code;
-  unsigned int nID, j=0, i;
+  unsigned int nID, j=0, i, last;
   string line;
 
   nID_buf[4]='\0';
@@ -51,15 +51,18 @@ int get_code(ifstream *file, std::vector<node> &grid){
       if(code[i]=='\n'||code[i]=='\r'){
 	if((i-j)>MAX_LINE_LENGTH)
 	  return 5;
-	line = code.substr(j,i-j);
-	if(!is_whitespace(line))
+	line = code.substr(j+1,i-j-1);
+	if(!is_whitespace(line)){
 	  grid[nID].inputCode.push_back(line);
-	j=i;
+	  //std::cout << "---";
+	   //std::cout << line; 
+	}
+	  j=i;
        }
     }
     if((i-j)>MAX_LINE_LENGTH)
       return 5;
-    line = code.substr(j,i-j);
+    line = code.substr(j+1,i-j);
     if(!is_whitespace(line))
       grid[nID].inputCode.push_back(line);
     }
