@@ -1,6 +1,6 @@
 #include "spis.h"
 #include <signal.h>
-
+#include <unistd.h>
 #define NODE_HEIGHT 11
 #define ARROW_WIDTH 1
 #define ARROW_HEIGHT 1
@@ -28,7 +28,46 @@ WINDOW *new_bwin(int height, int width, int starty, int startx){
   wrefresh(win);
   return win;
 }
-void resize(int n){
+void redraw(int n){
+  int x, y, max_x, max_y;
+  int nID=0;
+
+  endwin();
+  refresh();
+  clear();
+  
+  getbegyx(stdscr, y, x);
+  getmaxyx(stdscr, max_y, max_x);
+  printf("%d %d %d %d\n", x,y,max_x,max_y);
+  for(int i=0;i<grid_size[0]; i++){
+    x=GAP_WIDTH_H;
+    for(int j=0;j<grid_size[1];j++){
+      werase(grid[nID].w_main);
+      werase(grid[nID].w_code);
+      werase(grid[nID].w_reg);
+      refresh();
+      for(int k =0; k<4;k++){
+	if(grid[nID].arrows[k]){
+	  werase(grid[nID].arrows[k]->win);
+	  grid[nID].arrows[k]->win=newwin(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH_H-NODE_WIDTH);
+	}
+	}
+      grid[nID].w_main=new_bwin(NODE_HEIGHT, NODE_WIDTH, y, x);
+      grid[nID].w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
+      new_bwin(NODE_HEIGHT, CODE_WIDTH, y, x);
+      grid[nID].w_reg =newwin(NODE_HEIGHT-2,NODE_WIDTH-CODE_WIDTH-2, y+1, x+CODE_WIDTH+1);
+      grid[nID].inputCode.push_back("");
+      
+      wprintw(grid[nID].w_reg, "ACC%d\nBAK%d", grid[nID].acc, grid[nID].bak);
+      wrefresh(grid[nID].w_reg);
+      
+      x=x+NODE_WIDTH+ARROW_WIDTH+2*GAP_WIDTH_H;
+      refresh();
+      }
+    y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
+    nID++;
+  }
+  refresh();
   drawContent();
   return;
 }
@@ -50,7 +89,7 @@ int main(int argc, char *argv[]){
     return 1;
     }*/
   initscr();
-  signal(SIGWINCH, resize);
+  signal(SIGWINCH, redraw);
   getmaxyx(stdscr, max_y, max_x);
   y=0;
   refresh();
@@ -63,7 +102,8 @@ int main(int argc, char *argv[]){
       tmp_node->w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
       new_bwin(NODE_HEIGHT, CODE_WIDTH, y, x);
       tmp_node->w_reg =newwin(NODE_HEIGHT-2,NODE_WIDTH-CODE_WIDTH-2, y+1, x+CODE_WIDTH+1);
-      tmp_node->inputCode.push_back("");
+      if(tmp_node->inputCode.size()==0)
+	tmp_node->inputCode.push_back("");
       grid.push_back(*tmp_node);
 
       wprintw(tmp_node->w_reg, "ACC%d\nBAK%d", tmp_node->acc, tmp_node->bak);
@@ -107,7 +147,10 @@ void drawNode(int nodeIndex) {
 	node tmp_node = grid[nodeIndex];
 	werase(tmp_node.w_code);
 	for(int y = 0; y < tmp_node.inputCode.size(); y++) {
-		mvwprintw(tmp_node.w_code, y, 0, tmp_node.inputCode[y].c_str());
+	  if(tmp_node.w_code)
+	    mvwprintw(tmp_node.w_code, y, 0, tmp_node.inputCode[y].c_str());
+	  else
+	    return;
 	}
 	wrefresh(tmp_node.w_code);
 }
@@ -133,7 +176,7 @@ void inputLoop() {
 	keypad(stdscr, TRUE);
 
 	while(true) {
-		int input = getch();
+	  int input = getch();
 		if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122)
 				|| (input >= 48 && input <= 57) || input == 44
 				|| input == 32) {
