@@ -8,10 +8,13 @@
 #define GAP_WIDTH_V 0
 #define NODE_WIDTH 25
 #define CODE_WIDTH 20
+#define BUTTON_WIDTH 5
+#define BUTTON_HEIGHT 3
 
 
 pthread_t inputThread;
-
+bool thread_running;
+bool code_running;
 int grid_size[2] = {4,4};
 std::vector<io> inputs;
 std::vector<io> outputs;
@@ -22,6 +25,8 @@ bool pointInWindow(WINDOW *win, int x, int y);
 bool stop = FALSE;
 std::vector<node> grid;
 
+WINDOW *playButton;
+WINDOW *stopButton;
 
 WINDOW *new_bwin(int height, int width, int starty, int startx){
   WINDOW *win;
@@ -31,41 +36,44 @@ WINDOW *new_bwin(int height, int width, int starty, int startx){
   return win;
 }
 void redraw(int n){
+
   int x=GAP_WIDTH_H, y=0, max_x, max_y;
   int nID=0;
+  int x, y=0, max_x, max_y;
 
   werase(stdscr);
   refresh();
   clear();
   
+  getmaxyx(stdscr, max_y, max_x);
+
   printf("%d %d %d %d\n", x,y,max_x,max_y);
   for(int i=0;i<grid_size[0]; i++){
     x=GAP_WIDTH_H;
     for(int j=0;j<grid_size[1];j++){
-      werase(grid[nID].w_main);
-      werase(grid[nID].w_code);
-      werase(grid[nID].w_reg);
+      werase(grid[i].w_main);
+      werase(grid[i].w_code);
+      werase(grid[i].w_reg);
 
       refresh();
       for(int k =0; k<4;k++){
-	if(grid[nID].arrows[k]){
-	  werase(grid[nID].arrows[k]->win);
-	  grid[nID].arrows[k]->win=newwin(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH_H-NODE_WIDTH);
-	}
+				if(grid[i].arrows[k]){
+					werase(grid[i].arrows[k]->win);
+					grid[i].arrows[k]->win=newwin(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH_H-NODE_WIDTH);
+				}
       }
-      grid[nID].w_main=new_bwin(NODE_HEIGHT, NODE_WIDTH, y, x);
-      grid[nID].w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
+      grid[i].w_main=new_bwin(NODE_HEIGHT, NODE_WIDTH, y, x);
+      grid[i].w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
       new_bwin(NODE_HEIGHT, CODE_WIDTH, y, x);
-      grid[nID].w_reg =newwin(NODE_HEIGHT-2,NODE_WIDTH-CODE_WIDTH-2, y+1, x+CODE_WIDTH+1);
+      grid[i].w_reg =newwin(NODE_HEIGHT-2,NODE_WIDTH-CODE_WIDTH-2, y+1, x+CODE_WIDTH+1);
       
-      wprintw(grid[nID].w_reg, "ACC%d\nBAK%d", grid[nID].acc, grid[nID].bak);
-      wrefresh(grid[nID].w_reg);
+      wprintw(grid[i].w_reg, "ACC%d\nBAK%d", grid[i].acc, grid[i].bak);
+      wrefresh(grid[i].w_reg);
       
       x=x+NODE_WIDTH+ARROW_WIDTH+2*GAP_WIDTH_H;
       refresh();
       }
     y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
-    nID++;
   }
   refresh();
   sleep(0.5);
@@ -90,6 +98,7 @@ int main(int argc, char *argv[]){
     printf("Couldn't open file! Exiting.\n");
     return 1;
     }*/
+  code_running = TRUE;
   initscr();
   signal(SIGWINCH, NULL);
   getmaxyx(stdscr, max_y, max_x);
@@ -130,7 +139,13 @@ int main(int argc, char *argv[]){
     }
     y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
   }
-    //int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
+
+  x=GAP_WIDTH_H;
+  playButton = new_bwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
+  x += BUTTON_WIDTH + GAP_WIDTH_H;
+  stopButton = new_bwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
+
+    //
 
   if(get_code(&file, grid)){
     printf("%d\n", get_code(&file, grid));
@@ -141,10 +156,20 @@ int main(int argc, char *argv[]){
 		if(grid[i].inputCode.size() == 0)
 				grid[i].inputCode.push_back("");
   }
-
-  drawContent();
-  inputLoop();
-
+  while(exit!=TRUE){
+    if(code_running==FALSE){
+      computeTick();
+      drawContent();
+      if(!thread_running){
+	err = pthread_create(&inputThread, NULL, input_loop, NULL);
+	if(err!=0){
+	  //rip
+	}
+      }
+    }
+    else
+      inputLoop();
+  }
   endwin();
   return 0;
 }
@@ -163,6 +188,11 @@ void drawContent() {
     drawNode(i);
   }
  }
+void input_loop(){
+  thread_running=TRUE;
+  inputLoop();
+  thread_running=FALSE;
+}
 
 void inputLoop() {
 	MEVENT event;
@@ -226,6 +256,56 @@ void inputLoop() {
 		  drawNode(selectedNode);
 		  move(y, x);
 
+		} else if (input == KEY_LEFT) {
+			if (selectedIndex == 0) {
+				if (selectedLine != 0) {
+					selectedLine--;
+					y--;
+					selectedIndex = grid[selectedNode].inputCode[selectedLine].length();
+					x = getbegx(grid[selectedNode].w_code) + selectedIndex;
+
+					move(y, x);
+				}
+			} else {
+				selectedIndex--;
+				x--;
+
+				move(y, x);
+			}
+		} else if (input == KEY_RIGHT) {
+			if (selectedIndex != grid[selectedNode].inputCode[selectedLine].length()) {
+				selectedIndex++;
+				x++;
+
+				move(y, x);
+			} else if (selectedLine < grid[selectedNode].inputCode.size() - 1) {
+				selectedLine++;
+				y++;
+				selectedIndex = 0;
+				x = getbegx(grid[selectedNode].w_code);
+
+				move(y, x);
+			}
+		} else if (input == KEY_UP) {
+			if (selectedLine > 0) {
+				selectedLine--;
+				y--;
+				if (selectedIndex > grid[selectedNode].inputCode[selectedLine].length()) {
+					selectedIndex = grid[selectedNode].inputCode[selectedLine].length();
+					x = getbegx(grid[selectedNode].w_code) + selectedIndex;
+				}
+				move(y, x);
+			}
+		} else if (input == KEY_DOWN) {
+			if (selectedLine < grid[selectedNode].inputCode.size() - 1) {
+				selectedLine++;
+				y++;
+				if (selectedIndex > grid[selectedNode].inputCode[selectedLine].length()) {
+					selectedIndex = grid[selectedNode].inputCode[selectedLine].length();
+					x = getbegx(grid[selectedNode].w_code) + selectedIndex;
+				}
+				move(y, x);
+			}
 		} else if (input == KEY_MOUSE && getmouse(&event) == OK) {
 
 		  //if (event.bstate & BUTTON1_RELEASED) {
