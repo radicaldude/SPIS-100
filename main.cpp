@@ -13,7 +13,8 @@
 
 
 pthread_t inputThread;
-
+bool thread_running;
+bool code_running;
 int grid_size[2] = {4,4};
 std::vector<node> grid;
 
@@ -93,6 +94,7 @@ int main(int argc, char *argv[]){
     printf("Couldn't open file! Exiting.\n");
     return 1;
     }*/
+  code_running = TRUE;
   initscr();
   signal(SIGWINCH, redraw);
   getmaxyx(stdscr, max_y, max_x);
@@ -139,7 +141,7 @@ int main(int argc, char *argv[]){
   x += BUTTON_WIDTH + GAP_WIDTH_H;
   stopButton = new_bwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
 
-    //int err = pthread_create( &inputThread, NULL, inputLoop, NULL);
+    //
 
   if(get_code(&file, grid)){
     printf("%d\n", get_code(&file, grid));
@@ -150,10 +152,20 @@ int main(int argc, char *argv[]){
 		if(grid[i].inputCode.size() == 0)
 				grid[i].inputCode.push_back("");
   }
-
-  drawContent();
-  inputLoop();
-
+  while(exit!=TRUE){
+    if(code_running==FALSE){
+      computeTick();
+      drawContent();
+      if(!thread_running){
+	err = pthread_create(&inputThread, NULL, input_loop, NULL);
+	if(err!=0){
+	  //rip
+	}
+      }
+    }
+    else
+      inputLoop();
+  }
   endwin();
   return 0;
 }
@@ -172,6 +184,11 @@ void drawContent() {
     drawNode(i);
   }
  }
+void input_loop(){
+  thread_running=TRUE;
+  inputLoop();
+  thread_running=FALSE;
+}
 
 void inputLoop() {
 	MEVENT event;
