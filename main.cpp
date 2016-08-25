@@ -108,6 +108,11 @@ int main(int argc, char *argv[]){
   drawContent();
   state = 1;
 
+  noecho();
+	cbreak();
+	mousemask(ALL_MOUSE_EVENTS, NULL);
+	keypad(stdscr, TRUE);
+
   while (state != 0) {
   	switch(state) {
   		case 1:
@@ -152,10 +157,6 @@ void inputLoop() {
 	int selectedLine = 0;
 	int selectedIndex = 0;
 
-	noecho();
-	cbreak();
-	mousemask(ALL_MOUSE_EVENTS, NULL);
-	keypad(stdscr, TRUE);
 	curs_set(1);
 
 	int y, x = 0;
@@ -310,10 +311,6 @@ void inputLoop() {
 void *runtimeInputLoop(void *ptr) {
 	MEVENT event;
 
-	noecho();
-	cbreak();
-	mousemask(ALL_MOUSE_EVENTS, NULL);
-	keypad(stdscr, TRUE);
 	curs_set(0);
 
 	while (true) {
