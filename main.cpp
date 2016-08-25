@@ -150,7 +150,6 @@ void drawContent() {
 // INPUT AND RUNTIME
 
 void inputLoop() {
-	printf("input loop began");
 	MEVENT event;
 
 	int selectedNode = 0;
@@ -324,8 +323,8 @@ void *runtimeInputLoop(void *ptr) {
 }
 
 void runtimeLoop() {
-	pthread_t *thread;
-	int err = pthread_create(thread, NULL, &runtimeInputLoop, NULL);
+	pthread_t thread;
+	int err = pthread_create(&thread, NULL, &runtimeInputLoop, NULL);
 
 	if(err!=0){
 		return;
@@ -337,8 +336,7 @@ void runtimeLoop() {
 			//drawCodeLine();
 	}
 
-	pthread_cancel(*thread);
-	printf("Done");
+	pthread_cancel(thread);
 	return;
 }
 
