@@ -1,6 +1,8 @@
 #include "spis.h"
 #include <signal.h>
 #include <unistd.h>
+#include <pthread.h>
+
 #define NODE_HEIGHT 11
 #define ARROW_WIDTH 1
 #define ARROW_HEIGHT 1
@@ -13,73 +15,20 @@
 
 
 pthread_t inputThread;
-bool thread_running;
-bool code_running;
-int grid_size[2] = {4,4};
-std::vector<io> inputs;
-std::vector<io> outputs;
+
 void drawContent();
 void inputLoop();
-void *runtimeInputLoop(void *ptr);
+void runtimeLoop();
 bool pointInWindow(WINDOW *win, int x, int y);
-bool stop = FALSE;
-std::vector<node> grid;
+WINDOW *new_bwin(int height, int width, int starty, int startx);
 
 WINDOW *playButton;
 WINDOW *stopButton;
+WINDOW *pauseButton;
 
-WINDOW *new_bwin(int height, int width, int starty, int startx){
-  WINDOW *win;
-  win=newwin(height, width, starty, startx);
-  box(win,0,0);
-  wrefresh(win);
-  return win;
-}
-void redraw(int n){
-
-  int x=GAP_WIDTH_H, y=0, max_x, max_y;
-  int nID=0;
-  int x, y=0, max_x, max_y;
-
-  werase(stdscr);
-  refresh();
-  clear();
-  
-  getmaxyx(stdscr, max_y, max_x);
-
-  printf("%d %d %d %d\n", x,y,max_x,max_y);
-  for(int i=0;i<grid_size[0]; i++){
-    x=GAP_WIDTH_H;
-    for(int j=0;j<grid_size[1];j++){
-      werase(grid[i].w_main);
-      werase(grid[i].w_code);
-      werase(grid[i].w_reg);
-
-      refresh();
-      for(int k =0; k<4;k++){
-				if(grid[i].arrows[k]){
-					werase(grid[i].arrows[k]->win);
-					grid[i].arrows[k]->win=newwin(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH_H-NODE_WIDTH);
-				}
-      }
-      grid[i].w_main=new_bwin(NODE_HEIGHT, NODE_WIDTH, y, x);
-      grid[i].w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
-      new_bwin(NODE_HEIGHT, CODE_WIDTH, y, x);
-      grid[i].w_reg =newwin(NODE_HEIGHT-2,NODE_WIDTH-CODE_WIDTH-2, y+1, x+CODE_WIDTH+1);
-      
-      wprintw(grid[i].w_reg, "ACC%d\nBAK%d", grid[i].acc, grid[i].bak);
-      wrefresh(grid[i].w_reg);
-      
-      x=x+NODE_WIDTH+ARROW_WIDTH+2*GAP_WIDTH_H;
-      refresh();
-      }
-    y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
-  }
-  refresh();
-  sleep(0.5);
-  drawContent();
-  return;
-}
+int grid_size[2] = {4,4};
+std::vector<node> grid;
+int state = 0;
 
 int main(int argc, char *argv[]){
   int c,x=GAP_WIDTH_H, y=0, id;
@@ -98,7 +47,6 @@ int main(int argc, char *argv[]){
     printf("Couldn't open file! Exiting.\n");
     return 1;
     }*/
-  code_running = TRUE;
   initscr();
   signal(SIGWINCH, NULL);
   getmaxyx(stdscr, max_y, max_x);
@@ -144,8 +92,8 @@ int main(int argc, char *argv[]){
   playButton = new_bwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
   x += BUTTON_WIDTH + GAP_WIDTH_H;
   stopButton = new_bwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
-
-    //
+  x += BUTTON_WIDTH + GAP_WIDTH_H;
+  pauseButton = new_bwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
 
   if(get_code(&file, grid)){
     printf("%d\n", get_code(&file, grid));
@@ -156,23 +104,28 @@ int main(int argc, char *argv[]){
 		if(grid[i].inputCode.size() == 0)
 				grid[i].inputCode.push_back("");
   }
-  while(exit!=TRUE){
-    if(code_running==FALSE){
-      computeTick();
-      drawContent();
-      if(!thread_running){
-	err = pthread_create(&inputThread, NULL, input_loop, NULL);
-	if(err!=0){
-	  //rip
-	}
-      }
-    }
-    else
-      inputLoop();
+
+  drawContent();
+  state = 1;
+
+  while (state != 0) {
+  	switch(state) {
+  		case 1:
+  			inputLoop();
+  			break;
+  		case 2:
+  			runtimeLoop();
+  			break;
+  		default:
+  			state = 1;
+  	}
   }
+
   endwin();
   return 0;
 }
+
+// DRAWING
 
 void drawNode(int nodeIndex) {
   node *tmp_node =&grid[nodeIndex];
@@ -187,17 +140,13 @@ void drawContent() {
   for(int i = 0; i < grid.size(); i++) {
     drawNode(i);
   }
- }
-void input_loop(){
-  thread_running=TRUE;
-  inputLoop();
-  thread_running=FALSE;
 }
 
+// INPUT AND RUNTIME
+
 void inputLoop() {
+	printf("input loop began");
 	MEVENT event;
-	int y = 0;
-	int x = 0;
 
 	int selectedNode = 0;
 	int selectedLine = 0;
@@ -207,6 +156,12 @@ void inputLoop() {
 	cbreak();
 	mousemask(ALL_MOUSE_EVENTS, NULL);
 	keypad(stdscr, TRUE);
+	curs_set(1);
+
+	int y, x = 0;
+	getbegyx(grid[selectedNode].w_code, y, x);
+
+	move(y, x);
 
 	while(true) {
 	  int input = getch();
@@ -307,8 +262,8 @@ void inputLoop() {
 				move(y, x);
 			}
 		} else if (input == KEY_MOUSE && getmouse(&event) == OK) {
+			bool pointFound = false;
 
-		  //if (event.bstate & BUTTON1_RELEASED) {
 		  for (int i = 0; i < grid.size(); i++) {
 		    if (pointInWindow(grid[i].w_code, event.x, event.y)) {
 		      int begY, begX = 0;
@@ -331,15 +286,73 @@ void inputLoop() {
 				  x = selectedIndex + begX;
 				  
 				  move(y, x);
+				  pointFound = true;
 				  break;
-				  				}
+		    }
 			}
-			//}
+
+		  if (!pointFound && pointInWindow(playButton, event.x, event.y)) {
+		  	state = 2;
+		  	return;
+		  } else if (!pointFound && pointInWindow(pauseButton, event.x, event.y)) {
+		  	state = 0;
+		  	return;
+		  }
+
+
 		} else {
 			//mvwprintw(stdscr, 0, 0, to_string(input).c_str());
-			return;
+			//return 0;
 		}
 	}
+}
+
+void *runtimeInputLoop(void *ptr) {
+	MEVENT event;
+
+	noecho();
+	cbreak();
+	mousemask(ALL_MOUSE_EVENTS, NULL);
+	keypad(stdscr, TRUE);
+	curs_set(0);
+
+	while (true) {
+		int input = getch();
+
+		if (getmouse(&event) == OK && pointInWindow(stopButton, event.x, event.y)) {
+			state = 1;
+			return NULL;
+		}
+	}
+}
+
+void runtimeLoop() {
+	pthread_t *thread;
+	int err = pthread_create(thread, NULL, &runtimeInputLoop, NULL);
+
+	if(err!=0){
+		return;
+	}
+
+	while (state == 2) {
+			sleep(0.5);
+			//computeTick();
+			//drawCodeLine();
+	}
+
+	pthread_cancel(*thread);
+	printf("Done");
+	return;
+}
+
+// UTILLITY
+
+WINDOW *new_bwin(int height, int width, int starty, int startx){
+  WINDOW *win;
+  win=newwin(height, width, starty, startx);
+  box(win,0,0);
+  wrefresh(win);
+  return win;
 }
 
 bool pointInWindow(WINDOW *win, int x, int y) {
@@ -356,8 +369,4 @@ bool pointInWindow(WINDOW *win, int x, int y) {
 	}
 
 	return true;
-}
-
-void *runtimeInputLoop(void *ptr) {
-	// TODO
 }
