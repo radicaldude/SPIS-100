@@ -2,6 +2,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <stdio.h>
 
 #define NODE_HEIGHT 11
 #define ARROW_WIDTH 1
@@ -29,6 +30,7 @@ WINDOW *pauseButton;
 int grid_size[2] = {4,4};
 std::vector<node> grid;
 int state = 0;
+bool stop;
 
 int main(int argc, char *argv[]){
   int c,x=GAP_WIDTH_H, y=0, id;
@@ -48,6 +50,7 @@ int main(int argc, char *argv[]){
     return 1;
     }*/
   initscr();
+  start_color();
   signal(SIGWINCH, NULL);
   getmaxyx(stdscr, max_y, max_x);
   y=0;
@@ -134,11 +137,27 @@ int main(int argc, char *argv[]){
 
 void drawNode(int nodeIndex) {
   node *tmp_node =&grid[nodeIndex];
+  int beg_x, beg_y;
+  getbegyx(tmp_node->w_code, beg_y, beg_x);
+  
   werase(tmp_node->w_code);
   for(int y = 0; y < tmp_node->inputCode.size(); y++) {
+    if(y==grid[nodeIndex].pc){                         // &&state==2
+      continue;
+    }
     mvwprintw(tmp_node->w_code, y, 0, tmp_node->inputCode[y].c_str());
   }
-  wrefresh(tmp_node->w_code);
+    wrefresh(tmp_node->w_code);
+  //if(state==2){             commented out for test purposes
+    tmp_node=&grid[nodeIndex];
+    start_color();
+    tmp_node->w_highlight = newwin(1, CODE_WIDTH, beg_y+tmp_node->pc, beg_x-1);
+    init_pair(1, COLOR_BLACK, COLOR_WHITE);
+    wattron(tmp_node->w_highlight,COLOR_PAIR(1));
+    wbkgd(tmp_node->w_highlight, COLOR_PAIR(1));
+    mvwprintw(tmp_node->w_highlight, 0, 0, tmp_node->inputCode[tmp_node->pc].c_str());
+    wrefresh(tmp_node->w_highlight);
+    //}
 }
 
 void drawContent() {
@@ -148,7 +167,6 @@ void drawContent() {
 }
 
 // INPUT AND RUNTIME
-
 void inputLoop() {
 	printf("input loop began");
 	MEVENT event;
@@ -314,32 +332,44 @@ void *runtimeInputLoop(void *ptr) {
 	curs_set(0);
 
 	while (true) {
-		int input = getch();
-
-		if (getmouse(&event) == OK && pointInWindow(stopButton, event.x, event.y)) {
-			state = 1;
-			return NULL;
-		}
+	  int input = getch();
+	  if (getmouse(&event) == OK && pointInWindow(stopButton, event.x, event.y)) {
+	    state = 1;
+	    return NULL;
+	  }
 	}
 }
 
+void run_setup(){
+  for(unsigned int i=0;i<grid.size();i++){
+    grid[i].code.clear();
+    grid[i].pc=0;
+    if(grid[i].w_highlight){
+      werase(grid[i].w_highlight);
+      delwin(grid[i].w_highlight);
+    }
+    for(unsigned int j=0;j<grid[i].inputCode.size();j++)
+      grid[i].code.push_back(grid[i].inputCode[j]);
+  }
+  return;
+}
+
 void runtimeLoop() {
-	pthread_t *thread;
-	int err = pthread_create(thread, NULL, &runtimeInputLoop, NULL);
-
-	if(err!=0){
-		return;
-	}
-
-	while (state == 2) {
-			sleep(0.5);
-			//computeTick();
-			//drawCodeLine();
-	}
-
-	pthread_cancel(*thread);
-	printf("Done");
-	return;
+  pthread_t *thread = new pthread_t;
+  int err = pthread_create(thread, NULL, &runtimeInputLoop, NULL);
+  
+  if(err!=0){
+    return;
+  }
+  run_setup();
+  while (state == 2) {
+    compute_tick();
+    drawContent();
+  }
+  
+  pthread_cancel(*thread);
+  printf("Done");
+  return;
 }
 
 // UTILLITY

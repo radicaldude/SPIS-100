@@ -8,13 +8,22 @@ node::node(uint8_t nId){
 
 bool node::runline(){
   //string line = sanitize(code[this.pc]);
-  string line = code[pc];
-  // TODO – Remove labels and variations of commas, in sanitize function
-  
-  if(strncmp("NOP", line.c_str(), 3)){
+
+  if(pc>=code.size())
+    pc=0;
+  if(code.size()==0){
+    return true;
+  }
+  if(is_whitespace(code[pc])){
     pc++;
     return true;
-  } else if(strncmp("MOV", line.c_str(), 3)){
+  }
+  string line = code[pc];
+  // TODO – Remove labels and variations of commas, in sanitize function
+  if(!strncmp("NOP", line.c_str(), 3)){
+    pc++;
+    return true;
+  } else if(!strncmp("MOV", line.c_str(), 3)){
     int c;
     std::string src, dst;
     pair<int8_t, uint16_t> p;
@@ -60,30 +69,30 @@ bool node::runline(){
     } else if(dst== "DOWN") {
       arrow *a = arrows[2];
 
-      if (!a->nodeRequest(nodeId)) {
+      if (!a->nodeRequest(nodeId))
         a->nodeSet(nodeId, input);
-      } else {
-        pc--;
+      else
+	pc--;
       }
       // TODO – Handle error
-      return false;
+      else
+	return false;
+      pc++;
+      return true;
     }
-    pc++;
-    return true;
-
-  } else if(strncmp("SWP", line.c_str(), 3)){
+    else if(!strncmp("SWP", line.c_str(), 3)){
     int16_t tmpAcc = acc;
     acc = bak;
     bak = tmpAcc;
     pc++;
     return true;
-
-  } else if(strncmp("SAV", line.c_str(), 3)){
+    
+  } else if(!strncmp("SAV", line.c_str(), 3)){
     bak = acc;
     pc++;
     return true;
 
-  } else if(strncmp("ADD", line.c_str(), 3)){
+  } else if(!strncmp("ADD", line.c_str(), 3)){
     string src = line.substr(4);
     pair<bool, int16_t> p = getFromSrc(src);
     int16_t input;
@@ -101,7 +110,7 @@ bool node::runline(){
       pc++;
       return true;
     }
-  } else if(strncmp("SUB", line.c_str(), 3)){
+  } else if(!strncmp("SUB", line.c_str(), 3)){
     string src = line.substr(4);
     pair<int8_t, int16_t> p = getFromSrc(src);
     
@@ -120,17 +129,18 @@ bool node::runline(){
       input = p.second;
       acc -= input;
       pc++;
+      return true;
     }
     
-  } else if(strncmp("NEG", line.c_str(), 3)){
+  } else if(!strncmp("NEG", line.c_str(), 3)){
     acc = -acc;
     pc++;
     return true;   
   }
-  else if(strncmp("J",line.c_str(),1)){
+  else if(!strncmp("J",line.c_str(),1)){
     pair<int8_t, int16_t> p;
     p=getFromSrc(line.substr(4));
-    if(strncmp("JRO", line.c_str(), 3)){
+    if(!strncmp("JRO", line.c_str(), 3)){
       if(p.first==WAIT)
 	 return true;
        else if(p.first==SET)
@@ -140,20 +150,23 @@ bool node::runline(){
     } 
     if(p.second==this->labels.end()->second)
       return false;
-    if(strncmp("JGZ", line.c_str(), 3)&&this->acc>0)
+    if(strncmp("JGZ", line.c_str(), 3) && strncmp("JLZ", line.c_str(),3)
+       && strncmp("JEZ", line.c_str(),3) && strncmp("JNZ", line.c_str(),3))
+      return false;
+      
+    else if(!strncmp("JGZ", line.c_str(), 3)&&this->acc>0)
       pc=p.second;
-    else if(strncmp("JLZ", line.c_str(),3) &&this->acc<0)
+    else if(!strncmp("JLZ", line.c_str(),3) &&this->acc<0)
       pc=p.second;
-    else if(strncmp("JEZ", line.c_str(),3)&&this->acc==0)
+    else if(!strncmp("JEZ", line.c_str(),3)&&this->acc==0)
       pc=p.second;
-    else if(strncmp("JNZ", line.c_str(),3)&&this->acc!=0)
+    else if(!strncmp("JNZ", line.c_str(),3)&&this->acc!=0)
       pc=p.second;
     else
       pc++;
     return true;
   }
   else
-    // TODO – Handle error
     return false;
 }
               
@@ -234,7 +247,7 @@ bool node::runPrepare(){
       }
       continue codeLoop;
     }
-  }
+    }
   
   // TODO – Set properties for run line*/
 }

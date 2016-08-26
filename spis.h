@@ -13,6 +13,7 @@
 
 #define MAX_LINE_LENGTH 17
 
+
 using namespace std;
 
 const string SIM_OPS[] = { "NOP", "SWP", "SAV", "NEG" };  // Operations with no parameters
@@ -55,6 +56,7 @@ class node{
   WINDOW *w_main;
   WINDOW *w_code;
   WINDOW *w_reg;
+  WINDOW *w_highlight;
   node(uint8_t nId);
   int16_t acc;
   int16_t bak;
@@ -70,7 +72,9 @@ class node{
   arrow *arrows[4];
 };
 int get_code(ifstream *file, std::vector<node> &grid);
+void compute_tick();
+bool is_whitespace(string string);
 extern bool stop;
 extern std::vector<node> grid;
-extern std::vector<io> inputs;
-extern std::vector<io> outputs;
+extern int state;
+extern std::vector<io> input, output;

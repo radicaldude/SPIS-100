@@ -23,7 +23,7 @@ int get_code(ifstream *file, std::vector<node> &grid){
   file->get(ch);
   while(ch!=EOF){
     if(ch>='0'&&ch<='9'){
-      for(int i=0;i<3;i++){
+      for(i=0;i<3;i++){
       	if(ch==EOF)
       		return 1;
       	if(ch>='0'&&ch<='9')
