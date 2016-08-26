@@ -168,7 +168,6 @@ void drawContent() {
 
 // INPUT AND RUNTIME
 void inputLoop() {
-	printf("input loop began");
 	MEVENT event;
 
 	int selectedNode = 0;
