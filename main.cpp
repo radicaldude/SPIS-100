@@ -92,22 +92,22 @@ int main(int argc, char *argv[]){
   }
 
   x=GAP_WIDTH_H;
-  playButton = new_bwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
+  playButton = newwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
   init_pair(2, COLOR_BLACK, COLOR_GREEN);
   wbkgd(playButton, COLOR_PAIR(2));
   wrefresh(playButton);
   x += BUTTON_WIDTH + GAP_WIDTH_H;
   
-  stopButton = new_bwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
-  init_pair(2, COLOR_BLACK, COLOR_RED);
-  wbkgd(playButton, COLOR_PAIR(2));
-  wrefresh(playButton);
+  stopButton = newwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
+  init_pair(3, COLOR_BLACK, COLOR_RED);
+  wbkgd(stopButton, COLOR_PAIR(3));
+  wrefresh(stopButton);
   
   x += BUTTON_WIDTH + GAP_WIDTH_H;
-  pauseButton = new_bwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
-  init_pair(2, COLOR_BLACK, COLOR_YELLOW);
-  wbkgd(playButton, COLOR_PAIR(2));
-  wrefresh(playButton);
+  pauseButton = newwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
+  init_pair(4, COLOR_BLACK, COLOR_YELLOW);
+  wbkgd(pauseButton, COLOR_PAIR(4));
+  wrefresh(pauseButton);
   
   if(get_code(&file, grid)){
     printf("%d\n", get_code(&file, grid));
