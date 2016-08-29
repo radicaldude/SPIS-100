@@ -47,6 +47,8 @@ class io{
  public:
   arrow *arr; 
   std::vector<int> values;
+  void get();
+  void put();
 };
 
 class node{
@@ -71,10 +73,11 @@ class node{
   std::map<uint8_t, uint16_t> labels;
   arrow *arrows[4];
 };
+
 int get_code(ifstream *file, std::vector<node> &grid);
 void compute_tick();
 bool is_whitespace(string string);
 extern bool stop;
-extern std::vector<node> grid;
 extern int state;
-extern std::vector<io> input, output;
+extern std::vector<io> inputs, outputs;
+extern std::vector<node> grid;

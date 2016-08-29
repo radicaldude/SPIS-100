@@ -1,9 +1,4 @@
-1{
-AAA
+0{MOV UP ACC
 }
-2{BBB
-C
+2{
 }
-3{DDD
-E
-FADSAF}
