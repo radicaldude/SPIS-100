@@ -43,13 +43,13 @@ public:
   void nodeSet(int8_t nodeId, int16_t number);
 };
 
-class io{
+typedef struct{
  public:
   arrow *arr; 
   std::vector<int> values;
   void get();
   void put();
-};
+} io;
 
 class node{
   uint8_t nodeId;

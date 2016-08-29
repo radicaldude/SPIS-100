@@ -29,7 +29,6 @@ WINDOW *pauseButton;
 
 int  grid_size[2] = {4,4};
 std::vector<node> grid;
-std::vector<node> io, output;
 int  state = 0;
 bool stop;
 
@@ -111,14 +110,7 @@ int main(int argc, char *argv[]){
   init_pair(4, COLOR_BLACK, COLOR_YELLOW);
   wbkgd(pauseButton, COLOR_PAIR(4));
   wrefresh(pauseButton);
-  inputs.push_back(tmp_io);
-  inputs[0].arr = new arrow(-1, 0);
-  grid[0].arrows[0]=inputs[0].arr;
-  outputs.push_back(tmp_io);
-  grid.back().arrows[2]= new arrow(-2, grid.size()-1);
-  outputs[0].arr=grid.back().arrows[2];
-  inputs[0].get();
-  
+ 
   if(get_code(&file, grid)){
     printf("%d\n", get_code(&file, grid));
     endwin();
@@ -151,6 +143,13 @@ int main(int argc, char *argv[]){
   			state = 1;
   	}
   }
+  inputs.push_back(tmp_io);
+  inputs[0].arr = new arrow(-1, 0);
+  grid[0].arrows[0]=inputs[0].arr;
+  outputs.push_back(tmp_io);
+  grid.back().arrows[2]= new arrow(-2, grid.size()-1);
+  outputs[0].arr=grid.back().arrows[2];
+  inputs[0].get();
   outputs[0].put();
   endwin();
   return 0;
@@ -165,13 +164,13 @@ void drawNode(int nodeIndex) {
   
   werase(tmp_node->w_code);
   for(int y = 0; y < tmp_node->inputCode.size(); y++) {
-    if(y==grid[nodeIndex].pc&&state==2){
+    if(y==grid[nodeIndex].pc&&state==2)
       continue;
-    }
-    mvwprintw(tmp_node->w_code, y, 0, tmp_node->inputCode[y].c_str());
+      else
+      mvwprintw(tmp_node->w_code, y, 0, tmp_node->inputCode[y].c_str());
   }
-    wrefresh(tmp_node->w_code);
-  if(state==2){
+  wrefresh(tmp_node->w_code);
+    if(state==2){
     tmp_node=&grid[nodeIndex];
     start_color();
     tmp_node->w_highlight = newwin(1, CODE_WIDTH, beg_y+tmp_node->pc, beg_x-1);
@@ -180,7 +179,7 @@ void drawNode(int nodeIndex) {
     wbkgd(tmp_node->w_highlight, COLOR_PAIR(1));
     mvwprintw(tmp_node->w_highlight, 0, 0, tmp_node->inputCode[tmp_node->pc].c_str());
     wrefresh(tmp_node->w_highlight);
-  }
+    }
 }
 
 void drawContent() {
