@@ -19,7 +19,7 @@ void compute_tick(){
     if(stop==TRUE)
       return;  
   }
-  for(i=0; i<grid.size();i++){
+  for(i=0;i<grid.size();i++){
     if(!grid[i].runline()){
       state=1;
       return;
@@ -44,7 +44,7 @@ void io::get(){
 }
 
 void io::put(){
-  for(int i=0;i<10;i++){
+  for(int i=0;i<this->values.size();i++){
     std::cout << this->values[i];
   }  
   return;

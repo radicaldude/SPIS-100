@@ -111,26 +111,28 @@ int main(int argc, char *argv[]){
   wbkgd(pauseButton, COLOR_PAIR(4));
   wrefresh(pauseButton);
  
-  if(get_code(&file, grid)){
-    printf("%d\n", get_code(&file, grid));
-    endwin();
-    clear();
-    return 1;
-  }
-
-  for(int i=0; i < grid.size(); i++){
-		if(grid[i].inputCode.size() == 0)
-				grid[i].inputCode.push_back("");
-  }
+  get_code(&file, grid);
+    
+    for(int i=0; i < grid.size(); i++){
+      if(grid[i].inputCode.size() == 0)
+	grid[i].inputCode.push_back("");
+    }
 
   drawContent();
   state = 1;
 
   noecho();    //no russian
-	cbreak();
-	mousemask(ALL_MOUSE_EVENTS, NULL);
-	keypad(stdscr, TRUE);
-
+  cbreak();
+  mousemask(ALL_MOUSE_EVENTS, NULL);
+  keypad(stdscr, TRUE);
+  inputs.push_back(tmp_io);
+  inputs[0].arr = new arrow(-1, 0);
+  grid[0].arrows[0]=inputs[0].arr;
+  outputs.push_back(tmp_io);
+  grid.back().arrows[2]= new arrow(-2, grid.size()-1);
+  outputs[0].arr=grid.back().arrows[2];
+  inputs[0].get();
+  endwin();
   while (state != 0) {
   	switch(state) {
   		case 1:
@@ -143,15 +145,8 @@ int main(int argc, char *argv[]){
   			state = 1;
   	}
   }
-  inputs.push_back(tmp_io);
-  inputs[0].arr = new arrow(-1, 0);
-  grid[0].arrows[0]=inputs[0].arr;
-  outputs.push_back(tmp_io);
-  grid.back().arrows[2]= new arrow(-2, grid.size()-1);
-  outputs[0].arr=grid.back().arrows[2];
-  inputs[0].get();
-  outputs[0].put();
   endwin();
+  outputs[0].put();
   return 0;
 }
 
@@ -384,6 +379,7 @@ void runtimeLoop() {
   }
   run_setup();
   while (state == 2) {
+    sleep(0.5);
     compute_tick();
     drawContent();
   }
