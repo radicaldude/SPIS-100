@@ -64,7 +64,6 @@ int main(int argc, char *argv[]){
     for(int j=0;j<grid_size[1];j++){
       free(tmp_node);
       tmp_node = new node(nID);
-      nID++;
       tmp_node->w_main=new_bwin(NODE_HEIGHT, NODE_WIDTH, y, x);
       tmp_node->w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
       new_bwin(NODE_HEIGHT, CODE_WIDTH, y, x);
@@ -75,31 +74,15 @@ int main(int argc, char *argv[]){
       wrefresh(tmp_node->w_reg);
       x = x + NODE_WIDTH + ARROW_H_WIDTH + 2 * GAP_WIDTH_H;
       refresh();
-            
-      /*if((int) i<grid_size[0]){
-	tmp_node->arrows[0]=new arrow(nID, nID-grid_size[0]);
-	tmp_node->arrows[0]->win=newwin(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT+GAP_WIDTH_V,x+NODE_WIDTH/2);
-      }
-      if((i%grid_size[0])!=0){
-	tmp_node->arrows[3]=new arrow(nID, nID-1);
-	tmp_node->arrows[3]->win=newwin(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH_H-NODE_WIDTH);
-            }
-      if((i/grid_size[0]-1)<grid_size[1]){
-	tmp_node->arrows[2]=new arrow(nID, nID+grid_size[0]);
-	tmp_node->arrows[2]->win=newwin(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH_H-NODE_WIDTH);
-            }
-      if(((i+1)%grid_size[0])!=0){
-	tmp_node->arrows[1]=new arrow(nID, nID+1);
-                tmp_node->arrows[1]->win=newwin(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH_H-NODE_WIDTH);
-      }*/
 
       if (i != 0) {
       	tmp_node->arrows[0] = grid[nID + grid_size[1]].arrows[2];
       }
 
-      if (j != grid_size[1]) {
+      if (j != grid_size[1] - 1) {
       	tmp_node->arrows[1] = new arrow(nID, nID + 1);
       	tmp_node->arrows[1]->win=newwin(ARROW_H_HEIGHT, ARROW_H_WIDTH, y + floor(NODE_HEIGHT / 2) - floor(ARROW_H_HEIGHT / 2),x + NODE_WIDTH + GAP_WIDTH_H);
+      	wprintw(tmp_node->arrows[1]->win, "kek");
       }
 
       if (i != grid_size[0] - 1) {
@@ -110,6 +93,10 @@ int main(int argc, char *argv[]){
       if (j != 0) {
       	tmp_node->arrows[3] = grid[nID - 1].arrows[1];
       }
+
+      grid.push_back(*tmp_node);
+
+      nID++;
     }
     y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_V_HEIGHT);
   }
@@ -198,10 +185,50 @@ void drawNode(int nodeIndex) {
     }
 }
 
+void updateReg(int nodeIndex) {
+  node tmp_node = grid[nodeIndex];
+
+  mvwprintw(tmp_node.w_reg, 1, 0, makeThreeDigit(tmp_node.acc).c_str());
+  mvwprintw(tmp_node.w_reg, 3, 0, makeThreeDigit(tmp_node.bak).c_str());
+  wrefresh(tmp_node.w_reg);
+}
+
+void updateArrow(int nodeIndex, int arrowIndex) {
+	node tmp_node = grid[nodeIndex];
+	arrow tmp_arrow = *tmp_node.arrows[arrowIndex];
+
+	if (arrowIndex % 2 == 0) {
+		mvwprintw(tmp_arrow.win, 0, 0, makeThreeDigit(tmp_arrow.value[0]).c_str());
+		mvwprintw(tmp_arrow.win, 0, 5, makeThreeDigit(tmp_arrow.value[1]).c_str());
+	} else {
+		mvwprintw(tmp_arrow.win, 0, 0, makeThreeDigit(tmp_arrow.value[0]).c_str());
+		mvwprintw(tmp_arrow.win, 3, 0, makeThreeDigit(tmp_arrow.value[1]).c_str());
+	}
+	wrefresh(tmp_node.w_reg);
+}
+
+void updateArrowsForNode(int nodeIndex) {
+  if (nodeIndex >= grid_size[1])
+  	updateArrow(nodeIndex, 0);
+
+  if ((nodeIndex + 1) % grid_size[0] != 0)
+  	updateArrow(nodeIndex, 1);
+
+  if (nodeIndex < grid_size[0] - grid_size[1])
+  	updateArrow(nodeIndex, 2);
+
+  if (nodeIndex % grid_size[0] != 0)
+  	updateArrow(nodeIndex, 3);
+}
+
 void drawContent() {
   for(int i = 0; i < grid.size(); i++) {
     drawNode(i);
+    updateReg(i);
+    //updateArrowsForNode(i);
   }
+
+  updateArrow(0, 1);
 }
 
 // INPUT AND RUNTIME
@@ -437,5 +464,11 @@ bool pointInWindow(WINDOW *win, int x, int y) {
 }
 
 string makeThreeDigit(int n) {
+	string nToText = to_string(n);
 
+	while (nToText.length() < 3) {
+		nToText = "0" + nToText;
+	}
+
+	return nToText;
 }
