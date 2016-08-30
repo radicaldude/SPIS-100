@@ -9,16 +9,16 @@ node::node(uint8_t nId){
 bool node::runline(){
   //string line = sanitize(code[this.pc]);
 
-  if(pc>=code.size())
+  if(pc>=inputCode.size())
     pc=0;
-  if(code.size()==0){
+  if(inputCode.size()==0){
     return true;
   }
-  if(is_whitespace(code[pc])){
+  if(is_whitespace(inputCode[pc])){
     pc++;
     return true;
   }
-  string line = code[pc];
+  string line = inputCode[pc];
   // TODO – Remove labels and variations of commas, in sanitize function
   if(!strncmp("NOP", line.c_str(), 3)){
     pc++;
@@ -37,44 +37,33 @@ bool node::runline(){
     p = getFromSrc(src);
     if(p.first==INVALID)
       return false;
+    else if(p.first==WAIT)
+      return true;
     input = p.second;
-    if(dst == "ACC") {
+    if(!strncmp(dst.c_str(), "ACC", 3)) {  
       acc = input;
-    } else if(dst== "NIL") {
-      
-    } else if(dst== "LEFT"){
-      a = arrows[3];
-      if (!a->nodeRequest(nodeId)) {
+    } else if(!strncmp(dst.c_str(), "NIL",3)) {
+	
+    }else{
+      if(!strncmp("LEFT", dst.c_str(), 3)){
+	a = arrows[3];
+      } else if(!strncmp(dst.c_str(), "RIG", 3)) {
+	a = arrows[1];
+      } else if(strncmp(dst.c_str(), "UP",2)) {
+	a = arrows[0];
+      } else if(strncmp(dst.c_str(),"DOW", 3)) {
+    	a = arrows[2];
+      }
+      else
+	return false;
+      if (!a->nodeRequest(nodeId))
 	a->nodeSet(nodeId, input);
-      } else {
-        pc--;
-      }
-    } else if(dst== "RIGHT") {
-      a = arrows[1];
-
-      if (!a->nodeRequest(nodeId)) {
-        a->nodeSet(nodeId, input);
-      } else {
-        pc--;
-      }
-    } else if(dst== "UP") {
-      a = arrows[0];
-
-      if (!a->nodeRequest(nodeId)) {
-        a->nodeSet(nodeId, input);
-      } else {
-        pc--;
-      }
-    } else if(dst== "DOWN") {
-      a = arrows[2];
+      else
+	pc--;
     }
-    if (!a->nodeRequest(nodeId))
-      a->nodeSet(nodeId, input);
-    else
-      pc--;
     pc++;
     return true;
-    }
+  }
     else if(!strncmp("SWP", line.c_str(), 3)){
     int16_t tmpAcc = acc;
     acc = bak;

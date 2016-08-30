@@ -176,11 +176,11 @@ void drawNode(int nodeIndex) {
 }
 
 void updateReg(int nodeIndex) {
-  node tmp_node = grid[nodeIndex];
+  node *tmp_node = &grid[nodeIndex];
 
-  mvwprintw(tmp_node.w_reg, 1, 0, makeThreeDigit(tmp_node.acc).c_str());
-  mvwprintw(tmp_node.w_reg, 3, 0, makeThreeDigit(tmp_node.bak).c_str());
-  wrefresh(tmp_node.w_reg);
+  mvwprintw(tmp_node->w_reg, 1, 0, makeThreeDigit(tmp_node->acc).c_str());
+  mvwprintw(tmp_node->w_reg, 3, 0, makeThreeDigit(tmp_node->bak).c_str());
+  wrefresh(tmp_node->w_reg);
 }
 
 void updateArrow(int nodeIndex, int arrowIndex) {
@@ -188,7 +188,7 @@ void updateArrow(int nodeIndex, int arrowIndex) {
 	arrow *tmp_arrow = grid[nodeIndex].arrows[arrowIndex];
 	if(!tmp_arrow){
 	  endwin();
-	  printf("ERROR . ::: tmp_arrow was NULL!!\n");
+	  printf("ERROR: tmp_arrow was NULL!!\n");
 	  return;
 	}
 	if (arrowIndex % 2 == 0) {
@@ -398,20 +398,6 @@ void *runtimeInputLoop(void *ptr) {
 	}
 }
 
-void run_setup(){
-  for(unsigned int i=0;i<grid.size();i++){
-    grid[i].code.clear();
-    grid[i].pc=0;
-    if(grid[i].w_highlight){
-      werase(grid[i].w_highlight);
-      delwin(grid[i].w_highlight);
-    }
-    for(unsigned int j=0;j<grid[i].inputCode.size();j++)
-      grid[i].code.push_back(grid[i].inputCode[j]);
-  }
-  return;
-}
-
 void runtimeLoop() {
   pthread_t *thread = new pthread_t;
   int err = pthread_create(thread, NULL, &runtimeInputLoop, NULL);
@@ -419,7 +405,6 @@ void runtimeLoop() {
   if(err!=0){
     return;
   }
-  run_setup();
   while (state == 2) {
     sleep(0.5);
     compute_tick();
@@ -464,6 +449,5 @@ string makeThreeDigit(int n) {
     n=999-(n<0)*1998;
   sprintf(tmp_str, "%d", n);
   nToText = string(tmp_str);
-  std::cout << nToText;
   return nToText;
 }

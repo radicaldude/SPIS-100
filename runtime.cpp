@@ -5,11 +5,6 @@ std::vector<io> outputs;
 
 void compute_tick(){
   unsigned int i;
-  for(i=0;i<grid.size();i++){
-    for(unsigned int j=0;j<grid[i].inputCode.size();j++){
-      grid[i].code[j]=grid[i].inputCode[j];
-    }
-  }
   for(i=0;i<inputs.size();i++){
     if(inputs[i].arr->status[0]==SET){
       continue;

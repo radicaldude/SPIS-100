@@ -63,7 +63,6 @@ class node{
   int16_t acc;
   int16_t bak;
   int8_t  pc;
-  std::vector<string> code;
   std::vector<string> inputCode;
   bool runline();
   bool runPrepare();
