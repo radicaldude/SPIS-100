@@ -35,8 +35,6 @@ int get_code(ifstream *file, std::vector<node> &grid){
       nID=atoi(nID_buf);
       if(nID>=grid.size())
 	return 2;
-      while(ch!='{'){
-      }
       code="";
       ch=file->get();
       while(ch!='}'){
