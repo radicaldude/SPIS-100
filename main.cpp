@@ -56,37 +56,36 @@ int main(int argc, char *argv[]){
     for(int j=0;j<grid_size[1];j++){
       free(tmp_node);
       tmp_node = new node(nID);
-      tmp_node->w_main=new_bwin(NODE_HEIGHT, NODE_WIDTH, y, x);
-      tmp_node->w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
+      grid.push_back(*tmp_node);
+      grid[nID].w_main=new_bwin(NODE_HEIGHT, NODE_WIDTH, y, x);
+      grid[nID].w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
       new_bwin(NODE_HEIGHT, CODE_WIDTH, y, x);
-      tmp_node->w_reg =newwin(NODE_HEIGHT-2,NODE_WIDTH-CODE_WIDTH-2, y+1, x+CODE_WIDTH+1);
+      grid[nID].w_reg =newwin(NODE_HEIGHT-2,NODE_WIDTH-CODE_WIDTH-2, y+1, x+CODE_WIDTH+1);
       grid.push_back(*tmp_node);
 
-      wprintw(tmp_node->w_reg, "ACC%d\nBAK%d", tmp_node->acc, tmp_node->bak);
-      wrefresh(tmp_node->w_reg);
+      wprintw(grid[nID].w_reg, "ACC%d\nBAK%d", grid[nID].acc, grid[nID].bak);
+      wrefresh(grid[nID].w_reg);
       x = x + NODE_WIDTH + ARROW_H_WIDTH + 2 * GAP_WIDTH_H;
       refresh();
 
       if (i != 0) {
-      	tmp_node->arrows[0] = grid[nID - grid_size[1]].arrows[2];
+      	grid[nID].arrows[0] = grid[nID - grid_size[1]].arrows[2];
       }
 
       if (j != grid_size[1] - 1) {
-      	tmp_node->arrows[1] = new arrow(nID, nID + 1);
-      	tmp_node->arrows[1]->win=newwin(ARROW_H_HEIGHT, ARROW_H_WIDTH, y + floor(NODE_HEIGHT / 2) - floor(ARROW_H_HEIGHT / 2),x + NODE_WIDTH + GAP_WIDTH_H);
-      	wprintw(tmp_node->arrows[1]->win, "kek");
+      	grid[nID].arrows[1] = new arrow(nID, nID + 1);
+      	grid[nID].arrows[1]->win=newwin(ARROW_H_HEIGHT, ARROW_H_WIDTH, y + floor(NODE_HEIGHT / 2) - floor(ARROW_H_HEIGHT / 2),x + NODE_WIDTH + GAP_WIDTH_H);
+      	wprintw(grid[nID].arrows[1]->win, "kek");
       }
 
       if (i != grid_size[0] - 1) {
-      	tmp_node->arrows[2] = new arrow(nID, nID + grid_size[0] - 1);
-				tmp_node->arrows[2]->win=newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, y + NODE_HEIGHT + GAP_WIDTH_V, x + floor(NODE_WIDTH / 2) - floor(ARROW_V_WIDTH / 2));
+      	grid[nID].arrows[2] = new arrow(nID, nID + grid_size[0] - 1);
+				grid[nID].arrows[2]->win=newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, y + NODE_HEIGHT + GAP_WIDTH_V, x + floor(NODE_WIDTH / 2) - floor(ARROW_V_WIDTH / 2));
       }
 
       if (j != 0) {
-      	tmp_node->arrows[3] = grid[nID - 1].arrows[1];
+      	grid[nID].arrows[3] = grid[nID - 1].arrows[1];
       }
-      grid.push_back(*tmp_node);
-
       nID++;
     }
     y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_V_HEIGHT);
