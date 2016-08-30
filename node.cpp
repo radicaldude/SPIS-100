@@ -28,6 +28,7 @@ bool node::runline(){
     std::string src, dst;
     pair<int8_t, uint16_t> p;
     int16_t input;
+    arrow *a;
 
     string operands = line.substr(4);
     c = operands.find_first_of(' ');
@@ -40,18 +41,16 @@ bool node::runline(){
     if(dst == "ACC") {
       acc = input;
     } else if(dst== "NIL") {
-      pc++;
-      return true;
-      // T:I guess do nothing??? J: nope
+      
     } else if(dst== "LEFT"){
-      arrow *a = arrows[3];
+      a = arrows[3];
       if (!a->nodeRequest(nodeId)) {
 	a->nodeSet(nodeId, input);
       } else {
         pc--;
       }
     } else if(dst== "RIGHT") {
-      arrow *a = arrows[1];
+      a = arrows[1];
 
       if (!a->nodeRequest(nodeId)) {
         a->nodeSet(nodeId, input);
@@ -59,7 +58,7 @@ bool node::runline(){
         pc--;
       }
     } else if(dst== "UP") {
-      arrow *a = arrows[0];
+      a = arrows[0];
 
       if (!a->nodeRequest(nodeId)) {
         a->nodeSet(nodeId, input);
@@ -67,18 +66,14 @@ bool node::runline(){
         pc--;
       }
     } else if(dst== "DOWN") {
-      arrow *a = arrows[2];
-
-      if (!a->nodeRequest(nodeId))
-        a->nodeSet(nodeId, input);
-      else
-	pc--;
-      }
-      // TODO – Handle error
-      else
-	return false;
-      pc++;
-      return true;
+      a = arrows[2];
+    }
+    if (!a->nodeRequest(nodeId))
+      a->nodeSet(nodeId, input);
+    else
+      pc--;
+    pc++;
+    return true;
     }
     else if(!strncmp("SWP", line.c_str(), 3)){
     int16_t tmpAcc = acc;

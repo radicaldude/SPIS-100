@@ -1,4 +1,5 @@
 0{MOV UP ACC
+ADD 1
 }
 2{
 }

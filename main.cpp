@@ -161,7 +161,7 @@ void drawNode(int nodeIndex) {
   for(int y = 0; y < tmp_node->inputCode.size(); y++) {
     if(y==grid[nodeIndex].pc&&state==2)
       continue;
-      else
+    else
       mvwprintw(tmp_node->w_code, y, 0, tmp_node->inputCode[y].c_str());
   }
   wrefresh(tmp_node->w_code);
