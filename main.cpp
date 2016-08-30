@@ -5,8 +5,10 @@
 #include <stdio.h>
 
 #define NODE_HEIGHT 11
-#define ARROW_WIDTH 1
-#define ARROW_HEIGHT 1
+#define ARROW_H_WIDTH 3
+#define ARROW_H_HEIGHT 4
+#define ARROW_V_WIDTH 8
+#define ARROW_V_HEIGHT 1
 #define GAP_WIDTH_H 1
 #define GAP_WIDTH_V 0
 #define NODE_WIDTH 25
@@ -22,6 +24,7 @@ void inputLoop();
 void runtimeLoop();
 bool pointInWindow(WINDOW *win, int x, int y);
 WINDOW *new_bwin(int height, int width, int starty, int startx);
+string makeThreeDigit(int n);
 
 WINDOW *playButton;
 WINDOW *stopButton;
@@ -70,10 +73,10 @@ int main(int argc, char *argv[]){
 
       wprintw(tmp_node->w_reg, "ACC%d\nBAK%d", tmp_node->acc, tmp_node->bak);
       wrefresh(tmp_node->w_reg);
-      x=x+NODE_WIDTH+ARROW_WIDTH+2*GAP_WIDTH_H;
+      x = x + NODE_WIDTH + ARROW_H_WIDTH + 2 * GAP_WIDTH_H;
       refresh();
             
-      if((int) i<grid_size[0]){
+      /*if((int) i<grid_size[0]){
 	tmp_node->arrows[0]=new arrow(nID, nID-grid_size[0]);
 	tmp_node->arrows[0]->win=newwin(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT+GAP_WIDTH_V,x+NODE_WIDTH/2);
       }
@@ -88,9 +91,27 @@ int main(int argc, char *argv[]){
       if(((i+1)%grid_size[0])!=0){
 	tmp_node->arrows[1]=new arrow(nID, nID+1);
                 tmp_node->arrows[1]->win=newwin(ARROW_HEIGHT,ARROW_WIDTH,y+NODE_HEIGHT/2,x-GAP_WIDTH_H-NODE_WIDTH);
+      }*/
+
+      if (i != 0) {
+      	tmp_node->arrows[0] = grid[nID + grid_size[1]].arrows[2];
+      }
+
+      if (j != grid_size[1]) {
+      	tmp_node->arrows[1] = new arrow(nID, nID + 1);
+      	tmp_node->arrows[1]->win=newwin(ARROW_H_HEIGHT, ARROW_H_WIDTH, y + floor(NODE_HEIGHT / 2) - floor(ARROW_H_HEIGHT / 2),x + NODE_WIDTH + GAP_WIDTH_H);
+      }
+
+      if (i != grid_size[0] - 1) {
+      	tmp_node->arrows[2] = new arrow(nID, nID + grid_size[0] - 1);
+				tmp_node->arrows[2]->win=newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, y + NODE_HEIGHT + GAP_WIDTH_V, x + floor(NODE_WIDTH / 2) - floor(ARROW_V_WIDTH / 2));
+      }
+
+      if (j != 0) {
+      	tmp_node->arrows[3] = grid[nID - 1].arrows[1];
       }
     }
-    y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_WIDTH);
+    y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_V_HEIGHT);
   }
 
   x=GAP_WIDTH_H;
@@ -413,4 +434,8 @@ bool pointInWindow(WINDOW *win, int x, int y) {
 	}
 
 	return true;
+}
+
+string makeThreeDigit(int n) {
+
 }

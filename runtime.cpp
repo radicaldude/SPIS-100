@@ -9,7 +9,7 @@ void compute_tick(){
     for(unsigned int j=0;j<grid[i].inputCode.size();j++){
       grid[i].code[j]=grid[i].inputCode[j];
     }
-  }
+  }/*
   for(i=0;i<inputs.size();i++){
     if(inputs[i].arr->status[0]==SET){
       continue;
@@ -19,7 +19,7 @@ void compute_tick(){
       inputs[i].values.pop_back();
       inputs[i].arr->status[0]=SET;
     }
-  }
+  }*/
   for(i=0;i<grid.size();i++){
     if(stop==TRUE)
       return;
@@ -30,13 +30,13 @@ void compute_tick(){
       return;
     }
   }
-  
+  /*
   for(i=0;i<outputs.size();i++){
     if(outputs[i].arr->status[0]==SET){
       outputs[i].values.push_back(outputs[i].arr->value[0]);
       outputs[i].arr->status[0]=WAIT;
       }
-  }
+  }*/
   return;
 }
 
