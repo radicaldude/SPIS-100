@@ -43,16 +43,8 @@ int main(int argc, char *argv[]){
   int nID=0;
   WINDOW *menu;
   std::ifstream file;
-  /*    if(argc!=2){
-	printf("No file specified! Exiting.\n");
-	return 1;
-	}*/
+
   file.open(argv[1]);
-  
-  /*if(!file.is_open()){
-    printf("Couldn't open file! Exiting.\n");
-    return 1;
-    }*/
   initscr();
   start_color();
   signal(SIGWINCH, NULL);
@@ -76,7 +68,7 @@ int main(int argc, char *argv[]){
       refresh();
 
       if (i != 0) {
-      	tmp_node->arrows[0] = grid[nID + grid_size[1]].arrows[2];
+      	tmp_node->arrows[0] = grid[nID - grid_size[1]].arrows[2];
       }
 
       if (j != grid_size[1] - 1) {
@@ -93,7 +85,6 @@ int main(int argc, char *argv[]){
       if (j != 0) {
       	tmp_node->arrows[3] = grid[nID - 1].arrows[1];
       }
-
       grid.push_back(*tmp_node);
 
       nID++;
@@ -129,7 +120,7 @@ int main(int argc, char *argv[]){
   drawContent();
   state = 1;
 
-  noecho();    //no russian
+  noecho();    
   cbreak();
   mousemask(ALL_MOUSE_EVENTS, NULL);
   keypad(stdscr, TRUE);
@@ -194,17 +185,21 @@ void updateReg(int nodeIndex) {
 }
 
 void updateArrow(int nodeIndex, int arrowIndex) {
-	node tmp_node = grid[nodeIndex];
-	arrow tmp_arrow = *tmp_node.arrows[arrowIndex];
-
-	if (arrowIndex % 2 == 0) {
-		mvwprintw(tmp_arrow.win, 0, 0, makeThreeDigit(tmp_arrow.value[0]).c_str());
-		mvwprintw(tmp_arrow.win, 0, 5, makeThreeDigit(tmp_arrow.value[1]).c_str());
-	} else {
-		mvwprintw(tmp_arrow.win, 0, 0, makeThreeDigit(tmp_arrow.value[0]).c_str());
-		mvwprintw(tmp_arrow.win, 3, 0, makeThreeDigit(tmp_arrow.value[1]).c_str());
+	node  *tmp_node  = &grid[nodeIndex];
+	arrow *tmp_arrow = grid[nodeIndex].arrows[arrowIndex];
+	if(!tmp_arrow){
+	  endwin();
+	  printf("ERROR . ::: tmp_arrow was NULL!!\n");
+	  return;
 	}
-	wrefresh(tmp_node.w_reg);
+	if (arrowIndex % 2 == 0) {
+		mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(tmp_arrow->value[0]).c_str());		mvwprintw(tmp_arrow->win, 0, 5, makeThreeDigit(tmp_arrow->value[1]).c_str());
+	} else {
+		mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(tmp_arrow->value[0]).c_str());
+		mvwprintw(tmp_arrow->win, 3, 0, makeThreeDigit(tmp_arrow->value[1]).c_str());
+	}
+	wrefresh(tmp_node->w_reg);
+	return;
 }
 
 void updateArrowsForNode(int nodeIndex) {
@@ -464,11 +459,12 @@ bool pointInWindow(WINDOW *win, int x, int y) {
 }
 
 string makeThreeDigit(int n) {
-	string nToText = to_string(n);
-
-	while (nToText.length() < 3) {
-		nToText = "0" + nToText;
-	}
-
-	return nToText;
+  std::string nToText = "";
+  char tmp_str[4];
+  if(n>999||n<-999)
+    n=999-(n<0)*1998;
+  sprintf(tmp_str, "%d", n);
+  nToText = string(tmp_str);
+  std::cout << nToText;
+  return nToText;
 }
