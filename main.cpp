@@ -447,7 +447,7 @@ string makeThreeDigit(int n) {
   char tmp_str[4];
   if(n>999||n<-999)
     n=999-(n<0)*1998;
-  sprintf(tmp_str, "%d", n);
+  sprintf(tmp_str, "%03d", n);
   nToText = string(tmp_str);
   return nToText;
 }
