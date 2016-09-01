@@ -11,11 +11,12 @@ bool node::runline(){
 
   if(pc>=inputCode.size())
     pc=0;
-  if(inputCode.size()==0){
+  if(inputCode.size()==0)
     return true;
-  }
-  if(is_whitespace(inputCode[pc])){
-    pc++;
+  if(is_whitespace(inputCode[pc]) || inputCode[pc].length() == 0){
+  	pc++;
+  	if(pc>=inputCode.size())
+  	    pc=0;
     return true;
   }
   string line = inputCode[pc];
@@ -33,14 +34,15 @@ bool node::runline(){
     string operands = line.substr(4);
     c = operands.find_first_of(' ');
     src = operands.substr(0,c);
-    dst = operands.substr(c);
+    dst = operands.substr(c + 1);
     p = getFromSrc(src);
+
     if(p.first==INVALID)
       return false;
     else if(p.first==WAIT)
       return true;
     input = p.second;
-    if(!strncmp(dst.c_str(), "ACC", 3)) {  
+    if(!strncmp(dst.c_str(), "ACC", 3)) {
       acc = input;
     } else if(!strncmp(dst.c_str(), "NIL",3)) {
 	

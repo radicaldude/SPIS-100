@@ -10,6 +10,9 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include <stdio.h>
+#include <signal.h>
+#include <unistd.h>
 
 #define MAX_LINE_LENGTH 17
 

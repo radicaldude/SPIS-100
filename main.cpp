@@ -1,13 +1,10 @@
 #include "spis.h"
-#include <signal.h>
-#include <unistd.h>
 #include <pthread.h>
-#include <stdio.h>
 
 #define NODE_HEIGHT 11
 #define ARROW_H_WIDTH 3
 #define ARROW_H_HEIGHT 4
-#define ARROW_V_WIDTH 8
+#define ARROW_V_WIDTH 9
 #define ARROW_V_HEIGHT 1
 #define GAP_WIDTH_H 1
 #define GAP_WIDTH_V 0
@@ -44,6 +41,7 @@ int main(int argc, char *argv[]){
   WINDOW *menu;
   std::ifstream file;
 
+	setlocale(LC_ALL, "");
   file.open(argv[1]);
   initscr();
   start_color();
@@ -61,11 +59,9 @@ int main(int argc, char *argv[]){
       grid[nID].w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
       new_bwin(NODE_HEIGHT, CODE_WIDTH, y, x);
       grid[nID].w_reg =newwin(NODE_HEIGHT-2,NODE_WIDTH-CODE_WIDTH-2, y+1, x+CODE_WIDTH+1);
-      grid.push_back(*tmp_node);
 
       wprintw(grid[nID].w_reg, "ACC%d\nBAK%d", grid[nID].acc, grid[nID].bak);
       wrefresh(grid[nID].w_reg);
-      x = x + NODE_WIDTH + ARROW_H_WIDTH + 2 * GAP_WIDTH_H;
       refresh();
 
       if (i != 0) {
@@ -75,18 +71,22 @@ int main(int argc, char *argv[]){
       if (j != grid_size[1] - 1) {
       	grid[nID].arrows[1] = new arrow(nID, nID + 1);
       	grid[nID].arrows[1]->win=newwin(ARROW_H_HEIGHT, ARROW_H_WIDTH, y + floor(NODE_HEIGHT / 2) - floor(ARROW_H_HEIGHT / 2),x + NODE_WIDTH + GAP_WIDTH_H);
-      	wprintw(grid[nID].arrows[1]->win, "kek");
+      	wprintw(grid[nID].arrows[1]->win, "\n ⇨\n ⇦");
+				wrefresh(grid[nID].arrows[1]->win);
       }
 
       if (i != grid_size[0] - 1) {
       	grid[nID].arrows[2] = new arrow(nID, nID + grid_size[0] - 1);
 				grid[nID].arrows[2]->win=newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, y + NODE_HEIGHT + GAP_WIDTH_V, x + floor(NODE_WIDTH / 2) - floor(ARROW_V_WIDTH / 2));
+				wprintw(grid[nID].arrows[2]->win, "   ⇧⇩");
+				wrefresh(grid[nID].arrows[2]->win);
       }
 
       if (j != 0) {
       	grid[nID].arrows[3] = grid[nID - 1].arrows[1];
       }
       nID++;
+      x = x + NODE_WIDTH + ARROW_H_WIDTH + 2 * GAP_WIDTH_H;
     }
     y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_V_HEIGHT);
   }
@@ -109,14 +109,14 @@ int main(int argc, char *argv[]){
   wbkgd(pauseButton, COLOR_PAIR(4));
   wrefresh(pauseButton);
  
-  get_code(&file, grid);
+  //get_code(&file, grid);
+  grid[0].inputCode.push_back("MOV RIGHT ACC");
     
     for(int i=0; i < grid.size(); i++){
       if(grid[i].inputCode.size() == 0)
 	grid[i].inputCode.push_back("");
     }
 
-  drawContent();
   state = 1;
 
   noecho();    
@@ -134,6 +134,7 @@ int main(int argc, char *argv[]){
   while (state != 0) {
   	switch(state) {
   		case 1:
+  			drawContent();
   			inputLoop();
   			break;
   		case 2:
@@ -166,7 +167,7 @@ void drawNode(int nodeIndex) {
     if(state==2){
     tmp_node=&grid[nodeIndex];
     start_color();
-    tmp_node->w_highlight = newwin(1, CODE_WIDTH, beg_y+tmp_node->pc, beg_x-1);
+    tmp_node->w_highlight = newwin(1, CODE_WIDTH - 2, beg_y+tmp_node->pc, beg_x);
     init_pair(1, COLOR_BLACK, COLOR_WHITE);
     wattron(tmp_node->w_highlight,COLOR_PAIR(1));
     wbkgd(tmp_node->w_highlight, COLOR_PAIR(1));
@@ -192,12 +193,13 @@ void updateArrow(int nodeIndex, int arrowIndex) {
 	  return;
 	}
 	if (arrowIndex % 2 == 0) {
-		mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(tmp_arrow->value[0]).c_str());		mvwprintw(tmp_arrow->win, 0, 5, makeThreeDigit(tmp_arrow->value[1]).c_str());
+		mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(tmp_arrow->value[0]).c_str());
+		mvwprintw(tmp_arrow->win, 0, 6, makeThreeDigit(tmp_arrow->value[1]).c_str());
 	} else {
 		mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(tmp_arrow->value[0]).c_str());
 		mvwprintw(tmp_arrow->win, 3, 0, makeThreeDigit(tmp_arrow->value[1]).c_str());
 	}
-	wrefresh(tmp_node->w_reg);
+	wrefresh(tmp_arrow->win);
 	return;
 }
 
@@ -219,10 +221,8 @@ void drawContent() {
   for(int i = 0; i < grid.size(); i++) {
     drawNode(i);
     updateReg(i);
-    //updateArrowsForNode(i);
+    updateArrowsForNode(i);
   }
-
-  updateArrow(0, 1);
 }
 
 // INPUT AND RUNTIME
