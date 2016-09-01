@@ -267,12 +267,12 @@ void inputLoop() {
 	  int input = getch();
 		if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122)
 				|| (input >= 48 && input <= 57) || input == 44
-				|| input == 32) {
+				|| input == 32 || input == 58) {
 			if (input >= 97) {
 				input -= 32;
 			}
 
-			if (grid[selectedNode].inputCode[selectedLine].length() < 17) {
+			if (grid[selectedNode].inputCode[selectedLine].length() < CODE_WIDTH - 3) {
 				grid[selectedNode].inputChar(selectedLine, selectedIndex, static_cast<char>(input));
 				selectedIndex++;
 				x++;
