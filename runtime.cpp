@@ -19,7 +19,7 @@ void compute_tick(){
     if(stop==TRUE)
       return;
     if(!grid[i].runline()){
-      printf(("X" + grid[i].inputCode[grid[i].pc]).c_str());
+      printf("X %s", grid[i].inputCode[grid[i].pc].c_str());
       state=1;
       flash();
       return;

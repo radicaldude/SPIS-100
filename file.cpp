@@ -18,8 +18,10 @@ int get_code(ifstream *file, std::vector<node> &grid){
   string line;
 
   nID_buf[4]='\0';
-  if(!file->is_open())
+  if(!file->is_open()){
+    printf("Warning couldn't open file!\n");
     return 1;
+  }
   file->get(ch);
   while(ch!=EOF){
     if(ch>='0'&&ch<='9'){
