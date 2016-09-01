@@ -56,7 +56,7 @@ bool node::runline(){
       }
       else
 	return false;
-      if (!a->nodeRequest(nodeId))
+      if (!a->setRequest(nodeId))
 	a->nodeSet(nodeId, input);
       else
 	pc--;
@@ -297,7 +297,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       arrow *a = arrows[3];
       pair<bool, int16_t> p;
 
-      if (a->nodeRequest(nodeId)) {
+      if (a->getRequest(nodeId)) {
         p.first = SET;
         p.second = a->nodeGet(nodeId);
       } else {
@@ -308,7 +308,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       arrow *a = arrows[1];
       pair<bool, int16_t> p;
 
-      if (a->nodeRequest(nodeId)) {
+      if (a->getRequest(nodeId)) {
         p.first = SET;
         p.second = a->nodeGet(nodeId);
       } else {
@@ -319,7 +319,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       arrow *a = arrows[0];
       pair<bool, int16_t> p;
 
-      if (a->nodeRequest(nodeId)){
+      if (a->getRequest(nodeId)){
         p.first = SET;
         p.second = a->nodeGet(nodeId);
       } else {
@@ -330,7 +330,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       arrow *a = arrows[2];
       pair<bool, int16_t> p;
 
-      if (a->nodeRequest(nodeId)) {
+      if (a->getRequest(nodeId)) {
         p.first = SET;
         p.second = a->nodeGet(nodeId);
       } else {

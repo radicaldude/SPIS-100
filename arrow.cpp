@@ -20,7 +20,7 @@ uint8_t arrow::getNodeIndex(int8_t nId) {
   return nodeIndex;
 }
 
-bool arrow::nodeRequest(int8_t nodeId) {
+bool arrow::setRequest(int8_t nodeId) {
   uint8_t nodeIndex = getNodeIndex(nodeId);
   // TODO – Define status values
   if (status[nodeIndex] == 1) {
@@ -29,8 +29,17 @@ bool arrow::nodeRequest(int8_t nodeId) {
   return false;
 }
 
-int16_t arrow::nodeGet(int8_t nodeId) {
+bool arrow::getRequest(int8_t nodeId) {
   uint8_t nodeIndex = getNodeIndex(nodeId);
+  // TODO – Define status values
+  if (status[(nodeIndex + 1) % 2] == 1) {
+    return true;
+  }
+  return false;
+}
+
+int16_t arrow::nodeGet(int8_t nodeId) {
+  uint8_t nodeIndex = (getNodeIndex(nodeId) + 1) % 2;
   int16_t tmpValue = value[nodeIndex];
 
   // TODO – Define status values

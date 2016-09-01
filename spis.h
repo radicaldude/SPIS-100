@@ -41,7 +41,8 @@ public:
 
   WINDOW *win;
   arrow(int8_t nodeId1, int8_t nodeId2);
-  bool nodeRequest(int8_t nodeId);
+  bool setRequest(int8_t nodeId);
+  bool getRequest(int8_t nodeId);
   int16_t nodeGet(int8_t nodeId);
   void nodeSet(int8_t nodeId, int16_t number);
 };
