@@ -4,18 +4,16 @@ node::node(uint8_t nId){
   this->nodeId = nId;
   this->acc = 0;
   this->bak = 0;
+  this->pc=0;
 }
 
 bool node::runline(){
   //string line = sanitize(code[this.pc]);
-
-  if(pc>=inputCode.size())
-    pc=0;
   if(inputCode.size()==0)
     return true;
   if(is_whitespace(inputCode[pc]) || inputCode[pc].length() == 0){
   	pc++;
-  	if(pc>=inputCode.size())
+  	if(pc>=inputCode.size()-1)
   	    pc=0;
     return true;
   }

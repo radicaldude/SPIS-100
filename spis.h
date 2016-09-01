@@ -83,3 +83,4 @@ extern bool stop;
 extern int state;
 extern std::vector<io> inputs, outputs;
 extern std::vector<node> grid;
+extern void drawHighlight(int i);

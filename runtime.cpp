@@ -24,13 +24,14 @@ void compute_tick(){
       flash();
       return;
     }
+    if(grid[i].pc>=grid[i].inputCode.size())
+      grid[i].pc=0;
   }
-  
   for(i=0;i<outputs.size();i++){
     if(outputs[i].arr->status[0]==SET){
       outputs[i].values.push_back(outputs[i].arr->value[0]);
       outputs[i].arr->status[0]=WAIT;
-      }
+    }
   }
   return;
 }

@@ -54,6 +54,7 @@ int main(int argc, char *argv[]){
   file.open(argv[1]);
   initscr();
   start_color();
+  init_pair(5, COLOR_WHITE, COLOR_BLACK);
   signal(SIGWINCH, NULL);
   getmaxyx(stdscr, max_y, max_x);
   y=0;
@@ -163,25 +164,39 @@ void drawNode(int nodeIndex) {
   node *tmp_node =&grid[nodeIndex];
   int beg_x, beg_y;
   getbegyx(tmp_node->w_code, beg_y, beg_x);
-  
-  werase(tmp_node->w_code);
-  for(int y = 0; y < tmp_node->inputCode.size(); y++) {
-    if(y==grid[nodeIndex].pc&&state==2)
-      continue;
-    else
-      mvwprintw(tmp_node->w_code, y, 0, tmp_node->inputCode[y].c_str());
+  if(state==2){
+      drawHighlight(nodeIndex);
   }
+  else{
+    werase(tmp_node->w_code);
+    for(int y = 0; y < tmp_node->inputCode.size(); y++)
+      mvwprintw(tmp_node->w_code, y, 0, tmp_node->inputCode[y].c_str());
+    wrefresh(tmp_node->w_code);
+  }
+    return;
+}
+void drawHighlight(int nodeIndex){
+  node *tmp_node =&grid[nodeIndex];
+  int beg_x, beg_y;
+  if(tmp_node->pc==0){
+    mvwprintw(tmp_node->w_code, tmp_node->inputCode.size()-1, 0, tmp_node->inputCode[tmp_node->inputCode.size()-1].c_str());
+  }
+  else{
+    mvwprintw(tmp_node->w_code, tmp_node->pc-1, 0, tmp_node->inputCode[tmp_node->pc-1].c_str());
+  }
+  getbegyx(tmp_node->w_code, beg_y, beg_x);
+  werase(tmp_node->w_highlight);
+  delwin(tmp_node->w_highlight);
+  tmp_node=&grid[nodeIndex];
+  start_color();
+  tmp_node->w_highlight = newwin(1, CODE_WIDTH - 2, beg_y+tmp_node->pc, beg_x);
+  init_pair(1, COLOR_BLACK, COLOR_WHITE);
+  wattron(tmp_node->w_highlight,COLOR_PAIR(1));
+  wbkgd(tmp_node->w_highlight, COLOR_PAIR(1));
+  wbkgd(tmp_node->w_code, COLOR_PAIR(5));
+  mvwprintw(tmp_node->w_highlight, 0, 0, tmp_node->inputCode[tmp_node->pc].c_str());
   wrefresh(tmp_node->w_code);
-    if(state==2){
-    tmp_node=&grid[nodeIndex];
-    start_color();
-    tmp_node->w_highlight = newwin(1, CODE_WIDTH - 2, beg_y+tmp_node->pc, beg_x);
-    init_pair(1, COLOR_BLACK, COLOR_WHITE);
-    wattron(tmp_node->w_highlight,COLOR_PAIR(1));
-    wbkgd(tmp_node->w_highlight, COLOR_PAIR(1));
-    mvwprintw(tmp_node->w_highlight, 0, 0, tmp_node->inputCode[tmp_node->pc].c_str());
-    wrefresh(tmp_node->w_highlight);
-    }
+  wrefresh(tmp_node->w_highlight);
 }
 
 void updateReg(int nodeIndex) {
@@ -414,11 +429,11 @@ void runtimeLoop() {
     return;
   }
   while (state == 2) {
+    drawContent();
     sleep(1);
     compute_tick();
-    drawContent();
   }
-  
+  drawContent();
   pthread_cancel(*thread);
   printf("Done");
   return;
@@ -458,7 +473,7 @@ string makeThreeDigit(int n) {
   if(n>=0)
     sprintf(tmp_str, " %03d", n);
   else
-    sprintf(tmp_str, "%03d", n);
+    sprintf(tmp_str, "%04d", n);
   nToText = string(tmp_str);
   return nToText;
 }
