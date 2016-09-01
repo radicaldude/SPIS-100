@@ -406,7 +406,7 @@ void runtimeLoop() {
     return;
   }
   while (state == 2) {
-    sleep(0.5);
+    sleep(1);
     compute_tick();
     drawContent();
   }
