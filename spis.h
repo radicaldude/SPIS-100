@@ -67,9 +67,12 @@ class node{
   int16_t acc;
   int16_t bak;
   int8_t  pc;
+  bool no_code;
   std::vector<string> inputCode;
   bool runline();
   bool runPrepare();
+  void reset();
+  void first_instruction();
   void inputChar(int line, int index, char ch);
   void newLine(int line, int index);
   int backspace(int line, int index);

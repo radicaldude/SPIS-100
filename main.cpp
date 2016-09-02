@@ -411,7 +411,6 @@ void *runtimeInputLoop(void *ptr) {
 	MEVENT event;
 
 	curs_set(0);
-
 	while (true) {
 	  int input = getch();
 	  if (getmouse(&event) == OK && pointInWindow(stopButton, event.x, event.y)) {
@@ -427,6 +426,9 @@ void runtimeLoop() {
   
   if(err!=0){
     return;
+  }
+  for(int i;i<grid.size();i++){
+    grid[i].reset();
   }
   while (state == 2) {
     drawContent();
