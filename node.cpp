@@ -1,10 +1,11 @@
 #include "spis.h"
 
 node::node(uint8_t nId){
-  this->nodeId = nId;
-  this->acc = 0;
-  this->bak = 0;
-  this->pc=0;
+  nodeId = nId;
+  acc = 0;
+  bak = 0;
+  pc=0;
+  no_code=FALSE;
 }
 
 bool node::runline(){
@@ -340,4 +341,23 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
     }
   }
   // ANY and LAST are for the future (hopefully not)
+}
+
+void node::first_instruction(){
+  no_code=false;
+  for(int i=0;i<inputCode.size();i++){
+    if(!is_whitespace(inputCode[i])){
+      pc=i;
+      return;
+    }
+  }
+  pc=0;
+  no_code=true;
+  return;
+}
+
+void node::reset(){
+  acc=0;
+  bak=0;
+  first_instruction();
 }

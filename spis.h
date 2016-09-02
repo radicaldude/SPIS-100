@@ -64,12 +64,15 @@ class node{
   WINDOW *w_reg;
   WINDOW *w_highlight;
   node(uint8_t nId);
+  bool no_code;
   int16_t acc;
   int16_t bak;
   int8_t  pc;
   std::vector<string> inputCode;
   bool runline();
   bool runPrepare();
+  void first_instruction();
+  void reset();
   void inputChar(int line, int index, char ch);
   void newLine(int line, int index);
   int backspace(int line, int index);

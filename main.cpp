@@ -45,13 +45,13 @@ int main(int argc, char *argv[]){
   io tmp_io;
   int c,x=GAP_WIDTH_H, y=0, id;
   int max_x, max_y;
-  node *tmp_node;
   int nID=0;
   WINDOW *menu;
   std::ifstream file;
 
   setlocale(LC_ALL, "");
-  file.open(argv[1]);
+  if(argc>=2)
+    file.open(argv[1]);
   initscr();
   start_color();
   init_pair(5, COLOR_WHITE, COLOR_BLACK);
@@ -62,9 +62,7 @@ int main(int argc, char *argv[]){
   for(int i=0;i<grid_size[0]; i++){
     x=GAP_WIDTH_H;
     for(int j=0;j<grid_size[1];j++){
-      free(tmp_node);
-      tmp_node = new node(nID);
-      grid.push_back(*tmp_node);
+      grid.push_back(node(nID));
       grid[nID].w_main=new_bwin(NODE_HEIGHT, NODE_WIDTH, y, x);
       grid[nID].w_code=newwin(NODE_HEIGHT - 2, CODE_WIDTH - 2, y + 1 , x + 1);
       new_bwin(NODE_HEIGHT, CODE_WIDTH, y, x);
@@ -173,7 +171,7 @@ void drawNode(int nodeIndex) {
       mvwprintw(tmp_node->w_code, y, 0, tmp_node->inputCode[y].c_str());
     wrefresh(tmp_node->w_code);
   }
-    return;
+  return;
 }
 void drawHighlight(int nodeIndex){
   node *tmp_node =&grid[nodeIndex];
@@ -185,8 +183,10 @@ void drawHighlight(int nodeIndex){
     mvwprintw(tmp_node->w_code, tmp_node->pc-1, 0, tmp_node->inputCode[tmp_node->pc-1].c_str());
   }
   getbegyx(tmp_node->w_code, beg_y, beg_x);
-  werase(tmp_node->w_highlight);
-  delwin(tmp_node->w_highlight);
+  if(tmp_node->w_highlight){
+    //werase(tmp_node->w_highlight);
+    delwin(tmp_node->w_highlight);
+  }
   tmp_node=&grid[nodeIndex];
   start_color();
   tmp_node->w_highlight = newwin(1, CODE_WIDTH - 2, beg_y+tmp_node->pc, beg_x);
@@ -424,15 +424,21 @@ void *runtimeInputLoop(void *ptr) {
 void runtimeLoop() {
   pthread_t *thread = new pthread_t;
   int err = pthread_create(thread, NULL, &runtimeInputLoop, NULL);
-  
+
+  for(unsigned int i=0;i<grid.size();i++){
+    grid[i].reset();
+  }
+  //reset arrows, input and output
   if(err!=0){
     return;
   }
+  
   while (state == 2) {
     drawContent();
     sleep(1);
     compute_tick();
   }
+  
   drawContent();
   pthread_cancel(*thread);
   printf("Done");
