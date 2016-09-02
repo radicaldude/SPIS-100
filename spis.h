@@ -64,7 +64,6 @@ class node{
   WINDOW *w_reg;
   WINDOW *w_highlight;
   node(uint8_t nId);
-  bool no_code;
   int16_t acc;
   int16_t bak;
   int8_t  pc;
