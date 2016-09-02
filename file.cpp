@@ -3,6 +3,8 @@
 #define CODE_BUF 512
 
 bool is_whitespace(string string){
+  if(string.size()==0)
+    return true;
   for(unsigned int i=0;i>string.size();i++){
     if(string[i]!=' '&& string[i]!= '\n' && string[i]!='\r' && string[i]!='\t')
       return true;
