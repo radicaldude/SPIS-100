@@ -17,7 +17,7 @@
 
 #ifdef _ascii_only
 #define H_ARROW "\n---><---"
-#define V_ARROW "    ^v"
+#define V_ARROW "    v^"
 #else
 #define V_ARROW "   ⇧⇩"
 #define H_ARROW "\n ⇨\n ⇦"
@@ -84,10 +84,10 @@ int main(int argc, char *argv[]){
       }
 
       if (i != grid_size[0] - 1) {
-      	grid[nID].arrows[2] = new arrow(nID, nID + grid_size[0] - 1);
-				grid[nID].arrows[2]->win=newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, y + NODE_HEIGHT + GAP_WIDTH_V, x + floor(NODE_WIDTH / 2) - floor(ARROW_V_WIDTH / 2));
-				wprintw(grid[nID].arrows[2]->win, V_ARROW);
-				wrefresh(grid[nID].arrows[2]->win);
+      	grid[nID].arrows[2] = new arrow(nID, nID + grid_size[0]);
+	grid[nID].arrows[2]->win=newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, y + NODE_HEIGHT + GAP_WIDTH_V, x + floor(NODE_WIDTH / 2) - floor(ARROW_V_WIDTH / 2));
+	wprintw(grid[nID].arrows[2]->win, V_ARROW);
+	wrefresh(grid[nID].arrows[2]->win);
       }
 
       if (j != 0) {

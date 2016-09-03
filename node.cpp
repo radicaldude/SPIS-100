@@ -35,7 +35,7 @@ bool node::runline(){
     src = operands.substr(0,c);
     dst = operands.substr(c + 1);
     p = getFromSrc(src);
-
+    
     if(p.first==INVALID)
       return false;
     else if(p.first==WAIT)
@@ -47,19 +47,21 @@ bool node::runline(){
 	
     }else{
       unsigned int a_num;
-      if(!strncmp("LEFT", dst.c_str(), 3)){
+      if(!strncmp("LEF", dst.c_str(), 3)){
 	a_num=3;
       } else if(!strncmp(dst.c_str(), "RIG", 3)) {
 	a_num=1;;
-      } else if(strncmp(dst.c_str(), "UP",2)) {
+      } else if(!strncmp(dst.c_str(), "UP",2)) {
 	a_num=0;
-      } else if(strncmp(dst.c_str(),"DOW", 3)) {
+      } else if(!strncmp(dst.c_str(),"DOW", 3)) {
     	a_num=2;
       }
       else
 	return false;
-      if (!a->setRequest(nodeId)){
-	a=arrows[a_num];
+      a=arrows[a_num];
+      if(!a)
+	return false;
+      if (a->setRequest(nodeId)){
 	a->nodeSet(nodeId, input);
 	arrowUpdate(a_num);
       }
@@ -382,7 +384,7 @@ void node::arrowUpdate(unsigned int arrowID){
 	  if(arrows[arrowID]->status[i]==SET)
 	    vals[i] = makeThreeDigit(tmp_arrow->value[0]);
 	  else
-	    vals[i] = " ? ";
+	    vals[i] = " ?  ";
 	}
 	
 	if (arrowID % 2==0) {

@@ -54,6 +54,7 @@ typedef struct{
 } io;
 
 class node{
+ private:
   uint8_t nodeId;
   pair<int8_t, int16_t> getFromSrc(string src);
  public:
