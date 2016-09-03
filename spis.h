@@ -48,11 +48,8 @@ public:
 };
 
 typedef struct{
- public:
   arrow *arr; 
   std::vector<int> values;
-  void get();
-  void put();
 } io;
 
 class node{

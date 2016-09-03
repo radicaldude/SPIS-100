@@ -57,8 +57,10 @@ bool node::runline(){
       }
       else
 	return false;
-      if (!a->setRequest(nodeId))
+      if (!a->setRequest(nodeId)){
 	a->nodeSet(nodeId, input);
+	updateArrow((a-arrows)/sizeof(arrow));
+      }
       else
 	pc--;
     }
@@ -304,6 +306,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       } else {
         p.first = WAIT;
       }
+      arrowUpdate(3);
       return p;
     } else if (src ==  "RIGHT") {
       arrow *a = arrows[1];
@@ -315,6 +318,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       } else {
         p.first = WAIT;
       }
+      arrowUpdate[1];
       return p;
     } else if (src ==  "UP") {
       arrow *a = arrows[0];
@@ -326,6 +330,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       } else {
         p.first = WAIT;
       }
+      arrowUpdate(0);
       return p;
     } else if (src ==  "DOWN") {
       arrow *a = arrows[2];
@@ -337,6 +342,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       } else {
         p.first = WAIT;
       }
+      arrowUpdate(2);
       return p;
     }
   }
@@ -360,4 +366,29 @@ void node::reset(){
   acc=0;
   bak=0;
   first_instruction();
+}
+
+void node::updateArrow(int arrowID){
+	string vals[2];
+	if(arrows[arrowID]){
+	  endwin();
+	  printf("ERROR: arrow was NULL!\n");
+	  return;
+	}
+	for(int i=0;i<2;i++){
+	  if(arrows[arrowID].status[i]=SET)
+	    vals[i] = tmp_arrow->value[0].c_str();
+	  else
+	    vals[i] = " ? ";
+	}
+	
+	if (arrowIndex & 2) {
+	  mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(vals[0]).c_str());
+	  mvwprintw(tmp_arrow->win, 0, 7, makeThreeDigit(vals[1]).c_str());
+	} else {
+	  mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(vals[0]).c_str());
+	  mvwprintw(tmp_arrow->win, 3, 0, makeThreeDigit(vals[1]).c_str());
+	}
+	wrefresh(tmp_arrow->win);
+	return;  
 }

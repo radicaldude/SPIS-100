@@ -210,17 +210,25 @@ void updateReg(int nodeIndex) {
 void updateArrow(int nodeIndex, int arrowIndex) {
 	node  *tmp_node  = &grid[nodeIndex];
 	arrow *tmp_arrow = grid[nodeIndex].arrows[arrowIndex];
+	string vals[2];
 	if(!tmp_arrow){
 	  endwin();
-	  printf("ERROR: tmp_arrow was NULL!!\n");
+	  printf("ERROR: tmp_arrow was NULL!\n");
 	  return;
 	}
+	for(int i=0;i<2;i++){
+	  if(tmp_arrow->status[i]=SET)
+	    vals[i] = tmp_arrow->value[0].c_str();
+	  else
+	    vals[i] = " ? ";
+	}
+	
 	if (arrowIndex % 2 == 0) {
-		mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(tmp_arrow->value[0]).c_str());
-		mvwprintw(tmp_arrow->win, 0, 7, makeThreeDigit(tmp_arrow->value[1]).c_str());
+	  mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(vals[0]).c_str());
+		mvwprintw(tmp_arrow->win, 0, 7, makeThreeDigit(vals[1]).c_str());
 	} else {
-		mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(tmp_arrow->value[0]).c_str());
-		mvwprintw(tmp_arrow->win, 3, 0, makeThreeDigit(tmp_arrow->value[1]).c_str());
+		mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(vals[0]).c_str());
+		mvwprintw(tmp_arrow->win, 3, 0, makeThreeDigit(vals[1]).c_str());
 	}
 	wrefresh(tmp_arrow->win);
 	return;
@@ -262,7 +270,7 @@ void inputLoop() {
 	getbegyx(grid[selectedNode].w_code, y, x);
 
 	move(y, x);
-
+	
 	while(true) {
 	  int input = getch();
 		if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122)
