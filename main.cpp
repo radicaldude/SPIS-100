@@ -414,11 +414,7 @@ void runtimeLoop() {
   for(int i;i<grid.size();i++){
     grid[i].reset();
   }
-<<<<<<< HEAD
   //reset output and input and arrows
-=======
-
->>>>>>> 1f51f764668a1a47dd152662726a28d402c2af86
   while (state == 2) {
     drawContent();
     sleep(1);
