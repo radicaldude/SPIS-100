@@ -1,11 +1,11 @@
 #include "spis.h"
 
 node::node(uint8_t nId){
-  this->nodeId = nId;
-  this->acc = 0;
-  this->bak = 0;
-  this->pc=0;
-  this->no_code=FALSE;
+  nodeId = nId;
+  acc = 0;
+  bak = 0;
+  pc=0;
+  no_code=FALSE;
 }
 
 bool node::runline(){
