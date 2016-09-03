@@ -15,7 +15,8 @@
 #include <unistd.h>
 
 #define MAX_LINE_LENGTH 17
-
+#define updateArrow(a,b) \
+  grid[a].arrowUpdate(b)
 
 using namespace std;
 
@@ -70,6 +71,7 @@ class node{
   bool runPrepare();
   void reset();
   void first_instruction();
+  void arrowUpdate(unsigned int);
   void inputChar(int line, int index, char ch);
   void newLine(int line, int index);
   int backspace(int line, int index);
@@ -85,3 +87,5 @@ extern int state;
 extern std::vector<io> inputs, outputs;
 extern std::vector<node> grid;
 extern void drawHighlight(int i);
+//extern void updateArrow(int, int);
+extern string makeThreeDigit(int n);

@@ -4,8 +4,8 @@ arrow::arrow(int8_t nodeId1, int8_t nodeId2) {
   nodeId[0] = nodeId1;
   nodeId[1] = nodeId2;
 
-  status[0] = 0;
-  status[1] = 0;
+  status[0] = WAIT;
+  status[1] = WAIT;
 
   value[0] = 0;
   value[1] = 0;
@@ -53,6 +53,6 @@ void arrow::nodeSet(int8_t nodeId, int16_t number) {
 
   value[nodeIndex] = number;
   // TODO – Define status values
-  status[nodeIndex] = 1;
+  status[nodeIndex] = SET;
   return;
 }

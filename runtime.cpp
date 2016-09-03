@@ -9,7 +9,7 @@ void compute_tick(){
     if(inputs[i].arr->status[0]==SET){
       continue;
     }
-    else if(inputs[i].values[0]){
+    else if(inputs[i].values.size()>0){
       inputs[i].arr->value[0]=inputs[i].values.back();
       inputs[i].values.pop_back();
       inputs[i].arr->status[0]=SET;
@@ -44,19 +44,4 @@ void compute_tick(){
   }
   return;
 }
-  
-void io::get(){
-  for(int i=0;i<10;i++){
-    //std::cout << "Give me numbers!";
-    //this->values.push_back(getch()-'0');
-    this->values.push_back(5);
-  }
-  return;
-}
 
-void io::put(){
-  for(int i=0;i<this->values.size();i++){
-    //std::cout << this->values[i];
-  }  
-  return;
-}

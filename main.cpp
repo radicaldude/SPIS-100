@@ -17,7 +17,7 @@
 
 #ifdef _ascii_only
 #define H_ARROW "\n---><---"
-#define V_ARROW "     ^v"
+#define V_ARROW "    ^v"
 #else
 #define V_ARROW "   ⇧⇩"
 #define H_ARROW "\n ⇨\n ⇦"
@@ -138,7 +138,6 @@ int main(int argc, char *argv[]){
   outputs.push_back(tmp_io);
   grid.back().arrows[2]= new arrow(-2, grid.size()-1);
   outputs[0].arr=grid.back().arrows[2];
-  inputs[0].get();
   endwin();
   while (state != 0) {
   	switch(state) {
@@ -154,7 +153,6 @@ int main(int argc, char *argv[]){
   	}
   }
   endwin();
-  outputs[0].put();
   return 0;
 }
 
@@ -205,33 +203,6 @@ void updateReg(int nodeIndex) {
   mvwprintw(tmp_node->w_reg, 1, 0, makeThreeDigit(tmp_node->acc).c_str());
   mvwprintw(tmp_node->w_reg, 3, 0, makeThreeDigit(tmp_node->bak).c_str());
   wrefresh(tmp_node->w_reg);
-}
-
-void updateArrow(int nodeIndex, int arrowIndex) {
-	node  *tmp_node  = &grid[nodeIndex];
-	arrow *tmp_arrow = grid[nodeIndex].arrows[arrowIndex];
-	string vals[2];
-	if(!tmp_arrow){
-	  endwin();
-	  printf("ERROR: tmp_arrow was NULL!\n");
-	  return;
-	}
-	for(int i=0;i<2;i++){
-	  if(tmp_arrow->status[i]=SET)
-	    vals[i] = tmp_arrow->value[0].c_str();
-	  else
-	    vals[i] = " ? ";
-	}
-	
-	if (arrowIndex % 2 == 0) {
-	  mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(vals[0]).c_str());
-		mvwprintw(tmp_arrow->win, 0, 7, makeThreeDigit(vals[1]).c_str());
-	} else {
-		mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(vals[0]).c_str());
-		mvwprintw(tmp_arrow->win, 3, 0, makeThreeDigit(vals[1]).c_str());
-	}
-	wrefresh(tmp_arrow->win);
-	return;
 }
 
 void updateArrowsForNode(int nodeIndex) {

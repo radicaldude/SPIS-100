@@ -46,20 +46,22 @@ bool node::runline(){
     } else if(!strncmp(dst.c_str(), "NIL",3)) {
 	
     }else{
+      unsigned int a_num;
       if(!strncmp("LEFT", dst.c_str(), 3)){
-	a = arrows[3];
+	a_num=3;
       } else if(!strncmp(dst.c_str(), "RIG", 3)) {
-	a = arrows[1];
+	a_num=1;;
       } else if(strncmp(dst.c_str(), "UP",2)) {
-	a = arrows[0];
+	a_num=0;
       } else if(strncmp(dst.c_str(),"DOW", 3)) {
-    	a = arrows[2];
+    	a_num=2;
       }
       else
 	return false;
       if (!a->setRequest(nodeId)){
+	a=arrows[a_num];
 	a->nodeSet(nodeId, input);
-	updateArrow((a-arrows)/sizeof(arrow));
+	arrowUpdate(a_num);
       }
       else
 	pc--;
@@ -318,7 +320,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       } else {
         p.first = WAIT;
       }
-      arrowUpdate[1];
+      arrowUpdate(1);
       return p;
     } else if (src ==  "UP") {
       arrow *a = arrows[0];
@@ -368,26 +370,27 @@ void node::reset(){
   first_instruction();
 }
 
-void node::updateArrow(int arrowID){
+void node::arrowUpdate(unsigned int arrowID){
 	string vals[2];
-	if(arrows[arrowID]){
-	  endwin();
-	  printf("ERROR: arrow was NULL!\n");
+	arrow *tmp_arrow = arrows[arrowID];
+	if(!arrows[arrowID]){
+	   endwin();
+	   printf("ERROR: arrow was NULL!\n");
 	  return;
 	}
 	for(int i=0;i<2;i++){
-	  if(arrows[arrowID].status[i]=SET)
-	    vals[i] = tmp_arrow->value[0].c_str();
+	  if(arrows[arrowID]->status[i]==SET)
+	    vals[i] = makeThreeDigit(tmp_arrow->value[0]);
 	  else
 	    vals[i] = " ? ";
 	}
 	
-	if (arrowIndex & 2) {
-	  mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(vals[0]).c_str());
-	  mvwprintw(tmp_arrow->win, 0, 7, makeThreeDigit(vals[1]).c_str());
+	if (arrowID % 2==0) {
+	  mvwprintw(tmp_arrow->win, 0, 0, vals[0].c_str());
+	  mvwprintw(tmp_arrow->win, 0, 7, vals[1].c_str());
 	} else {
-	  mvwprintw(tmp_arrow->win, 0, 0, makeThreeDigit(vals[0]).c_str());
-	  mvwprintw(tmp_arrow->win, 3, 0, makeThreeDigit(vals[1]).c_str());
+	  mvwprintw(tmp_arrow->win, 0, 0, vals[0].c_str());
+	  mvwprintw(tmp_arrow->win, 3, 0, vals[1].c_str());
 	}
 	wrefresh(tmp_arrow->win);
 	return;  
