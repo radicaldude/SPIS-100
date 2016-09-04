@@ -13,15 +13,15 @@ node::node(uint8_t nId){
 
 bool node::runline(){
   //string line = sanitize(code[this.pc]);
-  if(inputCode.size()==0)
+  if(code.size()==0)
     return true;
-  if(is_whitespace(inputCode[pc]) || inputCode[pc].length() == 0){
+  if(is_whitespace(code[pc]) || code[pc].length() == 0){
   	pc++;
-  	if(pc>=inputCode.size()-1)
+  	if(pc>=code.size()-1)
   	    pc=0;
     return true;
   }
-  string line = inputCode[pc];
+  string line = code[pc];
   // TODO – Remove labels and variations of commas, in sanitize function
   if(!strncmp("NOP", line.c_str(), 3)){
     pc++;
@@ -174,32 +174,33 @@ bool node::runPrepare(){
   // TODO – Collect labels
   reset();
   labels.clear();
+  code.clear();
+  code.resize(inputCode.size());
   std::vector<int> labelLines;
-  for (int8_t i = 0; i < inputCode.size(); i++){
+  for (int8_t i = 0; i < code.size(); i++){
     bool space=false;
-    
-    for(unsigned int j=0;j<inputCode[i].size();j++){
-      string line=inputCode[i];
+    string line=code[i];
+    string tmp;
+    int last_space=-1;
+    int n_operands=0;
+    bool label=false;
+    for(unsigned int j=0;j<code[i].size();j++){
       char ch=line[j];
-      string tmp;
-      int last_space=-1;
-      int n_operands=0;
-      bool label=false;
-      
       if(ch==':'){
 	if(last_space)
 	  return false;
 	else{
 	  std::pair<std::string, uint8_t> p;
+	  label=true;
 	  p.first=line.substr(0,j-1);
 	  p.second=i;
 	  labels.push_back(p);
+	  last_space=j;
 	}
       }
-      if(ch==' '||j==inputCode.size()-1){
-	last_space=j;
-	      if(space==true)
-		continue;
+      else if(ch==' '||j==code.size()-1){
+	if(space==true)
+	  continue;
 	else{
 	  bool symbol_found=false;
 	  space=true;
@@ -249,11 +250,20 @@ bool node::runPrepare(){
 	   else
 	     code[i].append(tmp);
 	}
+	last_space=j;
       }
       else
 	space=false;
     }
   }
+  //Check no duplicate labels
+  for(int i=0; i<labels.size();i++){
+    for(int j=i+1;j<labels.size();j++){
+      if(labels[i]==labels[j])
+	return false;
+    }
+  }
+  
   for(int i=0; i<labelLines.size();i++){
     string operand;
     bool label_exists=false;
@@ -444,8 +454,8 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
 
 void node::first_instruction(){
   no_code=false;
-  for(int i=0;i<inputCode.size();i++){
-    if(!is_whitespace(inputCode[i])){
+  for(int i=0;i<code.size();i++){
+    if(!is_whitespace(code[i])){
       pc=i;
       return;
     }
