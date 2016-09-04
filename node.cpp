@@ -38,7 +38,7 @@ bool node::runline(){
     
     if(p.first==INVALID)
       return false;
-    else if(p.first==WAIT)
+    else if(p.first!=READY)
       return true;
     input = p.second;
     if(!strncmp(dst.c_str(), "ACC", 3)) {
@@ -87,7 +87,7 @@ bool node::runline(){
     string src = line.substr(4);
     pair<bool, int16_t> p = getFromSrc(src);
     int16_t input;
-    if (p.first==WAIT) {
+    if (p.first!=READY) {
       return true;
     }
     
@@ -106,16 +106,16 @@ bool node::runline(){
     pair<int8_t, int16_t> p = getFromSrc(src);
     
     int16_t input;
-
-        
-    if (p.first==WAIT) {
-      return true;
-    }
-    
-    else if(p.first==INVALID){
+ 
+    if(p.first==INVALID){
       //error
       return false;
     }
+
+    else if (p.first!=READY) {
+      return true;
+    }
+   
     else{
       input = p.second;
       acc -= input;
@@ -127,56 +127,142 @@ bool node::runline(){
     acc = -acc;
     pc++;
     return true;   
-  }
+    }
   else if(!strncmp("J",line.c_str(),1)){
-    pair<int8_t, int16_t> p;
-    p=getFromSrc(line.substr(4));
+    int p;
     if(!strncmp("JRO", line.c_str(), 3)){
-      if(p.first==WAIT)
+      string operands = line.substr(4);
+      string src = operands.substr(0);
+      pair<int8_t, int16_t> p = getFromSrc(src);
+      if(p.first!=READY )
 	 return true;
-       else if(p.first==SET)
-	 pc=pc+p.second;
-       return true;
-    pc=pc+p.second;
-    } 
-    if(p.second==this->labels.end()->second)
-      return false;
-    if(strncmp("JGZ", line.c_str(), 3) && strncmp("JLZ", line.c_str(),3)
-       && strncmp("JEZ", line.c_str(),3) && strncmp("JNZ", line.c_str(),3))
-      return false;
+      else if(p.first==INVALID)
+	return false;
+      else
+	pc=pc+p.second;
+      return true;
+    }
+    else{
+      p=getLine(line.substr(4));
+      if(p<0)
+	return false;
+      if(strcmp("JGZ", line.c_str()) && strcmp("JLZ", line.c_str())
+	 && strcmp("JEZ", line.c_str()) && strcmp("JNZ", line.c_str()))
+	return false;
       
-    else if(!strncmp("JGZ", line.c_str(), 3)&&this->acc>0)
-      pc=p.second;
-    else if(!strncmp("JLZ", line.c_str(),3) &&this->acc<0)
-      pc=p.second;
-    else if(!strncmp("JEZ", line.c_str(),3)&&this->acc==0)
-      pc=p.second;
-    else if(!strncmp("JNZ", line.c_str(),3)&&this->acc!=0)
-      pc=p.second;
-    else
-      pc++;
-    return true;
+      else if(!strcmp("JGZ", line.c_str())&&this->acc>0)
+	pc=p;
+      else if(!strcmp("JLZ", line.c_str()) &&this->acc<0)
+	pc=p;
+      else if(!strcmp("JEZ", line.c_str())&&this->acc==0)
+	pc=p;
+      else if(!strcmp("JNZ", line.c_str())&&this->acc!=0)
+	pc=p;
+      else
+	pc++;
+      return true;
+    }
   }
   else
     return false;
 }
               
 bool node::runPrepare(){
-/*    // TODO – Sanitize
-  
   // TODO – Collect labels
   labels.clear();
-  
-  for (int8_t i = 0; i < code.size(); i++) {
-    uint8_t colonIndex = code[i].find(':');
-    if(colonIndex != string::npos) {
-      string labelName = code[i].substr(0, colonIndex);
-      if(input.find_first_not_of(" ,") != std::string::npos) {
-        // TODO – Handle error
+  std::vector<int> labelLines;
+  for (int8_t i = 0; i < inputCode.size(); i++){
+    bool space=false;
+    
+    for(unsigned int j=0;j<inputCode.size();j++){
+      string line=inputCode[i];
+      char ch=line[j];
+      string tmp;
+      int last_space=0;
+      int n_operands=0;
+      bool label=false;
+      
+      if(ch==':'){
+	if(last_space)
+	  return false;
+	else{
+	  std::pair<std::string, uint8_t> p;
+	  p.first=line.substr(0,j-1);
+	  p.second=i;
+	  labels.push_back(p);
+	}
       }
-      labels.insert(pair<string, int8_t>(labelName, i));
+      if(ch==' '||j==inputCode.size()-1){
+	last_space=j;
+	      if(space==true)
+		continue;
+	else{
+	  bool symbol_found=false;
+	  space=true;
+	  tmp=line.substr(last_space+1, j-last_space-1);
+
+	  if(label){
+	    code[i].append(tmp);
+	    labelLines.push_back(i);
+	  }
+	  if(n_operands==0){
+	    for (uint8_t x = 0; x < 4; x++) {
+	      if (SIM_OPS[x].compare(tmp) == 0) {
+		n_operands=0;
+		symbol_found=true;
+		goto operand_test;
+		  }
+	    }
+	    for (uint8_t x = 0; x < 3; x++) {
+	      if (SRC_OPS[x].compare(tmp) == 0) {
+		symbol_found = true;
+		n_operands=1;
+		goto operand_test;
+	      }
+	    }
+	    for (uint8_t x = 0; x < 4; x++) {
+	      if (LAB_OPS[x].compare(tmp) == 0) {
+		symbol_found = true;
+	        label=true;
+		//n_operands stays 0 - the test for labels happens later
+		goto operand_test; 
+	      }
+	    }
+	    if(tmp=="MOV"){
+	      symbol_found==true;
+	      n_operands=2;
+	    }
+	  }
+	operand_test:
+	  if(n_operands>0)
+	    if(tmp=="UP"||tmp=="RIGHT"||tmp=="DOWN"||tmp=="LEFT"||tmp=="ACC"||tmp=="NIL"||(isNum(tmp)&&n_operands==2)){ //or number
+	      n_operands--;
+	       symbol_found=true;
+	     }
+	   if(!symbol_found)
+	     return false;
+	   else
+	     code[i].append(tmp);
+	}
+      }
+      else
+	space=false;
     }
   }
+  for(int i=0; i<labelLines.size();i++){
+    string operand;
+    bool label_exists=false;
+    operand=code[labelLines[i]].substr(4);
+    for(int j=0;j<labels.size();j++){
+      if(labels[j].first==operand){
+	label_exists=true;
+	break;
+      }
+      if(label_exists==false)
+	return false;
+    }
+  }
+}/*
   // TODO – Remove labels from code
   
   // TODO – Debug
@@ -239,10 +325,8 @@ bool node::runPrepare(){
       continue codeLoop;
     }
     }
-  
-  // TODO – Set properties for run line*/
 }
-
+ */
 void node::inputChar(int line, int index, char ch) {
 	if (inputCode.size() > line) {
 	  if (inputCode[line].length() < MAX_LINE_LENGTH) {
@@ -396,4 +480,9 @@ void node::arrowUpdate(unsigned int arrowID){
 	}
 	wrefresh(tmp_arrow->win);
 	return;  
+}
+
+int node::getLine(std::string label){
+  //TODO
+  return 0;
 }

@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
+#include <list>
 
 #define MAX_LINE_LENGTH 17
 #define updateArrow(a,b) \
@@ -28,6 +29,7 @@ const string LAB_OPS[] = { "JMP", "JEZ", "JNZ", "JGZ", "JLZ"}; // Operations wit
 
 enum STATUS{
   SET,
+  READY,
   WAIT,
   INVALID
 };
@@ -68,6 +70,7 @@ class node{
   int8_t  pc;
   bool no_code;
   std::vector<string> inputCode;
+  std::vector<string> code;
   bool runline();
   bool runPrepare();
   void reset();
@@ -76,7 +79,8 @@ class node{
   void inputChar(int line, int index, char ch);
   void newLine(int line, int index);
   int backspace(int line, int index);
-  std::map<uint8_t, uint16_t> labels;
+  std::vector<std::pair<std::string, uint8_t> > labels;
+  int getLine(string label);
   arrow *arrows[4];
 };
 
@@ -90,3 +94,4 @@ extern std::vector<node> grid;
 extern void drawHighlight(int i);
 //extern void updateArrow(int, int);
 extern string makeThreeDigit(int n);
+extern bool isNum(string);

@@ -465,3 +465,8 @@ string makeThreeDigit(int n) {
   nToText = string(tmp_str);
   return nToText;
 }
+
+bool isNum(string str){
+  //TODO
+  return true;
+}
