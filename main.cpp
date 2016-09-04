@@ -404,7 +404,7 @@ void runtimeLoop() {
   int err = pthread_create(thread, NULL, &runtimeInputLoop, NULL);
 
   for(unsigned int i=0;i<grid.size();i++){
-    grid[i].reset();
+    grid[i].runPrepare();
   }
   //reset arrows, input and output
   if(err!=0){

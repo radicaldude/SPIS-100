@@ -6,6 +6,9 @@ node::node(uint8_t nId){
   bak = 0;
   pc=0;
   no_code=FALSE;
+  for(int i = 0; i < 4; i++){
+    arrows[i]=NULL;
+  }
 }
 
 bool node::runline(){
@@ -169,16 +172,17 @@ bool node::runline(){
               
 bool node::runPrepare(){
   // TODO – Collect labels
+  reset();
   labels.clear();
   std::vector<int> labelLines;
   for (int8_t i = 0; i < inputCode.size(); i++){
     bool space=false;
     
-    for(unsigned int j=0;j<inputCode.size();j++){
+    for(unsigned int j=0;j<inputCode[i].size();j++){
       string line=inputCode[i];
       char ch=line[j];
       string tmp;
-      int last_space=0;
+      int last_space=-1;
       int n_operands=0;
       bool label=false;
       
@@ -202,6 +206,7 @@ bool node::runPrepare(){
 	  tmp=line.substr(last_space+1, j-last_space-1);
 
 	  if(label){
+	    label=false;
 	    code[i].append(tmp);
 	    labelLines.push_back(i);
 	  }
