@@ -18,11 +18,11 @@ void compute_tick(){
   for(i=0;i<grid.size();i++){
     if(stop==TRUE)
       return;
-    for(int j=0;i<4;j++){
+    for(int j=0;j<4;j++){
       if(grid[i].arrows[j]){
-	for(int k=0;k<2;k++)
-	  if(grid[i].arrows[j]->status[k]==SET)
-	    grid[i].arrows[j]->status[k]==READY;
+      	for(int k=0;k<2;k++)
+      		if(grid[i].arrows[j]->status[k]==SET)
+      			grid[i].arrows[j]->status[k]==READY;
       }
     }
     if(grid[i].no_code)

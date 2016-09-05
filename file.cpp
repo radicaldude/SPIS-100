@@ -21,7 +21,7 @@ int get_code(ifstream *file, std::vector<node> &grid){
 
   nID_buf[4]='\0';
   if(!file->is_open()){
-    printf("Warning couldn't open file!\n");
+    //printf("Warning couldn't open file!\n");
     return 1;
   }
   file->get(ch);

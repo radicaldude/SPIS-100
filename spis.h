@@ -34,26 +34,27 @@ enum STATUS{
   INVALID
 };
 
+enum STATE {
+	OFF,
+	EDIT,
+	RUNNING
+};
+
 class arrow{
   uint8_t getNodeIndex(int8_t nodeId);
 
-public:
-  int8_t nodeId[2];
-  int8_t status[2];
-  int16_t value[2];
+	public:
+		int8_t nodeId[2];
+		int8_t status[2];
+		int16_t value[2];
 
-  WINDOW *win;
-  arrow(int8_t nodeId1, int8_t nodeId2);
-  bool setRequest(int8_t nodeId);
-  bool getRequest(int8_t nodeId);
-  int16_t nodeGet(int8_t nodeId);
-  void nodeSet(int8_t nodeId, int16_t number);
+		WINDOW *win;
+		arrow(int8_t nodeId1, int8_t nodeId2);
+		bool setRequest(int8_t nodeId);
+		bool getRequest(int8_t nodeId);
+		int16_t nodeGet(int8_t nodeId);
+		void nodeSet(int8_t nodeId, int16_t number);
 };
-
-typedef struct{
-  arrow *arr; 
-  std::vector<int> values;
-} io;
 
 class node{
  private:
@@ -84,14 +85,40 @@ class node{
   arrow *arrows[4];
 };
 
+typedef struct{
+  arrow *arr;
+  std::vector<int> values;
+} io;
+
+class input {
+
+};
+
+class output {
+
+};
+
 int get_code(ifstream *file, std::vector<node> &grid);
 void compute_tick();
 bool is_whitespace(string string);
+
+bool pointInWindow(WINDOW *win, int x, int y);
+WINDOW *new_bwin(int height, int width, int starty, int startx);
+
+void initSystem();
+void runtimeSystemInput(MEVENT event);
+void drawNodeContent();
+bool systemInput(int input, MEVENT event);
+void drawSystemContent();
+
 extern bool stop;
 extern int state;
+extern int tickDelay;
 extern std::vector<io> inputs, outputs;
 extern std::vector<node> grid;
 extern void drawHighlight(int i);
 //extern void updateArrow(int, int);
 extern string makeThreeDigit(int n);
 extern bool isNum(string);
+extern int x;
+extern int y;
