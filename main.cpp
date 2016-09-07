@@ -2,7 +2,7 @@
 
 int y, x = 0;
 bool cursorVisible = false;
-int tickDelay = 100;
+int tickDelay = 500;
 
 void editLoop();
 void *runtimeInputLoop(void *ptr);
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
   init_pair(4, COLOR_BLACK, COLOR_YELLOW);
 	init_pair(5, COLOR_WHITE, COLOR_BLACK);
 
-	curs_set(cursorVisible);
+	curs_set(!cursorVisible);
 
   refresh();
 
@@ -78,9 +78,10 @@ void runtimeLoop() {
   pthread_t *thread = new pthread_t;
   int err = pthread_create(thread, NULL, &runtimeInputLoop, NULL);
 
-  for(unsigned int i=0;i<grid.size();i++){
+  /*for(unsigned int i=0;i<grid.size();i++){
     grid[i].runPrepare();
-  }
+  }*/
+
   //reset arrows, input and output
   if(err!=0){
     return;

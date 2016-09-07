@@ -25,9 +25,6 @@
 
 pthread_t inputThread;
 
-void drawContent();
-void inputLoop();
-void runtimeLoop();
 string makeThreeDigit(int n);
 
 WINDOW *playButton;
