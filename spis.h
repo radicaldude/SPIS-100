@@ -26,6 +26,8 @@ const string SRC_OPS[] = { "ADD", "SUB", "JRO" };  // Operations with only SRC a
 const string SD_OPS[] = { "MOV" };  // Operations with both SRC and DST as parameters
 const string LAB_OPS[] = { "JMP", "JEZ", "JNZ", "JGZ", "JLZ"}; // Operations with only SRC as a parameter
 
+const int inputID = -1;
+
 
 enum STATUS{
   SET,
@@ -40,15 +42,24 @@ enum STATE {
 	RUNNING
 };
 
-class arrow{
-  uint8_t getNodeIndex(int8_t nodeId);
+class arrowType{
+	protected:
+  	int8_t nodeId[2];
 
 	public:
-		int8_t nodeId[2];
 		int8_t status[2];
 		int16_t value[2];
+		uint8_t getNodeIndex(int8_t nodeId);
+		virtual bool setRequest(int8_t nodeId);
+		virtual bool getRequest(int8_t nodeId);
+		virtual int16_t nodeGet(int8_t nodeId);
+		virtual void nodeSet(int8_t nodeId, int16_t number);
 
 		WINDOW *win;
+};
+
+class arrow: public arrowType {
+	public:
 		arrow(int8_t nodeId1, int8_t nodeId2);
 		bool setRequest(int8_t nodeId);
 		bool getRequest(int8_t nodeId);
@@ -91,7 +102,15 @@ typedef struct{
 } io;
 
 class input {
-
+	protected:
+		list<int> inputList;
+		arrow inputArrow;
+	public:
+		virtual void inputInt(int input) {
+			inputList.push_back(input);
+			if (inputArrow.setRequest(inputID))
+				inputArrow.nodeSet(inputID, input);
+		}
 };
 
 class output {

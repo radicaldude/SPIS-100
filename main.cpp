@@ -64,8 +64,8 @@ void redrawContent() {
 void editLoop() {
 	curs_set(1);
 	while (state == EDIT) {
-		int input = getch();
 		MEVENT event;
+		int input = getch();
 		if (input == KEY_MOUSE)
 			getmouse(&event);
 		if (systemInput(input, event)) {
