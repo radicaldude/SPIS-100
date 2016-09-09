@@ -6,6 +6,9 @@ node::node(uint8_t nId){
   bak = 0;
   pc=0;
   no_code=FALSE;
+
+  for (int i = 0; i < 4; i++)
+  	arrows[i] = NULL;
 }
 
 bool node::runline(){

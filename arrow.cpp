@@ -11,7 +11,7 @@ arrow::arrow(int8_t nodeId1, int8_t nodeId2) {
   value[1] = 0;
 }
 
-uint8_t arrow::getNodeIndex(int8_t nId) {
+uint8_t arrowType::getNodeIndex(int8_t nId) {
   uint8_t nodeIndex = 0;
   if (nId == nodeId[1])
     nodeIndex = 1;
@@ -50,3 +50,5 @@ void arrow::nodeSet(int8_t nodeId, int16_t number) {
   status[nodeIndex] = SET;
   return;
 }
+
+
