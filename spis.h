@@ -82,7 +82,7 @@ class node{
   int backspace(int line, int index);
   std::vector<std::pair<std::string, uint8_t> > labels;
   int getLine(string label);
-  arrow *arrows[4];
+  arrow (*arrows)[4];
 };
 
 typedef struct{
