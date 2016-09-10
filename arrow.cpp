@@ -18,6 +18,22 @@ uint8_t arrowType::getNodeIndex(int8_t nId) {
   return nodeIndex;
 }
 
+bool arrowType::setRequest(int8_t nodeId) {
+  return false;
+}
+
+bool arrowType::getRequest(int8_t nodeId) {
+  return false;
+}
+
+int16_t arrowType::nodeGet(int8_t nodeId) {
+  return 0;
+}
+
+void arrowType::nodeSet(int8_t nodeId, int16_t number) {
+  return;
+}
+
 bool arrow::setRequest(int8_t nodeId) {
   uint8_t nodeIndex = getNodeIndex(nodeId);
   // TODO – Define status values
