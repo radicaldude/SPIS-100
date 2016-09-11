@@ -13,16 +13,16 @@ node::node(uint8_t nId){
 
 bool node::runline(){
   //string line = sanitize(code[this.pc]);
-  if(inputCode.size()==0)
+  if(code.size()==0)
     return true;
-  if(is_whitespace(inputCode[pc]) || inputCode[pc].length() == 0){
+  if(is_whitespace(code[pc]) || code[pc].length() == 0){
   	pc++;
-  	if(pc>=inputCode.size()-1)
+  	if(pc>=code.size()-1)
   	    pc=0;
     return true;
   }
-  string line = inputCode[pc];
-  // TODO – Remove labels and variations of commas, in sanitize function
+  endwin();
+  string line = code[pc];
   if(!strncmp("NOP", line.c_str(), 3)){
     pc++;
     return true;
@@ -41,8 +41,9 @@ bool node::runline(){
     
     if(p.first==INVALID)
       return false;
-    else if(p.first!=READY)
+    else if(p.first==SET){
       return true;
+    }
     input = p.second;
     if(!strncmp(dst.c_str(), "ACC", 3)) {
       acc = input;
@@ -367,7 +368,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
   if(src.find_first_not_of("0123456789") == std::string::npos) {
     // Then src is just a number
     pair<bool, int16_t> p;
-    p.first = SET;
+    p.first = READY;
     try{
       p.second = atoi(src.c_str());
     }

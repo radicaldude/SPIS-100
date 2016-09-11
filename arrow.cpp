@@ -64,7 +64,7 @@ int16_t arrow::nodeGet(int8_t nodeId) {
 
 void arrow::nodeSet(int8_t nodeId, int16_t number) {
   uint8_t nodeIndex = getNodeIndex(nodeId);
-
+  
   value[nodeIndex] = number;
   status[nodeIndex] = SET;
   return;

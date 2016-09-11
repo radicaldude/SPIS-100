@@ -1,8 +1,7 @@
 #include "spis.h"
-
+#define TICK_DELAY 1000000
 int y, x = 0;
 bool cursorVisible = false;
-int tickDelay = 500;
 
 void editLoop();
 void *runtimeInputLoop(void *ptr);
@@ -95,7 +94,7 @@ void runtimeLoop() {
 
   while (state == RUNNING) {
   	redrawContent();
-    usleep(tickDelay);
+	usleep(TICK_DELAY);
     compute_tick();
   }
 
