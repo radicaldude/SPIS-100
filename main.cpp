@@ -39,6 +39,7 @@ int main(int argc, char *argv[]){
 
   state = EDIT;
 
+  endwin();
   while (state != OFF) {
   	switch(state) {
   		case EDIT:

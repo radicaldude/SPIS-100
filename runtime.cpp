@@ -16,6 +16,7 @@ void compute_tick(){
     }
   }
   for(i=0;i<grid.size();i++){
+  	cout << grid[i].code.size();
     if(stop==TRUE)
       return;
     for(int j=0;j<4;j++){

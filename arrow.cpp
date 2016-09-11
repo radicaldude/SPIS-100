@@ -34,6 +34,9 @@ void arrowType::nodeSet(int8_t nodeId, int16_t number) {
   return;
 }
 
+
+
+
 bool arrow::setRequest(int8_t nodeId) {
   uint8_t nodeIndex = getNodeIndex(nodeId);
   // TODO – Define status values
