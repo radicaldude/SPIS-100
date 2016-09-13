@@ -11,34 +11,18 @@ arrow::arrow(int8_t nodeId1, int8_t nodeId2) {
   value[1] = 0;
 }
 
-uint8_t arrowType::getNodeIndex(int8_t nId) {
+uint8_t arrowType::getNodeIndex(int8_t id) {
   uint8_t nodeIndex = 0;
-  if (nId == nodeId[1])
+  if (id == nodeId[1])
     nodeIndex = 1;
   return nodeIndex;
 }
 
-bool arrowType::setRequest(int8_t nodeId) {
-  return false;
-}
 
-bool arrowType::getRequest(int8_t nodeId) {
-  return false;
-}
+// arrow
 
-int16_t arrowType::nodeGet(int8_t nodeId) {
-  return 0;
-}
-
-void arrowType::nodeSet(int8_t nodeId, int16_t number) {
-  return;
-}
-
-
-
-
-bool arrow::setRequest(int8_t nodeId) {
-  uint8_t nodeIndex = getNodeIndex(nodeId);
+bool arrow::setRequest(int8_t id) {
+  uint8_t nodeIndex = getNodeIndex(id);
   // TODO – Define status values
   if (status[nodeIndex] == WAIT) {
     return true;
@@ -46,28 +30,68 @@ bool arrow::setRequest(int8_t nodeId) {
   return false;
 }
 
-bool arrow::getRequest(int8_t nodeId) {
-  uint8_t nodeIndex = getNodeIndex(nodeId);
+bool arrow::getRequest(int8_t id) {
+  uint8_t nodeIndex = getNodeIndex(id);
   if (status[(nodeIndex + 1) % 2] == SET) {
     return true;
   }
   return false;
 }
 
-int16_t arrow::nodeGet(int8_t nodeId) {
-  uint8_t nodeIndex = (getNodeIndex(nodeId) + 1) % 2;
+int16_t arrow::nodeGet(int8_t id) {
+  uint8_t nodeIndex = (getNodeIndex(id) + 1) % 2;
   int16_t tmpValue = value[nodeIndex];
 
   status[nodeIndex] = WAIT;
   return tmpValue;
 }
 
-void arrow::nodeSet(int8_t nodeId, int16_t number) {
-  uint8_t nodeIndex = getNodeIndex(nodeId);
+void arrow::nodeSet(int8_t id, int16_t number) {
+  uint8_t nodeIndex = getNodeIndex(id);
   
   value[nodeIndex] = number;
   status[nodeIndex] = SET;
   return;
 }
 
+void arrow::tickUpdate() {
+	for(int k=0;k<2;k++)
+		if(status[k]==SET)
+			status[k]==READY;
+}
 
+
+// inputArrow
+
+inputArrow::inputArrow(int8_t id) {
+	nodeId[0] = id;
+
+	status[0] = WAIT;
+
+	value[0] = 0;
+}
+
+bool inputArrow::setRequest(int8_t id) {
+	if (status[0] == WAIT && id < 0) {
+		return true;
+	}
+	return false;
+}
+
+bool inputArrow::getRequest(int8_t id) {
+	if (status[0] == SET) {
+		return true;
+	}
+	return false;
+}
+
+int16_t inputArrow::nodeGet(int8_t id) {
+  status[0] = WAIT;
+  return value[0];
+}
+
+void inputArrow::nodeSet(int8_t id, int16_t number) {
+  value[0] = number;
+  status[0] = SET;
+  return;
+}

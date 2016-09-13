@@ -70,6 +70,7 @@ void initSystem() {
       if (j != grid_size[1] - 1) {
       	grid[nID].arrows[1] = new arrow(nID, nID + 1);
       	grid[nID].arrows[1]->win=newwin(ARROW_H_HEIGHT, ARROW_H_WIDTH, y + floor(NODE_HEIGHT / 2) - floor(ARROW_H_HEIGHT / 2),x + NODE_WIDTH + GAP_WIDTH_H);
+      	gridArrows.push_back(grid[nID].arrows[1]);
       	wprintw(grid[nID].arrows[1]->win, H_ARROW);
 				wrefresh(grid[nID].arrows[1]->win);
       }
@@ -77,6 +78,7 @@ void initSystem() {
       if (i != grid_size[0] - 1) {
       	grid[nID].arrows[2] = new arrow(nID, nID + grid_size[0]);
 	grid[nID].arrows[2]->win=newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, y + NODE_HEIGHT + GAP_WIDTH_V, x + floor(NODE_WIDTH / 2) - floor(ARROW_V_WIDTH / 2));
+	gridArrows.push_back(grid[nID].arrows[2]);
 	wprintw(grid[nID].arrows[2]->win, V_ARROW);
 	wrefresh(grid[nID].arrows[2]->win);
       }
