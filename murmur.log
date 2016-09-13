@@ -1,0 +1,34 @@
+<W>2016-09-11 21:09:43.865 Initializing settings from /home/dudebro/.murmurd/murmur.ini (basepath /home/dudebro/.murmurd)
+<W>2016-09-11 21:09:43.886 Meta: TLS cipher preference is "ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:AES256-SHA:AES128-SHA"
+<W>2016-09-11 21:09:43.886 OpenSSL: OpenSSL 1.0.2h-fips  3 May 2016
+<W>2016-09-11 21:09:44.011 ServerDB: Opened SQLite database /home/dudebro/murmur.sqlite
+<W>2016-09-11 21:09:44.176 Murmur 1.2.11 (1.2.11) running on X11: Fedora release 24 (Twenty Four): Booting servers
+<W>2016-09-11 21:09:44.278 1 => Server listening on [::]:64738
+<W>2016-09-11 21:09:44.361 1 => Announcing server via bonjour
+<W>2016-09-11 21:09:44.461 1 => Not registering server as public
+<W>2016-09-11 21:09:44.461 Object::connect: No such slot MurmurDBus::userTextMessage(const User *, const TextMessage &)
+<W>2016-09-11 21:10:00.415 Initializing settings from /home/dudebro/.murmurd/murmur.ini (basepath /home/dudebro/.murmurd)
+<W>2016-09-11 21:10:00.416 Meta: TLS cipher preference is "ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:AES256-SHA:AES128-SHA"
+<W>2016-09-11 21:10:00.416 OpenSSL: OpenSSL 1.0.2h-fips  3 May 2016
+<W>2016-09-11 21:10:00.461 ServerDB: Opened SQLite database /home/dudebro/murmur.sqlite
+<W>2016-09-11 21:10:00.495 Murmur 1.2.11 (1.2.11) running on X11: Fedora release 24 (Twenty Four): Booting servers
+<W>2016-09-11 21:10:00.604 1 => Server: TCP Listen on [::]:64738 failed: The bound address is already in use
+<W>2016-09-11 21:10:00.687 1 => Stopped
+<W>2016-09-11 21:28:29.462 1 => <1:(-1)> New connection: 192.168.1.198:52786
+<W>2016-09-11 21:28:30.557 1 => <1:(-1)> Client version 1.2.16 (Win: 1.2.16)
+<W>2016-09-11 21:28:30.640 1 => Starting voice thread
+<W>2016-09-11 21:28:30.733 1 => CELT codec switch ffffffff80000010 0 (prefer ffffffff80000010) (Opus 1)
+<W>2016-09-11 21:28:30.820 1 => <1:JOEstCOOL(-1)> Authenticated
+<W>2016-09-11 21:28:40.791 1 => <2:(-1)> New connection: 81.136.107.47:65404
+<W>2016-09-11 21:28:42.533 1 => <2:(-1)> Client version 1.2.16 (Win: 1.2.16)
+<W>2016-09-11 21:28:42.691 1 => <2:dave-o(-1)> Authenticated
+<W>2016-09-12 00:48:41.700 1 => <1:JOEstCOOL(-1)> Connection closed: The remote host closed the connection [1]
+<C>2016-09-12 00:48:45.589 Caught SIGTERM, exiting
+<W>2016-09-12 00:48:45.589 Killing running servers
+<C>2016-09-12 00:48:45.594 Caught SIGTERM, exiting
+<W>2016-09-12 00:48:45.594 Killing running servers
+<W>2016-09-12 00:48:45.595 Shutting down
+<W>2016-09-12 00:48:47.155 1 => Stopped announcing server via bonjour
+<W>2016-09-12 00:48:47.580 1 => Ending voice thread
+<W>2016-09-12 00:48:47.977 1 => Stopped
+<W>2016-09-12 00:48:47.977 Shutting down

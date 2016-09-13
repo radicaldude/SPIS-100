@@ -77,8 +77,8 @@ void runtimeLoop() {
   int err = pthread_create(thread, NULL, &runtimeInputLoop, NULL);
 
   for(unsigned int i=0;i<grid.size();i++){
-    //grid[i].runPrepare();
-    grid[i].code = grid[i].inputCode;
+    grid[i].runPrepare();
+    //grid[i].code = grid[i].inputCode;
   }
 
   //reset arrows, input and output

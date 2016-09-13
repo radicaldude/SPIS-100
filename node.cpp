@@ -133,7 +133,7 @@ bool node::runline(){
     return true;   
     }
   else if(!strncmp("J",line.c_str(),1)){
-    int p;
+    unsigned int p;
     if(!strncmp("JRO", line.c_str(), 3)){
       string operands = line.substr(4);
       string src = operands.substr(0);
@@ -150,17 +150,19 @@ bool node::runline(){
       p=getLine(line.substr(4));
       if(p<0)
 	return false;
-      if(strcmp("JGZ", line.c_str()) && strcmp("JLZ", line.c_str())
-	 && strcmp("JEZ", line.c_str()) && strcmp("JNZ", line.c_str()))
+      if(strncmp("JGZ", line.c_str(),3) && strncmp("JLZ", line.c_str(),3)
+	 && strncmp("JEZ", line.c_str(),3) && strncmp("JNZ", line.c_str(),3)&& strncmp("JEZ", line.c_str(), 3) && strncmp("JMP", line.c_str(),3))
 	return false;
       
-      else if(!strcmp("JGZ", line.c_str())&&this->acc>0)
+      else if(!strncmp("JGZ", line.c_str(),3)&&this->acc>0)
 	pc=p;
-      else if(!strcmp("JLZ", line.c_str()) &&this->acc<0)
+      else if(!strncmp("JLZ", line.c_str(),3) &&this->acc<0)
 	pc=p;
-      else if(!strcmp("JEZ", line.c_str())&&this->acc==0)
+      else if(!strncmp("JEZ", line.c_str(),3)&&this->acc==0)
 	pc=p;
-      else if(!strcmp("JNZ", line.c_str())&&this->acc!=0)
+      else if(!strncmp("JNZ", line.c_str(),3)&&this->acc!=0)
+	pc=p;
+      else if(!strncmp("JMP", line.c_str(),3))
 	pc=p;
       else
 	pc++;
@@ -172,85 +174,30 @@ bool node::runline(){
 }
               
 bool node::runPrepare(){
-  // TODO – Collect labels
   labels.clear();
+  endwin();
   std::vector<int> labelLines;
   for (int8_t i = 0; i < inputCode.size(); i++){
-    bool space=false;
+    bool label=false;
     
     for(unsigned int j=0;j<inputCode.size();j++){
       string line=inputCode[i];
       char ch=line[j];
-      string tmp;
-      int last_space=0;
-      int n_operands=0;
-      bool label=false;
-      
+      string tmp;      
       if(ch==':'){
-	if(last_space)
-	  return false;
-	else{
-	  std::pair<std::string, uint8_t> p;
-	  p.first=line.substr(0,j-1);
-	  p.second=i;
-	  labels.push_back(p);
-	}
+	std::pair<std::string, uint8_t> p;
+	int c;
+	p.first=line.substr(0,j);
+	p.second=i;
+	labels.push_back(p);
+	label=true;
+	c=line.substr(j+1).find_first_not_of(" ");
+	code.push_back(line.substr(c+j+1));
+	break;
       }
-      if(ch==' '||j==inputCode.size()-1){
-	last_space=j;
-	      if(space==true)
-		continue;
-	else{
-	  bool symbol_found=false;
-	  space=true;
-	  tmp=line.substr(last_space+1, j-last_space-1);
-
-	  if(label){
-	    code[i].append(tmp);
-	    labelLines.push_back(i);
-	  }
-	  if(n_operands==0){
-	    for (uint8_t x = 0; x < 4; x++) {
-	      if (SIM_OPS[x].compare(tmp) == 0) {
-		n_operands=0;
-		symbol_found=true;
-		goto operand_test;
-		  }
-	    }
-	    for (uint8_t x = 0; x < 3; x++) {
-	      if (SRC_OPS[x].compare(tmp) == 0) {
-		symbol_found = true;
-		n_operands=1;
-		goto operand_test;
-	      }
-	    }
-	    for (uint8_t x = 0; x < 4; x++) {
-	      if (LAB_OPS[x].compare(tmp) == 0) {
-		symbol_found = true;
-	        label=true;
-		//n_operands stays 0 - the test for labels happens later
-		goto operand_test; 
-	      }
-	    }
-	    if(tmp=="MOV"){
-	      symbol_found==true;
-	      n_operands=2;
-	    }
-	  }
-	operand_test:
-	  if(n_operands>0)
-	    if(tmp=="UP"||tmp=="RIGHT"||tmp=="DOWN"||tmp=="LEFT"||tmp=="ACC"||tmp=="NIL"||(isNum(tmp)&&n_operands==2)){ //or number
-	      n_operands--;
-	       symbol_found=true;
-	     }
-	   if(!symbol_found)
-	     return false;
-	   else
-	     code[i].append(tmp);
-	}
-      }
-      else
-	space=false;
+    }
+    if(label==false){
+      code.push_back(inputCode[i]);
     }
   }
   for(int i=0; i<labelLines.size();i++){
@@ -487,6 +434,9 @@ void node::arrowUpdate(unsigned int arrowID){
 }
 
 int node::getLine(std::string label){
-  //TODO
-  return 0;
+  for(unsigned int i=0; i<labels.size();i++){
+    if(labels[i].first==label)
+      return labels[i].second;
+  }
+  return -1;
 }
