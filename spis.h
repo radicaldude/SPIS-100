@@ -49,11 +49,22 @@ class arrowType{
 	public:
 		int8_t status[2];
 		int16_t value[2];
-		uint8_t getNodeIndex(int8_t nodeId);
-		virtual bool setRequest(int8_t nodeId);
-		virtual bool getRequest(int8_t nodeId);
-		virtual int16_t nodeGet(int8_t nodeId);
-		virtual void nodeSet(int8_t nodeId, int16_t number);
+		uint8_t getNodeIndex(int8_t id);
+		virtual bool setRequest(int8_t id) {
+			return false;
+		}
+		virtual bool getRequest(int8_t id) {
+			return false;
+		}
+		virtual int16_t nodeGet(int8_t id) {
+			return 0;
+		}
+		virtual void nodeSet(int8_t id, int16_t number) {
+			return;
+		}
+		virtual void tickUpdate() {
+			return;
+		}
 
 		WINDOW *win;
 };
@@ -61,10 +72,11 @@ class arrowType{
 class arrow: public arrowType {
 	public:
 		arrow(int8_t nodeId1, int8_t nodeId2);
-		bool setRequest(int8_t nodeId);
-		bool getRequest(int8_t nodeId);
-		int16_t nodeGet(int8_t nodeId);
-		void nodeSet(int8_t nodeId, int16_t number);
+		bool setRequest(int8_t id);
+		bool getRequest(int8_t id);
+		int16_t nodeGet(int8_t id);
+		void nodeSet(int8_t id, int16_t number);
+		void tickUpdate();
 };
 
 class node{
@@ -93,24 +105,31 @@ class node{
   int  backspace(int line, int index);
   std::list<std::pair<std::string, uint8_t> > labels;
   int getLine(string label);
-  arrow *arrows[4];
+  arrowType *arrows[4];
 };
 
 typedef struct{
-  arrow *arr;
+  arrowType *arr;
   std::vector<int> values;
 } io;
+
+class inputArrow: public arrowType {
+	public:
+		inputArrow(int8_t id);
+		bool setRequest(int8_t id);
+		bool getRequest(int8_t id);
+		int16_t nodeGet(int8_t id);
+		void nodeSet(int8_t id, int16_t number);
+		void tickUpdate();
+};
 
 class input {
 	protected:
 		list<int> inputList;
-		arrow inputArrow;
+		inputArrow arr;
 	public:
-		virtual void inputInt(int input) {
-			inputList.push_back(input);
-			if (inputArrow.setRequest(inputID))
-				inputArrow.nodeSet(inputID, input);
-		}
+		virtual void loadValue();
+		virtual void inputInt(int input);
 };
 
 class output {
@@ -134,7 +153,9 @@ extern bool stop;
 extern int state;
 extern int tickDelay;
 extern std::vector<io> inputs, outputs;
+//extern vector<input>
 extern std::vector<node> grid;
+extern vector<arrowType *> gridArrows;
 extern void drawHighlight(int i);
 //extern void updateArrow(int, int);
 extern string makeThreeDigit(int n);

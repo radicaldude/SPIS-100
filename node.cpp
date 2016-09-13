@@ -30,7 +30,7 @@ bool node::runline(){
     std::string src, dst;
     pair<int8_t, uint16_t> p;
     int16_t input;
-    arrow *a;
+    arrowType *a;
 
     string operands = line.substr(4);
     c = operands.find_first_of(' ');
@@ -272,7 +272,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       p.second = 0;
       return p;
     } else if (src ==  "LEFT") {
-      arrow *a = arrows[3];
+      arrowType *a = arrows[3];
       pair<bool, int16_t> p;
 
       if (a->getRequest(nodeId)) {
@@ -284,7 +284,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       arrowUpdate(3);
       return p;
     } else if (src ==  "RIGHT") {
-      arrow *a = arrows[1];
+    	arrowType *a = arrows[1];
       pair<bool, int16_t> p;
 
       if (a->getRequest(nodeId)) {
@@ -296,7 +296,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       arrowUpdate(1);
       return p;
     } else if (src ==  "UP") {
-      arrow *a = arrows[0];
+    	arrowType *a = arrows[0];
       pair<bool, int16_t> p;
 
       if (a->getRequest(nodeId)){
@@ -308,7 +308,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       arrowUpdate(0);
       return p;
     } else if (src ==  "DOWN") {
-      arrow *a = arrows[2];
+    	arrowType *a = arrows[2];
       pair<bool, int16_t> p;
 
       if (a->getRequest(nodeId)) {
@@ -344,21 +344,20 @@ void node::reset(){
 }
 
 void node::arrowUpdate(unsigned int arrowID){
-  string vals[2];
-  arrow *tmp_arrow = arrows[arrowID];
-  if(!arrows[arrowID]){
-    endwin();
-    printf("ERROR: arrow was NULL!\n");
-    return;
-  }
-  for(int i=0;i<2;i++){
-    if(arrows[arrowID]->status[i]==SET)
-      vals[i] = makeThreeDigit(tmp_arrow->value[0]);
-    else
-      vals[i] = " ?  ";
-  }
-	
-  if (arrowID % 2==0) {
+	string vals[2];
+	arrowType *tmp_arrow = arrows[arrowID];
+	if(!arrows[arrowID]){
+	   endwin();
+	   printf("ERROR: arrow was NULL!\n");
+	  return;
+	}
+	for(int i=0;i<2;i++){
+	  if(arrows[arrowID]->status[i]==SET)
+	    vals[i] = makeThreeDigit(tmp_arrow->value[0]);
+	  else
+	    vals[i] = " ?  ";
+	}
+  if (arrowID&2) {
     mvwprintw(tmp_arrow->win, 0, 0, vals[0].c_str());
     mvwprintw(tmp_arrow->win, 0, 7, vals[1].c_str());
   } else {
