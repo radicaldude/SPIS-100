@@ -42,7 +42,6 @@ int selectedLine = 0;
 int selectedIndex = 0;
 
 void initSystem() {
-  io tmp_io;
   int c,x=GAP_WIDTH_H, y=0, id;
   int max_x, max_y;
   int nID=0;
@@ -115,12 +114,14 @@ void initSystem() {
 
   refresh();
 
-  inputs.push_back(tmp_io);
+  /*inputs.push_back(tmp_io);
   inputs[0].arr = new arrow(-1, 0);
   grid[0].arrows[0]=inputs[0].arr;
   outputs.push_back(tmp_io);
   grid.back().arrows[2]= new arrow(-2, grid.size()-1);
-  outputs[0].arr=grid.back().arrows[2];
+  outputs[0].arr=grid.back().arrows[2];*/
+
+  return;
 }
 
 // DRAWING

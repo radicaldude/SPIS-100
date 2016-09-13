@@ -27,6 +27,7 @@ const string SD_OPS[] = { "MOV" };  // Operations with both SRC and DST as param
 const string LAB_OPS[] = { "JMP", "JEZ", "JNZ", "JGZ", "JLZ"}; // Operations with only SRC as a parameter
 
 const int inputID = -1;
+const int outputID = -2;
 
 
 enum STATUS{
@@ -108,11 +109,6 @@ class node{
   arrowType *arrows[4];
 };
 
-typedef struct{
-  arrowType *arr;
-  std::vector<int> values;
-} io;
-
 class inputArrow: public arrowType {
 	public:
 		inputArrow(int8_t id);
@@ -123,17 +119,14 @@ class inputArrow: public arrowType {
 		void tickUpdate();
 };
 
-class input {
-	protected:
-		list<int> inputList;
-		inputArrow arr;
+class outputArrow: public arrowType {
 	public:
-		virtual void loadValue();
-		virtual void inputInt(int input);
-};
-
-class output {
-
+		outputArrow(int8_t id);
+		bool setRequest(int8_t id);
+		bool getRequest(int8_t id);
+		int16_t nodeGet(int8_t id);
+		void nodeSet(int8_t id, int16_t number);
+		void tickUpdate();
 };
 
 int get_code(ifstream *file, std::vector<node> &grid);
@@ -152,8 +145,9 @@ void drawSystemContent();
 extern bool stop;
 extern int state;
 extern int tickDelay;
-extern std::vector<io> inputs, outputs;
-//extern vector<input>
+//extern std::vector<io> inputs, outputs;
+extern vector<input> inputs;
+extern vector<output> outputs;
 extern std::vector<node> grid;
 extern vector<arrowType *> gridArrows;
 extern void drawHighlight(int i);

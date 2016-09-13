@@ -1,15 +1,48 @@
 #include "spis.h"
 
+// input
+
+input::input(int8_t id) : arr(id) {
+	return;
+}
+
 void input::loadValue() {
-	if (arr.setRequest(-1) && inputList.size() > 0) {
-		arr.nodeSet(-1, inputList.front());
-		inputList.pop_front();
-	}
+	arr.nodeSet(inputID, inputList.front());
+	inputList.pop_front();
+	return;
 }
 
 void input::inputInt(int input) {
 	inputList.push_back(input);
-	loadValue();
+
+	if (arr.setRequest(inputID) && inputList.size() > 0)
+		loadValue();
+
+	return;
+}
+
+void input::tickUpdate() {
+	if (inputList.size() > 0 && arr.setRequest(inputID))
+		loadValue();
+
+	return;
 }
 
 
+// output
+
+output::output(int8_t id) : arr(id) {
+	return;
+}
+
+void output::takeValue() {
+	arr.nodeGet(outputID);
+	return;
+}
+
+void output::tickUpdate() {
+	if (arr.getRequest(outputID))
+		takeValue();
+
+	return;
+}
