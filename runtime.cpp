@@ -1,4 +1,5 @@
 #include "spis.h"
+#include "io.h"
 #include <unistd.h>
 
 void compute_tick(){

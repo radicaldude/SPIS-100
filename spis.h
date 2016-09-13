@@ -146,8 +146,6 @@ extern bool stop;
 extern int state;
 extern int tickDelay;
 //extern std::vector<io> inputs, outputs;
-extern vector<input> inputs;
-extern vector<output> outputs;
 extern std::vector<node> grid;
 extern vector<arrowType *> gridArrows;
 extern void drawHighlight(int i);
@@ -156,3 +154,5 @@ extern string makeThreeDigit(int n);
 extern bool isNum(string);
 extern int x;
 extern int y;
+
+#include "io.h"

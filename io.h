@@ -23,5 +23,8 @@ class output {
 
 class inputList: public input {
 	protected:
-		list<int> in
+		list<int> in;
 };
+
+extern vector<input> inputs;
+extern vector<output> outputs;
