@@ -21,7 +21,6 @@ bool node::runline(){
   	    pc=0;
     return true;
   }
-  endwin();
   string line = code[pc];
   if(!strncmp("NOP", line.c_str(), 3)){
     pc++;
@@ -175,11 +174,10 @@ bool node::runline(){
               
 bool node::runPrepare(){
   labels.clear();
-  endwin();
+  code.resize(inputCode.size());
   std::vector<int> labelLines;
   for (int8_t i = 0; i < inputCode.size(); i++){
     bool label=false;
-    
     for(unsigned int j=0;j<inputCode.size();j++){
       string line=inputCode[i];
       char ch=line[j];
@@ -192,121 +190,59 @@ bool node::runPrepare(){
 	labels.push_back(p);
 	label=true;
 	c=line.substr(j+1).find_first_not_of(" ");
-	code.push_back(line.substr(c+j+1));
+	code[i]=line.substr(c+j+1);
 	break;
       }
     }
     if(label==false){
-      code.push_back(inputCode[i]);
+      code[i]=inputCode[i];
     }
   }
   for(int i=0; i<labelLines.size();i++){
     string operand;
     bool label_exists=false;
     operand=code[labelLines[i]].substr(4);
-    for(int j=0;j<labels.size();j++){
-      if(labels[j].first==operand){
+    for(list<pair<string, uint8_t> >::iterator j=labels.begin();j!=labels.end();j++){
+      if(j->first==operand){
 	label_exists=true;
 	break;
       }
-      if(label_exists==false)
-	return false;
     }
+    if(label_exists==false)
+      return false;
   }
-}/*
-  // TODO – Remove labels from code
-  
-  // TODO – Debug
-  codeLoop: for (uint8_t i = 0; i < code.size(); i++) {
-    string op = code[i].substr(0, 3);
-    bool opFound = false;
-    
-    for (uint8_t x = 0; x < 4; x++) {
-      if (SIM_OPS[x].compare(op) == 0) {
-        opFound = true;
-      }
-    }
-    if (opFound == true) {
-      if (code[i].length()) {
-        // TODO – Handle error
-      }
-      continue codeLoop;
-    }
-    
-    
-    for (uint8_t x = 0; x < 3; x++) {
-      if (SRC_OPS[x].compare(op) == 0) {
-        opFound = true;
-      }
-    }
-    if (opFound == true) {
-      string param = code[i].substr(4);
-      if (param.find(' ') != string::npos) {
-        // TODO – Handle error
-      } else if (!testSrc(param)) {
-        // TODO – Handle error
-      }
-      continue codeLoop;
-    }
-    
-    if (SD_OPS[0].compare(op) == 0) {
-      string param = code[i].substr(4);
-      string paramSrc = param.substr(0, param.find(' '));
-      string paramDst = param.substr(paramSrc.length() + 1)
-      if(paramDst.find(' ') != string::npos) {
-        // TODO – Handle error
-      } else if (!testSrc(paramSrc)) {
-        // TODO – Handle error
-      } else if (!testDst(paramDst)) {
-        // TODO – Handle error
-      }
-      continue codeLoop;
-    }
-    
-    for (uint8_t x = 0; x < 4; x++) {
-      if (LAB_OPS[x].compare(op) == 0) {
-        opFound = true;
-      }
-    }
-    if (opFound == true) {
-      string param = code[i].substr(4);
-      if (labels.find(param) == map::end) {
-        // TODO - Handle error
-      }
-      continue codeLoop;
-    }
-    }
+  //TODO remove extra whitespace
 }
- */
+
 void node::inputChar(int line, int index, char ch) {
-	if (inputCode.size() > line) {
-	  if (inputCode[line].length() < MAX_LINE_LENGTH) {
-	  	inputCode[line] = inputCode[line].substr(0, index) + ch + inputCode[line].substr(index);
-	    //inputCode[line] += ch;
-	  }
-	} else {
-		inputCode[line] = ch;
-	}
+  if (inputCode.size() > line) {
+    if (inputCode[line].length() < MAX_LINE_LENGTH) {
+      inputCode[line] = inputCode[line].substr(0, index) + ch + inputCode[line].substr(index);
+      //inputCode[line] += ch;
+    }
+  } else {
+    inputCode[line] = ch;
+  }
 }
 
 void node::newLine(int line, int index) {
   inputCode.insert(inputCode.begin() + line, inputCode[line].substr(0, index));
-	inputCode[line + 1] = inputCode[line + 1].substr(index);
+  inputCode[line + 1] = inputCode[line + 1].substr(index);
 }
 
 int node::backspace(int line, int index) {
   if (index > 0) {
-  	if (inputCode[line].length() > index) {
-  		inputCode[line] = inputCode[line].substr(0, index - 1) + inputCode[line].substr(index);
-  	} else if (inputCode[line].length() == index) {
-  		inputCode[line] = inputCode[line].substr(0, index - 1);
-  	}
-		return 1;
+    if (inputCode[line].length() > index) {
+      inputCode[line] = inputCode[line].substr(0, index - 1) + inputCode[line].substr(index);
+    } else if (inputCode[line].length() == index) {
+      inputCode[line] = inputCode[line].substr(0, index - 1);
+    }
+    return 1;
   } else if(line > 0 && inputCode[line - 1].length() + inputCode[line].length() <= MAX_LINE_LENGTH && index == 0) {
-  	inputCode[line - 1] += inputCode[line];
+    inputCode[line - 1] += inputCode[line];
     inputCode.erase(inputCode.begin() + line);
     return 2;
-	}
+  }
   
   return 0;
 }
@@ -408,35 +344,35 @@ void node::reset(){
 }
 
 void node::arrowUpdate(unsigned int arrowID){
-	string vals[2];
-	arrow *tmp_arrow = arrows[arrowID];
-	if(!arrows[arrowID]){
-	   endwin();
-	   printf("ERROR: arrow was NULL!\n");
-	  return;
-	}
-	for(int i=0;i<2;i++){
-	  if(arrows[arrowID]->status[i]==SET)
-	    vals[i] = makeThreeDigit(tmp_arrow->value[0]);
-	  else
-	    vals[i] = " ?  ";
-	}
+  string vals[2];
+  arrow *tmp_arrow = arrows[arrowID];
+  if(!arrows[arrowID]){
+    endwin();
+    printf("ERROR: arrow was NULL!\n");
+    return;
+  }
+  for(int i=0;i<2;i++){
+    if(arrows[arrowID]->status[i]==SET)
+      vals[i] = makeThreeDigit(tmp_arrow->value[0]);
+    else
+      vals[i] = " ?  ";
+  }
 	
-	if (arrowID % 2==0) {
-	  mvwprintw(tmp_arrow->win, 0, 0, vals[0].c_str());
-	  mvwprintw(tmp_arrow->win, 0, 7, vals[1].c_str());
-	} else {
-	  mvwprintw(tmp_arrow->win, 0, 0, vals[0].c_str());
-	  mvwprintw(tmp_arrow->win, 3, 0, vals[1].c_str());
-	}
-	wrefresh(tmp_arrow->win);
-	return;  
+  if (arrowID % 2==0) {
+    mvwprintw(tmp_arrow->win, 0, 0, vals[0].c_str());
+    mvwprintw(tmp_arrow->win, 0, 7, vals[1].c_str());
+  } else {
+    mvwprintw(tmp_arrow->win, 0, 0, vals[0].c_str());
+    mvwprintw(tmp_arrow->win, 3, 0, vals[1].c_str());
+  }
+  wrefresh(tmp_arrow->win);
+  return;  
 }
 
 int node::getLine(std::string label){
-  for(unsigned int i=0; i<labels.size();i++){
-    if(labels[i].first==label)
-      return labels[i].second;
+  for(list<pair<string, uint8_t> >::iterator i=labels.begin(); i!=labels.end();i++){
+    if(i->first==label)
+      return i->second;
   }
   return -1;
 }

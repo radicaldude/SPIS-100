@@ -1,5 +1,5 @@
 #include "spis.h"
-#define TICK_DELAY 1000000
+#define TICK_DELAY 200000
 int y, x = 0;
 bool cursorVisible = false;
 
@@ -76,12 +76,18 @@ void runtimeLoop() {
   pthread_t *thread = new pthread_t;
   int err = pthread_create(thread, NULL, &runtimeInputLoop, NULL);
 
-  for(unsigned int i=0;i<grid.size();i++){
+  for(unsigned int i=0;i<grid.size();i++)
     grid[i].runPrepare();
-    //grid[i].code = grid[i].inputCode;
-  }
 
-  //reset arrows, input and output
+  //TODO: reset input and output
+  for(unsigned int i=0;i<grid.size();i++){
+    for(int j=0;j<4;j++){
+      if(grid[i].arrows[j]){
+	grid[i].arrows[j]->status[0]=WAIT;
+	grid[i].arrows[j]->status[1]=WAIT;
+      }
+    }
+  }
   if(err!=0){
     return;
   }
@@ -91,8 +97,8 @@ void runtimeLoop() {
   }
 
   while (state == RUNNING) {
-  	redrawContent();
-	usleep(TICK_DELAY);
+    redrawContent();
+    usleep(TICK_DELAY);
     compute_tick();
   }
 
