@@ -4,15 +4,9 @@ class input {
 		inputArrow arr;
 	public:
 		input(int8_t id);
-		virtual void loadValue() {
-			return;
-		}
-		virtual void inputInt(int input) {
-			return;
-		}
-		virtual void tickUpdate() {
-			return;
-		}
+		virtual void loadValue();
+		virtual void inputInt(int input);
+		virtual void tickUpdate();
 };
 
 class output {

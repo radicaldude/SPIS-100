@@ -1,5 +1,4 @@
 #include "spis.h"
-
 // input
 
 input::input(int8_t id) : arr(id) {
