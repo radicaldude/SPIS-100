@@ -1,11 +1,9 @@
 #include "spis.h"
 #include <unistd.h>
-std::vector<io> inputs;
-std::vector<io> outputs;
 
 void compute_tick(){
   unsigned int i;
-  for(i=0;i<inputs.size();i++){
+  /*for(i=0;i<inputs.size();i++){
     if(inputs[i].arr->status[0]==SET){
       continue;
     }
@@ -14,10 +12,14 @@ void compute_tick(){
       inputs[i].values.pop_back();
       inputs[i].arr->status[0]=SET;
     }
+  }*/
+
+  for (i=0; i < inputs.size(); i++) {
+  	inputs[i].tickUpdate();
   }
 
   for (i = 0; i < gridArrows.size(); i++) {
-  	gridArrows[i]->tickUpdate();
+     gridArrows[i]->tickUpdate();
   }
 
   for(i=0;i<grid.size();i++){
@@ -40,6 +42,10 @@ void compute_tick(){
 	break;
       }
     }
+  }
+
+  for (i=0; i < outputs.size(); i++) {
+    outputs[i].tickUpdate();
   }
 
   /*(for(i=0;i<outputs.size();i++){

@@ -58,6 +58,8 @@ void arrow::tickUpdate() {
 	for(int k=0;k<2;k++)
 		if(status[k]==SET)
 			status[k]==READY;
+
+	return;
 }
 
 
@@ -69,6 +71,8 @@ inputArrow::inputArrow(int8_t id) {
 	status[0] = WAIT;
 
 	value[0] = 0;
+
+	return;
 }
 
 bool inputArrow::setRequest(int8_t id) {
@@ -79,7 +83,7 @@ bool inputArrow::setRequest(int8_t id) {
 }
 
 bool inputArrow::getRequest(int8_t id) {
-	if (status[0] == SET) {
+	if (status[0] == READY) {
 		return true;
 	}
 	return false;
@@ -91,6 +95,44 @@ int16_t inputArrow::nodeGet(int8_t id) {
 }
 
 void inputArrow::nodeSet(int8_t id, int16_t number) {
+  value[0] = number;
+  status[0] = SET;
+  return;
+}
+
+
+// outputArrow
+
+outputArrow::outputArrow(int8_t id) {
+	nodeId[0] = id;
+
+	status[0] = WAIT;
+
+	value[0] = 0;
+
+	return;
+}
+
+bool outputArrow::setRequest(int8_t id) {
+	if (status[0] == WAIT) {
+		return true;
+	}
+	return false;
+}
+
+bool outputArrow::getRequest(int8_t id) {
+	if (status[0] == SET && id < 0) {
+		return true;
+	}
+	return false;
+}
+
+int16_t outputArrow::nodeGet(int8_t id) {
+  status[0] = WAIT;
+  return value[0];
+}
+
+void outputArrow::nodeSet(int8_t id, int16_t number) {
   value[0] = number;
   status[0] = SET;
   return;
