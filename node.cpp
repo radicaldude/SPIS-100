@@ -87,15 +87,10 @@ bool node::runline(){
   } else if(!strncmp("ADD", line.c_str(), 3)){
     string src = line.substr(4);
     pair<bool, int16_t> p = getFromSrc(src);
-    if (p.first) {
-      return true;
-    }
-    else{
-      acc += p.second;
-      pc++;
-      return true;
-    }
-  } else if(!strncmp("SUB", line.c_str(), 3)){
+    acc += p.second;
+    pc++;
+    return true;
+    } else if(!strncmp("SUB", line.c_str(), 3)){
     string src = line.substr(4);
     pair<int8_t, int16_t> p = getFromSrc(src);
     
