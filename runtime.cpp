@@ -1,7 +1,7 @@
 #include "spis.h"
-#include "io.h"
 #include <unistd.h>
-
+std::vector<input> inputs;
+std::vector<output> outputs;
 void compute_tick(){
   unsigned int i;
   /*for(i=0;i<inputs.size();i++){

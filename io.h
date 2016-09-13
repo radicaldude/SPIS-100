@@ -1,5 +1,3 @@
-#include "spis.h"
-
 class input {
 	protected:
 		list<int> inputList;
