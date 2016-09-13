@@ -20,3 +20,8 @@ class output {
 		virtual void takeValue();
 		virtual void tickUpdate();
 };
+
+class inputList: public input {
+	protected:
+		list<int> in
+};

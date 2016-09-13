@@ -100,6 +100,14 @@ void inputArrow::nodeSet(int8_t id, int16_t number) {
   return;
 }
 
+void inputArrow::tickUpdate() {
+	for(int k=0;k<2;k++)
+		if(status[k]==SET)
+			status[k]==READY;
+
+	return;
+}
+
 
 // outputArrow
 
@@ -136,4 +144,12 @@ void outputArrow::nodeSet(int8_t id, int16_t number) {
   value[0] = number;
   status[0] = SET;
   return;
+}
+
+void outputArrow::tickUpdate() {
+	for(int k=0;k<2;k++)
+		if(status[k]==SET)
+			status[k]==READY;
+
+	return;
 }
