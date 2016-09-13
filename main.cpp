@@ -1,5 +1,5 @@
 #include "spis.h"
-#define TICK_DELAY 200000
+#define TICK_DELAY 1000000
 int y, x = 0;
 bool cursorVisible = false;
 

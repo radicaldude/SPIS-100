@@ -31,7 +31,7 @@ bool arrow::setRequest(int8_t id) {
 
 bool arrow::getRequest(int8_t id) {
   uint8_t nodeIndex = getNodeIndex(id);
-  if (status[!nodeIndex] == SET) {
+  if (status[!nodeIndex] == READY) {
     return true;
   }
   return false;

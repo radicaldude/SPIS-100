@@ -276,7 +276,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       return p;
     } else if (src ==  "UP") {
     	arrowType *a = arrows[0];
-      pair<bool, int16_t> p;
+	pair<bool, int16_t> p;
 
       if (a->getRequest(nodeId)){
         p.first = true;
@@ -332,7 +332,7 @@ void node::arrowUpdate(unsigned int arrowID){
 	}
 	for(int i=0;i<2;i++){
 	  if(arrows[arrowID]->status[i]==SET||arrows[arrowID]->status[i]==READY)
-	    vals[i] = makeThreeDigit(tmp_arrow->value[0]);
+	    vals[i] = makeThreeDigit(tmp_arrow->value[i]);
 	  else
 	    vals[i] = " ?  ";
 	}
