@@ -33,6 +33,7 @@ WINDOW *pauseButton;
 
 int  grid_size[2] = {4,4};
 std::vector<node> grid;
+vector<arrowType *> gridArrows;
 int  state = OFF;
 bool stop;
 

@@ -32,14 +32,14 @@ bool arrow::setRequest(int8_t id) {
 
 bool arrow::getRequest(int8_t id) {
   uint8_t nodeIndex = getNodeIndex(id);
-  if (status[(nodeIndex + 1) % 2] == SET) {
+  if (status[!nodeIndex] == SET) {
     return true;
   }
   return false;
 }
 
 int16_t arrow::nodeGet(int8_t id) {
-  uint8_t nodeIndex = (getNodeIndex(id) + 1) % 2;
+  uint8_t nodeIndex = !getNodeIndex(id);
   int16_t tmpValue = value[nodeIndex];
 
   status[nodeIndex] = WAIT;
