@@ -23,7 +23,6 @@ uint8_t arrowType::getNodeIndex(int8_t id) {
 
 bool arrow::setRequest(int8_t id) {
   uint8_t nodeIndex = getNodeIndex(id);
-  // TODO – Define status values
   if (status[nodeIndex] == WAIT) {
     return true;
   }
@@ -57,7 +56,7 @@ void arrow::nodeSet(int8_t id, int16_t number) {
 void arrow::tickUpdate() {
 	for(int k=0;k<2;k++)
 		if(status[k]==SET)
-			status[k]==READY;
+			status[k]=READY;
 
 	return;
 }

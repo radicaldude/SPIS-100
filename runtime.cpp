@@ -16,11 +16,11 @@ void compute_tick(){
   }*/
 
   for (i=0; i < inputs.size(); i++) {
-  	inputs[i].tickUpdate();
+    inputs[i].tickUpdate();
   }
 
   for (i = 0; i < gridArrows.size(); i++) {
-     gridArrows[i]->tickUpdate();
+    gridArrows[i]->tickUpdate();
   }
 
   for(i=0;i<grid.size();i++){

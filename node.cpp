@@ -37,10 +37,8 @@ bool node::runline(){
     src = operands.substr(0,c);
     dst = operands.substr(c + 1);
     p = getFromSrc(src);
-    
-    if(p.first==INVALID)
-      return false;
-    else if(p.first==SET){
+  
+    if(!p.first){
       return true;
     }
     input = p.second;
@@ -89,18 +87,11 @@ bool node::runline(){
   } else if(!strncmp("ADD", line.c_str(), 3)){
     string src = line.substr(4);
     pair<bool, int16_t> p = getFromSrc(src);
-    int16_t input;
-    if (p.first!=READY) {
+    if (p.first) {
       return true;
     }
-    
-    else if(p.first==INVALID){
-      //error
-      return false;
-    }
     else{
-      input = p.second;
-      acc += input;
+      acc += p.second;
       pc++;
       return true;
     }
@@ -110,12 +101,7 @@ bool node::runline(){
     
     int16_t input;
  
-    if(p.first==INVALID){
-      //error
-      return false;
-    }
-
-    else if (p.first!=READY) {
+    if (!p.first) {
       return true;
     }
    
@@ -137,10 +123,8 @@ bool node::runline(){
       string operands = line.substr(4);
       string src = operands.substr(0);
       pair<int8_t, int16_t> p = getFromSrc(src);
-      if(p.first!=READY )
+      if(!p.first)
 	 return true;
-      else if(p.first==INVALID)
-	return false;
       else
 	pc=pc+p.second;
       return true;
@@ -173,9 +157,9 @@ bool node::runline(){
 }
               
 bool node::runPrepare(){
+  std::vector<int> labelLines;
   labels.clear();
   code.resize(inputCode.size());
-  std::vector<int> labelLines;
   for (int8_t i = 0; i < inputCode.size(); i++){
     bool label=false;
     for(unsigned int j=0;j<inputCode.size();j++){
@@ -263,12 +247,12 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
   } else {
     if (src == "ACC") {
       pair<bool, int16_t> p;
-      p.first = SET;
+      p.first = true;
       p.second = this->acc;
       return p;
     } else if (src ==  "NIL") {
       pair<bool, int16_t> p;
-      p.first = SET;
+      p.first = true;
       p.second = 0;
       return p;
     } else if (src ==  "LEFT") {
@@ -276,10 +260,10 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       pair<bool, int16_t> p;
 
       if (a->getRequest(nodeId)) {
-        p.first = SET;
+        p.first = true;
         p.second = a->nodeGet(nodeId);
       } else {
-        p.first = WAIT;
+        p.first = false;
       }
       arrowUpdate(3);
       return p;
@@ -288,10 +272,10 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       pair<bool, int16_t> p;
 
       if (a->getRequest(nodeId)) {
-        p.first = SET;
+        p.first = true;
         p.second = a->nodeGet(nodeId);
       } else {
-        p.first = WAIT;
+        p.first = false;
       }
       arrowUpdate(1);
       return p;
@@ -300,10 +284,10 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       pair<bool, int16_t> p;
 
       if (a->getRequest(nodeId)){
-        p.first = SET;
+        p.first = true;
         p.second = a->nodeGet(nodeId);
       } else {
-        p.first = WAIT;
+        p.first = false;
       }
       arrowUpdate(0);
       return p;
@@ -312,10 +296,10 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       pair<bool, int16_t> p;
 
       if (a->getRequest(nodeId)) {
-        p.first = SET;
+        p.first = true;
         p.second = a->nodeGet(nodeId);
       } else {
-        p.first = WAIT;
+        p.first = false;
       }
       arrowUpdate(2);
       return p;
@@ -352,7 +336,7 @@ void node::arrowUpdate(unsigned int arrowID){
 	  return;
 	}
 	for(int i=0;i<2;i++){
-	  if(arrows[arrowID]->status[i]==SET)
+	  if(arrows[arrowID]->status[i]==SET||arrows[arrowID]->status[i]==READY)
 	    vals[i] = makeThreeDigit(tmp_arrow->value[0]);
 	  else
 	    vals[i] = " ?  ";
