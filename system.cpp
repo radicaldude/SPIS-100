@@ -2,27 +2,6 @@
 #include <pthread.h>
 #include <locale.h>
 
-#define NODE_HEIGHT 11
-#define ARROW_H_WIDTH 4
-#define ARROW_H_HEIGHT 4
-#define ARROW_V_WIDTH 12
-#define ARROW_V_HEIGHT 1
-#define GAP_WIDTH_H 1
-#define GAP_WIDTH_V 0
-#define NODE_WIDTH 26
-#define CODE_WIDTH 20
-#define BUTTON_WIDTH 5
-#define BUTTON_HEIGHT 3
-
-
-#ifdef _ascii_only
-#define H_ARROW "\n---><---"
-#define V_ARROW "    v^"
-#else
-#define V_ARROW "   ⇧⇩"
-#define H_ARROW "\n ⇨\n ⇦"
-#endif
-
 pthread_t inputThread;
 
 string makeThreeDigit(int n);
@@ -73,19 +52,13 @@ void initSystem(int begX, int begY) {
       }
 
       if (j != grid_size[1] - 1) {
-      	grid[nID].arrows[1] = new arrow(nID, nID + 1);
-      	grid[nID].arrows[1]->win=newwin(ARROW_H_HEIGHT, ARROW_H_WIDTH, y + floor(NODE_HEIGHT / 2) - floor(ARROW_H_HEIGHT / 2),x + NODE_WIDTH + GAP_WIDTH_H);
+      	grid[nID].arrows[1] = new arrow(nID, nID + 1, y + floor(NODE_HEIGHT / 2) - floor(ARROW_H_HEIGHT / 2), x + NODE_WIDTH + GAP_WIDTH_H, false);
       	gridArrows.push_back(grid[nID].arrows[1]);
-      	wprintw(grid[nID].arrows[1]->win, H_ARROW);
-				wrefresh(grid[nID].arrows[1]->win);
       }
 
       if (i != grid_size[0] - 1) {
-      	grid[nID].arrows[2] = new arrow(nID, nID + grid_size[0]);
-	grid[nID].arrows[2]->win=newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, y + NODE_HEIGHT + GAP_WIDTH_V, x + floor(NODE_WIDTH / 2) - floor(ARROW_V_WIDTH / 2));
+      	grid[nID].arrows[2] = new arrow(nID, nID + grid_size[0], y + NODE_HEIGHT + GAP_WIDTH_V, x + floor(NODE_WIDTH / 2) - floor(ARROW_V_WIDTH / 2), true);
 	gridArrows.push_back(grid[nID].arrows[2]);
-	wprintw(grid[nID].arrows[2]->win, V_ARROW);
-	wrefresh(grid[nID].arrows[2]->win);
       }
 
       if (j != 0) {
@@ -118,13 +91,6 @@ void initSystem(int begX, int begY) {
   }
 
   refresh();
-
-  /*inputs.push_back(tmp_io);
-  inputs[0].arr = new arrow(-1, 0);
-  grid[0].arrows[0]=inputs[0].arr;
-  outputs.push_back(tmp_io);
-  grid.back().arrows[2]= new arrow(-2, grid.size()-1);
-  outputs[0].arr=grid.back().arrows[2];*/
 
   return;
 }
@@ -180,26 +146,17 @@ void updateReg(int nodeIndex) {
   wrefresh(tmp_node->w_reg);
 }
 
-void updateArrowsForNode(int nodeIndex) {
-  if (nodeIndex >= grid_size[1])
-  	updateArrow(nodeIndex, 0);
-
-  if ((nodeIndex + 1) % grid_size[0] != 0)
-  	updateArrow(nodeIndex, 1);
-
-  if (nodeIndex < grid_size[0] - grid_size[1])
-  	updateArrow(nodeIndex, 2);
-
-  if (nodeIndex % grid_size[0] != 0)
-  	updateArrow(nodeIndex, 3);
+void updateArrows() {
+  for (int i = 0; i < gridArrows.size(); i++)
+  	gridArrows[i]->updateValues();
 }
 
 void drawSystemContent() {
   for(int i = 0; i < grid.size(); i++) {
     drawCode(i);
     updateReg(i);
-    updateArrowsForNode(i);
   }
+  updateArrows();
 }
 
 // INPUT AND RUNTIME

@@ -1,16 +1,5 @@
 #include "spis.h"
 
-arrow::arrow(int8_t nodeId1, int8_t nodeId2) {
-  nodeId[0] = nodeId1;
-  nodeId[1] = nodeId2;
-
-  status[0] = WAIT;
-  status[1] = WAIT;
-
-  value[0] = 0;
-  value[1] = 0;
-}
-
 uint8_t arrowType::getNodeIndex(int8_t id) {
   uint8_t nodeIndex = 0;
   if (id == nodeId[1])
@@ -20,6 +9,29 @@ uint8_t arrowType::getNodeIndex(int8_t id) {
 
 
 // arrow
+
+arrow::arrow(int8_t nodeId1, int8_t nodeId2, int startY, int startX, bool vertical) {
+  nodeId[0] = nodeId1;
+  nodeId[1] = nodeId2;
+
+  status[0] = WAIT;
+  status[1] = WAIT;
+
+  value[0] = 0;
+  value[1] = 0;
+
+  vert = vertical;
+
+  if (vert) {
+  	win = win=newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, startY, startX);
+  	wprintw(win, V_ARROW);
+  } else {
+  	win = win=newwin(ARROW_H_HEIGHT, ARROW_H_WIDTH, startY, startX);
+  	wprintw(win, H_ARROW);
+  }
+
+	wrefresh(win);
+}
 
 bool arrow::setRequest(int8_t id) {
   uint8_t nodeIndex = getNodeIndex(id);
@@ -61,15 +73,49 @@ void arrow::tickUpdate() {
 	return;
 }
 
+void arrow::updateValues() {
+	string vals[2];
+
+	for(int i=0;i<2;i++){
+		if(status[i] == SET || status[i] == READY)
+			vals[i] = makeThreeDigit(value[i]);
+		else
+			vals[i] = " ?  ";
+	}
+	if (vert) {
+		mvwprintw(win, 0, 0, vals[0].c_str());
+		mvwprintw(win, 0, 7, vals[1].c_str());
+	} else {
+		mvwprintw(win, 0, 0, vals[0].c_str());
+		mvwprintw(win, 3, 0, vals[1].c_str());
+	}
+
+	wrefresh(win);
+}
+
 
 // inputArrow
 
-inputArrow::inputArrow(int8_t id) {
+inputArrow::inputArrow(int8_t id, int startY, int startX, bool vertical, string label) {
 	nodeId[0] = id;
 
 	status[0] = WAIT;
 
 	value[0] = 0;
+
+	vert = vertical;
+
+	if (vert) {
+		win = win=newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, startY, startX);
+		wprintw(win, V_ARROW);
+	} else {
+		win = win=newwin(ARROW_H_HEIGHT, ARROW_H_WIDTH, startY, startX);
+		wprintw(win, H_ARROW);
+	}
+
+	mvwprintw(win, 0, 0, label.c_str());
+
+	wrefresh(win);
 
 	return;
 }
@@ -102,9 +148,26 @@ void inputArrow::nodeSet(int8_t id, int16_t number) {
 void inputArrow::tickUpdate() {
 	for(int k=0;k<2;k++)
 		if(status[k]==SET)
-			status[k]==READY;
+			status[k]=READY;
 
 	return;
+}
+
+void inputArrow::updateValues() {
+	string val;
+
+	if(status[0] == SET || status[0] == READY)
+		val = makeThreeDigit(value[0]);
+	else
+		val = " ?  ";
+
+	if (vert) {
+		mvwprintw(win, 0, 7, val.c_str());
+	} else {
+		mvwprintw(win, 3, 0, val.c_str());
+	}
+
+	wrefresh(win);
 }
 
 
@@ -151,4 +214,21 @@ void outputArrow::tickUpdate() {
 			status[k]==READY;
 
 	return;
+}
+
+void outputArrow::updateValues() {
+	string val;
+
+	if(status[0] == SET || status[0] == READY)
+		val = makeThreeDigit(value[0]);
+	else
+		val = " ?  ";
+
+	if (vert) {
+		mvwprintw(win, 0, 7, val.c_str());
+	} else {
+		mvwprintw(win, 3, 0, val.c_str());
+	}
+
+	wrefresh(win);
 }

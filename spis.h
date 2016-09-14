@@ -16,8 +16,25 @@
 #include <list>
 
 #define MAX_LINE_LENGTH 17
-#define updateArrow(a,b) \
-  grid[a].arrowUpdate(b)
+#define NODE_HEIGHT 11
+#define ARROW_H_WIDTH 4
+#define ARROW_H_HEIGHT 4
+#define ARROW_V_WIDTH 12
+#define ARROW_V_HEIGHT 1
+#define GAP_WIDTH_H 1
+#define GAP_WIDTH_V 0
+#define NODE_WIDTH 26
+#define CODE_WIDTH 20
+#define BUTTON_WIDTH 5
+#define BUTTON_HEIGHT 3
+
+#ifdef _ascii_only
+#define H_ARROW "\n---><---"
+#define V_ARROW "    v^"
+#else
+#define V_ARROW "   ⇧⇩"
+#define H_ARROW "\n ⇨\n ⇦"
+#endif
 
 using namespace std;
 
@@ -45,6 +62,7 @@ enum STATE {
 class arrowType{
 	protected:
   	int8_t nodeId[2];
+  	bool vert;
 
 	public:
 		int8_t status[2];
@@ -65,18 +83,22 @@ class arrowType{
 		virtual void tickUpdate() {
 			return;
 		}
+		virtual void updateValues() {
+			return;
+		}
 
 		WINDOW *win;
 };
 
 class arrow: public arrowType {
 	public:
-		arrow(int8_t nodeId1, int8_t nodeId2);
+		arrow(int8_t nodeId1, int8_t nodeId2, int startX, int startY, bool vertical);
 		bool setRequest(int8_t id);
 		bool getRequest(int8_t id);
 		int16_t nodeGet(int8_t id);
 		void nodeSet(int8_t id, int16_t number);
 		void tickUpdate();
+		void updateValues();
 };
 
 class node{
@@ -110,12 +132,13 @@ class node{
 
 class inputArrow: public arrowType {
 	public:
-		inputArrow(int8_t id);
+		inputArrow(int8_t id, int startY, int startX, bool vertical, string label);
 		bool setRequest(int8_t id);
 		bool getRequest(int8_t id);
 		int16_t nodeGet(int8_t id);
 		void nodeSet(int8_t id, int16_t number);
 		void tickUpdate();
+		void updateValues();
 };
 
 class outputArrow: public arrowType {
@@ -126,6 +149,7 @@ class outputArrow: public arrowType {
 		int16_t nodeGet(int8_t id);
 		void nodeSet(int8_t id, int16_t number);
 		void tickUpdate();
+		void updateValues();
 };
 
 int get_code(ifstream *file, std::vector<node> &grid);

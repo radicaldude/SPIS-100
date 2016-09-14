@@ -64,7 +64,7 @@ bool node::runline(){
 	return false;
       if (a->setRequest(nodeId)){
 	a->nodeSet(nodeId, input);
-	arrowUpdate(a_num);
+	a->updateValues();
       }
       else
 	pc--;
@@ -260,7 +260,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       } else {
         p.first = false;
       }
-      arrowUpdate(3);
+      a->updateValues();
       return p;
     } else if (src ==  "RIGHT") {
     	arrowType *a = arrows[1];
@@ -272,7 +272,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       } else {
         p.first = false;
       }
-      arrowUpdate(1);
+      a->updateValues();
       return p;
     } else if (src ==  "UP") {
     	arrowType *a = arrows[0];
@@ -284,7 +284,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       } else {
         p.first = false;
       }
-      arrowUpdate(0);
+      a->updateValues();
       return p;
     } else if (src ==  "DOWN") {
     	arrowType *a = arrows[2];
@@ -296,7 +296,7 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       } else {
         p.first = false;
       }
-      arrowUpdate(2);
+      a->updateValues();
       return p;
     }
   }
@@ -320,31 +320,6 @@ void node::reset(){
   acc=0;
   bak=0;
   first_instruction();
-}
-
-void node::arrowUpdate(unsigned int arrowID){
-	string vals[2];
-	arrowType *tmp_arrow = arrows[arrowID];
-	if(!arrows[arrowID]){
-	   endwin();
-	   printf("ERROR: arrow was NULL!\n");
-	  return;
-	}
-	for(int i=0;i<2;i++){
-	  if(arrows[arrowID]->status[i]==SET||arrows[arrowID]->status[i]==READY)
-	    vals[i] = makeThreeDigit(tmp_arrow->value[i]);
-	  else
-	    vals[i] = " ?  ";
-	}
-  if (arrowID&2) {
-    mvwprintw(tmp_arrow->win, 0, 0, vals[0].c_str());
-    mvwprintw(tmp_arrow->win, 0, 7, vals[1].c_str());
-  } else {
-    mvwprintw(tmp_arrow->win, 0, 0, vals[0].c_str());
-    mvwprintw(tmp_arrow->win, 3, 0, vals[1].c_str());
-  }
-  wrefresh(tmp_arrow->win);
-  return;  
 }
 
 int node::getLine(std::string label){

@@ -3,27 +3,23 @@
 vector<input> inputs;
 vector<output> outputs;
 
-input::input(int8_t id) : arr(id) {
-	return;
-}
-
 void input::loadValue() {
-	arr.nodeSet(INPUT_ID, inputList.front());
-	inputList.pop_front();
+	inArr->nodeSet(INPUT_ID, inList.front());
+	inList.pop_front();
 	return;
 }
 
 void input::inputInt(int input) {
-	inputList.push_back(input);
+	inList.push_back(input);
 
-	if (arr.setRequest(INPUT_ID) && inputList.size() > 0)
+	if (inArr->setRequest(INPUT_ID) && inList.size() > 0)
 		loadValue();
 
 	return;
 }
 
 void input::tickUpdate() {
-	if (inputList.size() > 0 && arr.setRequest(INPUT_ID))
+	if (inList.size() > 0 && inArr->setRequest(INPUT_ID))
 		loadValue();
 
 	return;
@@ -32,17 +28,17 @@ void input::tickUpdate() {
 
 // output
 
-output::output(int8_t id) : arr(id) {
+/*output::output(int8_t id) : outArr(id) {
 	return;
-}
+}*/
 
 void output::takeValue() {
-	arr.nodeGet(OUTPUT_ID);
+	outArr->nodeGet(OUTPUT_ID);
 	return;
 }
 
 void output::tickUpdate() {
-	if (arr.getRequest(OUTPUT_ID))
+	if (outArr->getRequest(OUTPUT_ID))
 		takeValue();
 
 	return;

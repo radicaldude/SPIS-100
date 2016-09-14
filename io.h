@@ -2,10 +2,9 @@ const int inputListWidth = 4;
 
 class input {
 	protected:
-		list<int> inputList;
-		inputArrow arr;
+		list<int> inList;
+		inputArrow *inArr;
 	public:
-		input(int8_t id);
 		virtual void loadValue();
 		virtual void inputInt(int input);
 		virtual void tickUpdate();
@@ -14,16 +13,15 @@ class input {
 class output {
 	protected:
 		list<int> outputList;
-		outputArrow arr;
+		outputArrow *outArr;
 	public:
-		output(int8_t);
 		virtual void takeValue();
 		virtual void tickUpdate();
 };
 
 class listInput: public input {
 	protected:
-		string label;
+		string lbl;
 		int current;
 		WINDOW *win;
 		WINDOW *numWin;
@@ -33,7 +31,8 @@ class listInput: public input {
 		void inputInt(int input);
 		void tickUpdate();
 
-		listInput(int startX, int startY, int maxNum, list<int> numbers, int8_t arrowNode, string label);
+		listInput(int startX, int startY, string label, int maxNum, list<int> numbers);
+		void initArrow(int8_t nodeIndex, int8_t arrowIndex);
 		void updateNumbers(list<int> numbers);
 		void drawHighlight(int previous, int previousNum);
 };

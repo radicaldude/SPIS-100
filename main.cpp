@@ -35,13 +35,17 @@ int main(int argc, char *argv[]){
   refresh();
 
   get_code(&file, grid);
-	initSystem(0, 0);
+	initSystem(2, 2);
 
 	list<int> nums;
-	for (int i = 0; i < 10; i++) {
-		nums.push_back(i);
+	for (int i = 0; i < 20; i++) {
+		nums.push_back(i + 5);
 	}
-	inputs.push_back(listInput(125, 0, 10, nums, 0, "lol"));
+
+	listInput lIn = listInput(128, 1, "IN.A", 20, nums);
+	lIn.initArrow(0, 0);
+
+	inputs.push_back(lIn);
 
   state = EDIT;
 
