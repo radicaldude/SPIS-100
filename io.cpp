@@ -1,11 +1,14 @@
 #include "spis.h"
 
+vector<input> inputs;
+vector<output> outputs;
+
 input::input(int8_t id) : arr(id) {
 	return;
 }
 
 void input::loadValue() {
-	arr.nodeSet(inputID, inputList.front());
+	arr.nodeSet(INPUT_ID, inputList.front());
 	inputList.pop_front();
 	return;
 }
@@ -13,14 +16,14 @@ void input::loadValue() {
 void input::inputInt(int input) {
 	inputList.push_back(input);
 
-	if (arr.setRequest(inputID) && inputList.size() > 0)
+	if (arr.setRequest(INPUT_ID) && inputList.size() > 0)
 		loadValue();
 
 	return;
 }
 
 void input::tickUpdate() {
-	if (inputList.size() > 0 && arr.setRequest(inputID))
+	if (inputList.size() > 0 && arr.setRequest(INPUT_ID))
 		loadValue();
 
 	return;
@@ -34,12 +37,12 @@ output::output(int8_t id) : arr(id) {
 }
 
 void output::takeValue() {
-	arr.nodeGet(outputID);
+	arr.nodeGet(OUTPUT_ID);
 	return;
 }
 
 void output::tickUpdate() {
-	if (arr.getRequest(outputID))
+	if (arr.getRequest(OUTPUT_ID))
 		takeValue();
 
 	return;

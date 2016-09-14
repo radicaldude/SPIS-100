@@ -26,9 +26,8 @@ const string SRC_OPS[] = { "ADD", "SUB", "JRO" };  // Operations with only SRC a
 const string SD_OPS[] = { "MOV" };  // Operations with both SRC and DST as parameters
 const string LAB_OPS[] = { "JMP", "JEZ", "JNZ", "JGZ", "JLZ"}; // Operations with only SRC as a parameter
 
-const int inputID = -1;
-const int outputID = -2;
-
+const int INPUT_ID = -1;
+const int OUTPUT_ID = -2;
 
 enum STATUS{
   SET,
@@ -136,7 +135,7 @@ bool is_whitespace(string string);
 bool pointInWindow(WINDOW *win, int x, int y);
 WINDOW *new_bwin(int height, int width, int starty, int startx);
 
-void initSystem();
+void initSystem(int begX, int begY);
 void runtimeSystemInput(MEVENT event);
 void drawNodeContent();
 bool systemInput(int input, MEVENT event);

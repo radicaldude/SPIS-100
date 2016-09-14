@@ -24,6 +24,7 @@ int main(int argc, char *argv[]){
   mousemask(ALL_MOUSE_EVENTS, NULL);
 	keypad(stdscr, TRUE);
 
+  init_pair(1, COLOR_BLACK, COLOR_WHITE);
   init_pair(2, COLOR_BLACK, COLOR_GREEN);
   init_pair(3, COLOR_BLACK, COLOR_RED);
   init_pair(4, COLOR_BLACK, COLOR_YELLOW);
@@ -34,7 +35,13 @@ int main(int argc, char *argv[]){
   refresh();
 
   get_code(&file, grid);
-	initSystem();
+	initSystem(0, 0);
+
+	list<int> nums;
+	for (int i = 0; i < 10; i++) {
+		nums.push_back(i);
+	}
+	inputs.push_back(listInput(125, 0, 10, nums, 0, "lol"));
 
   state = EDIT;
 

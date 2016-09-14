@@ -41,17 +41,22 @@ int selectedNode = 0;
 int selectedLine = 0;
 int selectedIndex = 0;
 
-void initSystem() {
-  int c,x=GAP_WIDTH_H, y=0, id;
+int startX;
+int startY;
+
+void initSystem(int begX, int begY) {
+	startX = begX;
+	startY = begY;
+  int c, x, y, id;
   int max_x, max_y;
   int nID=0;
   WINDOW *menu;
 
 	getmaxyx(stdscr, max_y, max_x);
 
-  y=0;
+  y = startY;
   for(int i=0;i<grid_size[0]; i++){
-    x=GAP_WIDTH_H;
+    x = startX + GAP_WIDTH_H;
     for(int j=0;j<grid_size[1];j++){
       grid.push_back(node(nID));
       grid[nID].w_main=new_bwin(NODE_HEIGHT, NODE_WIDTH, y, x);
@@ -92,7 +97,7 @@ void initSystem() {
     y=y+(NODE_HEIGHT+2*GAP_WIDTH_V+ARROW_V_HEIGHT);
   }
 
-  x=GAP_WIDTH_H;
+  x = startX + GAP_WIDTH_H;
   playButton = newwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
   wbkgd(playButton, COLOR_PAIR(2));
   wrefresh(playButton);
@@ -156,9 +161,9 @@ void drawHighlight(int nodeIndex){
     delwin(tmp_node->w_highlight);
   }
   tmp_node=&grid[nodeIndex];
-  start_color();
+  //start_color();
   tmp_node->w_highlight = newwin(1, CODE_WIDTH - 2, beg_y+tmp_node->pc, beg_x);
-  init_pair(1, COLOR_BLACK, COLOR_WHITE);
+  //init_pair(1, COLOR_BLACK, COLOR_WHITE);
   wattron(tmp_node->w_highlight,COLOR_PAIR(1));
   wbkgd(tmp_node->w_highlight, COLOR_PAIR(1));
   wbkgd(tmp_node->w_code, COLOR_PAIR(5));
