@@ -1,7 +1,7 @@
 #include "spis.h"
-#define TICK_DELAY 1000000
 int y, x = 0;
 bool cursorVisible = false;
+int tickDelay = 1000000;
 
 void editLoop();
 void *runtimeInputLoop(void *ptr);
@@ -37,16 +37,28 @@ int main(int argc, char *argv[]){
   get_code(&file, grid);
 	initSystem(2, 2);
 
-	vector<int> nums;
+
+	// TEST INPUTS AND OUTPUTS
+
+	vector<int> inNums;
 	for (int i = 0; i < 20; i++) {
-		nums.push_back(i + 5);
+		inNums.push_back((rand() % 500) + 100);
 	}
 
-	listInput lIn = listInput(128, 1, "IN.A", 20, nums);
+	listInput lIn = listInput(128, 1, "IN.A", 20, inNums);
 	lIn.initArrow(0, 0);
-
 	inputs.push_back(&lIn);
-	gridArrows.push_back(lIn.getArrow());
+
+	vector<int> outNums;
+	for (int i = 0; i < 20; i++) {
+		outNums.push_back(inNums[i] % 10);
+	}
+
+	listOutput lOut = listOutput(128, 25, "OU.A", 20, outNums);
+	lOut.initArrow(15, 2);
+	outputs.push_back(&lOut);
+
+
 
   state = EDIT;
 
@@ -106,9 +118,21 @@ void runtimeLoop() {
   	inputs[i]->reset();
   }
 
+  int i = 0;
   while (state == RUNNING) {
     redrawContent();
-    usleep(TICK_DELAY);
+
+    for (i = 0; i < tickDelay; i += STOP_CHECK_DELAY) {
+    	usleep(STOP_CHECK_DELAY);
+    	if (state != RUNNING)
+    		break;
+    }
+
+    if (state == RUNNING)
+    	usleep(tickDelay % STOP_CHECK_DELAY);
+    else
+    	break;
+
     compute_tick();
   }
 

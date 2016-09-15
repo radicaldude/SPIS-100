@@ -1,25 +1,22 @@
 #include "spis.h"
 
 vector<input *> inputs;
-vector<output> outputs;
+vector<output *> outputs;
 
 void input::loadValue() {
-	inArr->nodeSet(INPUT_ID, inList.front());
-	inList.pop_front();
 	return;
 }
 
 void input::inputInt(int input) {
-	inList.push_back(input);
-
-	if (inArr->setRequest(INPUT_ID) && inList.size() > 0)
-		loadValue();
-
 	return;
 }
 
+inputArrow *input::initArrow(int8_t nodeIndex, int8_t arrowIndex) {
+	return NULL;
+}
+
 void input::tickUpdate() {
-	if (inList.size() > 0 && inArr->setRequest(INPUT_ID))
+	if (inArr->setRequest(INPUT_ID))
 		loadValue();
 	return;
 }
@@ -40,9 +37,17 @@ void output::takeValue() {
 	return;
 }
 
+outputArrow *output::initArrow(int8_t nodeIndex, int8_t arrowIndex) {
+	return NULL;
+}
+
 void output::tickUpdate() {
 	if (outArr->getRequest(OUTPUT_ID))
 		takeValue();
 
+	return;
+}
+
+void output::reset() {
 	return;
 }

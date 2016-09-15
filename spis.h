@@ -27,13 +27,22 @@
 #define CODE_WIDTH 20
 #define BUTTON_WIDTH 5
 #define BUTTON_HEIGHT 3
+#define STOP_CHECK_DELAY 10000
 
 #ifdef _ascii_only
 #define H_ARROW "\n---><---"
 #define V_ARROW "    v^"
+#define UP_ARROW "    ^"
+#define RI_ARROW "    >"
+#define DO_ARROW "    v"
+#define LE_ARROW "    <"
 #else
 #define V_ARROW "   ⇧⇩"
 #define H_ARROW "\n ⇨\n ⇦"
+#define UP_ARROW "    ⇧"
+#define RI_ARROW "    ⇨"
+#define DO_ARROW "    ⇩"
+#define LE_ARROW "    ⇦"
 #endif
 
 using namespace std;
@@ -137,7 +146,7 @@ class node{
 
 class inputArrow: public arrowType {
 	public:
-		inputArrow(int8_t id, int startY, int startX, bool vertical, string label);
+		inputArrow(int8_t id, int startY, int startX, int arrowIndex, string label);
 		bool setRequest(int8_t id);
 		bool getRequest(int8_t id);
 		int16_t nodeGet(int8_t id);
@@ -149,7 +158,7 @@ class inputArrow: public arrowType {
 
 class outputArrow: public arrowType {
 	public:
-		outputArrow(int8_t id);
+		outputArrow(int8_t id, int startY, int startX, int arrowIndex, string label);
 		bool setRequest(int8_t id);
 		bool getRequest(int8_t id);
 		int16_t nodeGet(int8_t id);

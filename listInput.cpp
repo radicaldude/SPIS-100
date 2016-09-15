@@ -19,23 +19,25 @@ listInput::listInput(int startX, int startY, string label, int maxNum, vector<in
 
 }
 
-void listInput::initArrow(int8_t nodeIndex, int8_t arrowIndex) {
+inputArrow *listInput::initArrow(int8_t nodeIndex, int8_t arrowIndex) {
 	int y, x;
 	getbegyx(grid[nodeIndex].w_main, y, x);
 
 	if (arrowIndex == 0)
-		inArr = new inputArrow(nodeIndex, y - ARROW_V_HEIGHT, x + floor(NODE_WIDTH / 2) - floor(ARROW_V_WIDTH / 2), true, lbl);
+		inArr = new inputArrow(nodeIndex, y - ARROW_V_HEIGHT, x + floor(NODE_WIDTH / 2) - floor(ARROW_V_WIDTH / 2), arrowIndex, lbl);
 	else if (arrowIndex == 1)
-		inArr = new inputArrow(nodeIndex, y + floor(NODE_HEIGHT / 2) - floor(ARROW_H_HEIGHT / 2), x + NODE_WIDTH + GAP_WIDTH_H, false, lbl);
+		inArr = new inputArrow(nodeIndex, y + floor(NODE_HEIGHT / 2) - floor(ARROW_H_HEIGHT / 2), x + NODE_WIDTH + GAP_WIDTH_H, arrowIndex, lbl);
 	else if (arrowIndex == 2)
-		inArr = new inputArrow(nodeIndex, y + NODE_HEIGHT + GAP_WIDTH_V, x + floor(NODE_WIDTH / 2) - floor(ARROW_V_WIDTH / 2), true, lbl);
+		inArr = new inputArrow(nodeIndex, y + NODE_HEIGHT + GAP_WIDTH_V, x + floor(NODE_WIDTH / 2) - floor(ARROW_V_WIDTH / 2), arrowIndex, lbl);
 	else
-		inArr = new inputArrow(nodeIndex, y + floor(NODE_HEIGHT / 2) - floor(ARROW_H_HEIGHT / 2), x - ARROW_H_WIDTH, false, lbl);
+		inArr = new inputArrow(nodeIndex, y + floor(NODE_HEIGHT / 2) - floor(ARROW_H_HEIGHT / 2), x - ARROW_H_WIDTH, arrowIndex, lbl);
 
 	gridArrows.push_back(inArr);
 	grid[nodeIndex].arrows[arrowIndex] = inArr;
 
 	wrefresh(inArr->win);
+
+	return inArr;
 }
 
 void listInput::loadValue() {
@@ -59,7 +61,6 @@ void listInput::tickUpdate() {
 }
 
 void listInput::reset() {
-	inList.clear();
 	current = 0;
 }
 

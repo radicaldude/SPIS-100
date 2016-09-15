@@ -101,24 +101,31 @@ void arrow::reset() {
 
 // inputArrow
 
-inputArrow::inputArrow(int8_t id, int startY, int startX, bool vertical, string label) {
+inputArrow::inputArrow(int8_t id, int startY, int startX, int arrowIndex, string label) {
 	nodeId[0] = id;
 
 	status[0] = WAIT;
 
 	value[0] = 0;
 
-	vert = vertical;
+	vert = arrowIndex % 2 == 0;
 
-	if (vert) {
-		win = win=newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, startY, startX);
-		wprintw(win, V_ARROW);
+	if (arrowIndex == 0) {
+		win = newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, startY, startX);
+		wprintw(win, DO_ARROW);
+	} else if (arrowIndex == 1) {
+		win = newwin(ARROW_H_HEIGHT, ARROW_H_WIDTH, startY, startX);
+		wprintw(win, LE_ARROW);
+	} else if (arrowIndex == 2) {
+		win = newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, startY, startX);
+		wprintw(win, UP_ARROW);
 	} else {
-		win = win=newwin(ARROW_H_HEIGHT, ARROW_H_WIDTH, startY, startX);
-		wprintw(win, H_ARROW);
+		win = newwin(ARROW_H_HEIGHT, ARROW_H_WIDTH, startY, startX);
+		wprintw(win, RI_ARROW);
 	}
 
 	mvwprintw(win, 0, 0, label.c_str());
+	//updateValues();
 
 	wrefresh(win);
 
@@ -183,12 +190,32 @@ void inputArrow::reset() {
 
 // outputArrow
 
-outputArrow::outputArrow(int8_t id) {
+outputArrow::outputArrow(int8_t id, int startY, int startX, int arrowIndex, string label) {
 	nodeId[0] = id;
 
 	status[0] = WAIT;
 
 	value[0] = 0;
+
+	vert = arrowIndex % 2 == 0;
+
+	if (arrowIndex == 0) {
+		win = newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, startY, startX);
+		wprintw(win, UP_ARROW);
+	} else if (arrowIndex == 1) {
+		win = newwin(ARROW_H_HEIGHT, ARROW_H_WIDTH, startY, startX);
+		wprintw(win, RI_ARROW);
+	} else if (arrowIndex == 2) {
+		win = newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, startY, startX);
+		wprintw(win, DO_ARROW);
+	} else {
+		win = newwin(ARROW_H_HEIGHT, ARROW_H_WIDTH, startY, startX);
+		wprintw(win, LE_ARROW);
+	}
+
+	mvwprintw(win, 0, 0, label.c_str());
+
+	wrefresh(win);
 
 	return;
 }
@@ -201,14 +228,14 @@ bool outputArrow::setRequest(int8_t id) {
 }
 
 bool outputArrow::getRequest(int8_t id) {
-	if (status[0] == SET && id < 0) {
+	if (status[0] == READY && id < 0) {
 		return true;
 	}
 	return false;
 }
 
 int16_t outputArrow::nodeGet(int8_t id) {
-  status[0] = WAIT;
+  status[0] = GOT;
   return value[0];
 }
 
@@ -219,10 +246,10 @@ void outputArrow::nodeSet(int8_t id, int16_t number) {
 }
 
 void outputArrow::tickUpdate() {
-	for(int k=0;k<2;k++)
-		if(status[k]==SET)
-			status[k]=READY;
-
+	if(status[0]==SET)
+		status[0]=READY;
+	if (status[0] == GOT)
+		status[0] = WAIT;
 	return;
 }
 
