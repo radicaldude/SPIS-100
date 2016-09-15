@@ -168,7 +168,7 @@ class outputArrow: public arrowType {
 		void reset();
 };
 
-int get_code(ifstream *file, std::vector<node> &grid);
+int get_code(ifstream *file);
 void compute_tick();
 bool is_whitespace(string string);
 
