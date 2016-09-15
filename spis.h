@@ -14,6 +14,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <list>
+#include <sstream>
 
 #define MAX_LINE_LENGTH 17
 #define NODE_HEIGHT 11
@@ -174,12 +175,14 @@ bool is_whitespace(string string);
 
 bool pointInWindow(WINDOW *win, int x, int y);
 WINDOW *new_bwin(int height, int width, int starty, int startx);
+string intToString (int a);
 
 void initSystem(int begX, int begY);
 void runtimeSystemInput(MEVENT event);
 void drawNodeContent();
 bool systemInput(int input, MEVENT event);
 void drawSystemContent();
+void setCursor(bool value);
 
 extern bool stop;
 extern int state;

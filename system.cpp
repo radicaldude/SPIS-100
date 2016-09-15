@@ -10,6 +10,10 @@ WINDOW *playButton;
 WINDOW *stopButton;
 WINDOW *pauseButton;
 
+WINDOW *delayValueWindow;
+WINDOW *increaseDelayButton;
+WINDOW *decreaseDelayButton;
+
 int  grid_size[2] = {4,4};
 std::vector<node> grid;
 vector<arrowType *> gridArrows;
@@ -84,6 +88,25 @@ void initSystem(int begX, int begY) {
   pauseButton = newwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
   wbkgd(pauseButton, COLOR_PAIR(4));
   wrefresh(pauseButton);
+
+
+  x += BUTTON_WIDTH + GAP_WIDTH_H * 2;
+	decreaseDelayButton = newwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
+	wbkgd(decreaseDelayButton, COLOR_PAIR(1));
+	mvwprintw(decreaseDelayButton, 1, 2, "–");
+	wrefresh(decreaseDelayButton);
+
+  x += BUTTON_WIDTH + GAP_WIDTH_H;
+  increaseDelayButton = newwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
+  wbkgd(increaseDelayButton, COLOR_PAIR(1));
+	mvwprintw(increaseDelayButton, 1, 2, "+");
+  wrefresh(increaseDelayButton);
+
+  x += BUTTON_WIDTH + GAP_WIDTH_H;
+  delayValueWindow = newwin(1, 5, y + 1, x);
+	mvwprintw(delayValueWindow, 0, 0, intToString(tickDelay).c_str());
+	wrefresh(delayValueWindow);
+
 
   for(int i=0; i < grid.size(); i++){
 		if(grid[i].inputCode.size() == 0)
@@ -167,14 +190,16 @@ bool systemInput(int input, MEVENT event) {
 		if (input >= 97) {
 			input -= 32;
 		}
-		if(selectedNode<0)
+		if(selectedNode<0) {
+			setCursor(false);
 		  return true;
-		else if (grid[selectedNode].inputCode[selectedLine].length() < CODE_WIDTH - 3) {
+		} else if (grid[selectedNode].inputCode[selectedLine].length() < CODE_WIDTH - 3) {
 			grid[selectedNode].inputChar(selectedLine, selectedIndex, static_cast<char>(input));
 			selectedIndex++;
 			x++;
 			move(y, x);
 			drawCode(selectedNode);
+			setCursor(true);
 		}
 	} else if (input == KEY_ENTER || input == 11 || input == 10) {
 		if (grid[selectedNode].inputCode.size() < NODE_HEIGHT - 2) {
@@ -185,6 +210,7 @@ bool systemInput(int input, MEVENT event) {
 			selectedLine++;
 			move(y, x);
 			drawCode(selectedNode);
+			setCursor(true);
 		}
 	} else if(input == KEY_BACKSPACE || input == 127) {
 		// BACKSPACE
@@ -207,6 +233,7 @@ bool systemInput(int input, MEVENT event) {
 
 		drawCode(selectedNode);
 		move(y, x);
+		setCursor(true);
 
 	} else if (input == KEY_LEFT) {
 		if (selectedIndex == 0) {
@@ -217,12 +244,14 @@ bool systemInput(int input, MEVENT event) {
 				x = getbegx(grid[selectedNode].w_code) + selectedIndex;
 
 				move(y, x);
+				setCursor(true);
 			}
 		} else {
 			selectedIndex--;
 			x--;
 
 			move(y, x);
+			setCursor(true);
 		}
 	} else if (input == KEY_RIGHT) {
 		if (selectedIndex != grid[selectedNode].inputCode[selectedLine].length()) {
@@ -230,6 +259,7 @@ bool systemInput(int input, MEVENT event) {
 			x++;
 
 			move(y, x);
+			setCursor(true);
 		} else if (selectedLine < grid[selectedNode].inputCode.size() - 1) {
 			selectedLine++;
 			y++;
@@ -237,6 +267,7 @@ bool systemInput(int input, MEVENT event) {
 			x = getbegx(grid[selectedNode].w_code);
 
 			move(y, x);
+			setCursor(true);
 		}
 	} else if (input == KEY_UP) {
 		if (selectedLine > 0) {
@@ -247,6 +278,7 @@ bool systemInput(int input, MEVENT event) {
 				x = getbegx(grid[selectedNode].w_code) + selectedIndex;
 			}
 			move(y, x);
+			setCursor(true);
 		}
 	} else if (input == KEY_DOWN) {
 		if (selectedLine < grid[selectedNode].inputCode.size() - 1) {
@@ -257,9 +289,9 @@ bool systemInput(int input, MEVENT event) {
 				x = getbegx(grid[selectedNode].w_code) + selectedIndex;
 			}
 			move(y, x);
+			setCursor(true);
 		}
 	} else if (input == KEY_MOUSE && getmouse(&event) == OK) {
-		bool pointFound = false;
 
 		for (int i = 0; i < grid.size(); i++) {
 			if (pointInWindow(grid[i].w_code, event.x, event.y)) {
@@ -283,18 +315,43 @@ bool systemInput(int input, MEVENT event) {
 				x = selectedIndex + begX;
 
 				move(y, x);
-				pointFound = true;
-				break;
+				setCursor(true);
+				return true;
 			}
 		}
 
-		if (!pointFound && pointInWindow(playButton, event.x, event.y)) {
+		if (pointInWindow(playButton, event.x, event.y)) {
 			state = RUNNING;
+			setCursor(false);
 			return true;
-		} else if (!pointFound && pointInWindow(pauseButton, event.x, event.y)) {
+		} else if (pointInWindow(stopButton, event.x, event.y)) {
+			setCursor(false);
+			return true;
+		} else if (pointInWindow(pauseButton, event.x, event.y)) {
 			state = OFF;
+			setCursor(false);
 			return true;
+		} else if (pointInWindow(increaseDelayButton, event.x, event.y)) {
+			if (tickDelay < 2048) {
+				tickDelay *= 2;
+				werase(delayValueWindow);
+				mvwprintw(delayValueWindow, 0, 0, intToString(tickDelay).c_str());
+				wrefresh(delayValueWindow);
+			}
+			setCursor(false);
+			return true;
+		} else if (pointInWindow(decreaseDelayButton, event.x, event.y)) {
+				if (tickDelay > 1) {
+					tickDelay /= 2;
+					werase(delayValueWindow);
+					mvwprintw(delayValueWindow, 0, 0, intToString(tickDelay).c_str());
+					wrefresh(delayValueWindow);
+				}
+				setCursor(false);
+				return true;
 		}
+
+		flash();
 
 
 	} else {
@@ -311,19 +368,6 @@ void runtimeSystemInput(MEVENT event) {
 }
 
 // UTILLITY
-
-string makeThreeDigit(int n) {
-  std::string nToText = "";
-  char tmp_str[4];
-  if(n>999||n<-999)
-    n=999-(n<0)*1998;
-  if(n>=0)
-    sprintf(tmp_str, " %03d", n);
-  else
-    sprintf(tmp_str, "%04d", n);
-  nToText = string(tmp_str);
-  return nToText;
-}
 
 bool isNum(string str){
   //TODO

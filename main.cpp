@@ -1,7 +1,7 @@
 #include "spis.h"
 int y, x = 0;
 bool cursorVisible = false;
-int tickDelay = 1000000;
+int tickDelay = 1024;
 
 void editLoop();
 void *runtimeInputLoop(void *ptr);
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
   init_pair(4, COLOR_BLACK, COLOR_YELLOW);
 	init_pair(5, COLOR_WHITE, COLOR_BLACK);
 
-	curs_set(!cursorVisible);
+	setCursor(false);
 
   refresh();
 
@@ -86,7 +86,6 @@ void redrawContent() {
 }
 
 void editLoop() {
-	curs_set(1);
 	while (state == EDIT) {
 		MEVENT event;
 		int input = getch();
@@ -122,14 +121,14 @@ void runtimeLoop() {
   while (state == RUNNING) {
     redrawContent();
 
-    for (i = 0; i < tickDelay; i += STOP_CHECK_DELAY) {
+    for (i = 0; i < tickDelay * 1000; i += STOP_CHECK_DELAY) {
     	usleep(STOP_CHECK_DELAY);
     	if (state != RUNNING)
     		break;
     }
 
     if (state == RUNNING)
-    	usleep(tickDelay % STOP_CHECK_DELAY);
+    	usleep((tickDelay * 1000) % STOP_CHECK_DELAY);
     else
     	break;
 
@@ -182,4 +181,29 @@ bool pointInWindow(WINDOW *win, int x, int y) {
 	}
 
 	return true;
+}
+
+string makeThreeDigit(int n) {
+  std::string nToText = "";
+  char tmp_str[4];
+  if(n>999||n<-999)
+    n=999-(n<0)*1998;
+  if(n>=0)
+    sprintf(tmp_str, " %03d", n);
+  else
+    sprintf(tmp_str, "%04d", n);
+  nToText = string(tmp_str);
+  return nToText;
+}
+
+string intToString (int a) {
+	ostringstream tmp;
+	tmp << a;
+	return tmp.str();
+}
+
+void setCursor(bool value) {
+	if (cursorVisible != value)
+		cursorVisible = value;
+		curs_set(cursorVisible);
 }
