@@ -1,4 +1,5 @@
 #include "spis.h"
+#include <fstream>
 
 #define CODE_BUF 512
 
@@ -12,7 +13,7 @@ bool is_whitespace(string string){
   return false;
 }
 
-int get_code(ifstream *file, std::vector<node> &grid){
+int get_code(ifstream *file){
   char ch;
   char nID_buf[4];
   string code;
@@ -61,7 +62,6 @@ int get_code(ifstream *file, std::vector<node> &grid){
 	  
 	  if(!is_whitespace(line)) {
 	    grid[nID].inputCode.push_back(line);
-	    //printf((line + "\n").c_str());
 	  }
 	  j = i + 1;
 	}
@@ -71,4 +71,14 @@ int get_code(ifstream *file, std::vector<node> &grid){
     ch=file->get();
   }
   return 0;
+}
+
+int save_code(ofstream *file){
+  for(unsigned int i=0;i<grid.size();i++){
+    *file << i << '{';
+    for(unsigned int j=0;j<grid[i].inputCode.size();j++){
+      *file << grid[i].inputCode[j] << std::endl;
+    }
+    *file << '}' << std::endl;
+  } 
 }
