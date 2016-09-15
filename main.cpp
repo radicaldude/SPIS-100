@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
   get_code(&file, grid);
 	initSystem(2, 2);
 
-	list<int> nums;
+	vector<int> nums;
 	for (int i = 0; i < 20; i++) {
 		nums.push_back(i + 5);
 	}
@@ -45,7 +45,8 @@ int main(int argc, char *argv[]){
 	listInput lIn = listInput(128, 1, "IN.A", 20, nums);
 	lIn.initArrow(0, 0);
 
-	inputs.push_back(lIn);
+	inputs.push_back(&lIn);
+	gridArrows.push_back(lIn.getArrow());
 
   state = EDIT;
 
@@ -91,14 +92,6 @@ void runtimeLoop() {
     grid[i].runPrepare();
 
   //TODO: reset input and output
-  for(unsigned int i=0;i<grid.size();i++){
-    for(int j=0;j<4;j++){
-      if(grid[i].arrows[j]){
-	grid[i].arrows[j]->status[0]=WAIT;
-	grid[i].arrows[j]->status[1]=WAIT;
-      }
-    }
-  }
   if(err!=0){
     return;
   }
@@ -106,12 +99,28 @@ void runtimeLoop() {
   for(int i=0;i<grid.size();i++){
     grid[i].reset();
   }
+  for (int i = 0; i < gridArrows.size(); i++) {
+  	gridArrows[i]->reset();
+  }
+  for (int i = 0; i < inputs.size(); i++) {
+  	inputs[i]->reset();
+  }
 
   while (state == RUNNING) {
     redrawContent();
     usleep(TICK_DELAY);
     compute_tick();
   }
+
+  for(int i=0;i<grid.size();i++){
+		grid[i].reset();
+	}
+	for (int i = 0; i < gridArrows.size(); i++) {
+		gridArrows[i]->reset();
+	}
+	for (int i = 0; i < inputs.size(); i++) {
+		inputs[i]->reset();
+	}
 
   redrawContent();
   pthread_cancel(*thread);

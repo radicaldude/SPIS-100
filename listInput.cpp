@@ -1,18 +1,18 @@
 #include "spis.h"
 
-listInput::listInput(int startX, int startY, string label, int maxNum, list<int> numbers) {
+listInput::listInput(int startX, int startY, string label, int maxNum, vector<int> numbers) {
 	win = newwin(maxNum + 1 + 2, inputListWidth + 2, startY, startX);
 	mvwprintw(win, 0, 0, label.c_str());
 	wrefresh(win);
 	numWin = new_bwin(maxNum + 2, inputListWidth + 2, startY + 1, startX);
 
-	inList = numbers;
+	numStorage = numbers;
+	current = 0;
+
 	lbl = label;
 
-	int i = 0;
-	for (list<int>::iterator it = inList.begin(); it != inList.end(); ++it) {
-		mvwprintw(numWin, i + 1, 1, makeThreeDigit(*it).c_str());
-		i++;
+	for (int i = 0; i < numStorage.size(); i++) {
+		mvwprintw(numWin, i + 1, 1, makeThreeDigit(numStorage[i]).c_str());
 	}
 
 	wrefresh(numWin);
@@ -39,7 +39,8 @@ void listInput::initArrow(int8_t nodeIndex, int8_t arrowIndex) {
 }
 
 void listInput::loadValue() {
-	inArr->nodeSet(INPUT_ID, inList.front());
+	inArr->nodeSet(INPUT_ID, numStorage[current]);
+	inArr->updateValues();
 	return;
 }
 
@@ -48,15 +49,23 @@ void listInput::inputInt(int input) {
 }
 
 void listInput::tickUpdate() {
-	if (inList.size() > 0 && inArr->setRequest(INPUT_ID))
+	if (inArr->setRequest(INPUT_ID) && current < numStorage.size()) {
 		loadValue();
+		current++;
+		drawHighlight();
+	}
 
 	return;
 }
 
-void listInput::drawHighlight(int previous, int previousNum) {
+void listInput::reset() {
+	inList.clear();
+	current = 0;
+}
+
+void listInput::drawHighlight() {
 	highlight = newwin(1, inputListWidth, getbegy(numWin) + current, getbegx(numWin));
 	wbkgd(highlight, COLOR_PAIR(1));
 	wbkgd(numWin, COLOR_PAIR(5));
-	wprintw(highlight, makeThreeDigit(inList.front()).c_str());
+	wprintw(highlight, makeThreeDigit(numStorage[current]).c_str());
 }

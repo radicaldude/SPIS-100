@@ -14,10 +14,6 @@ void compute_tick(){
     }
   }*/
 
-  for (i=0; i < inputs.size(); i++) {
-    inputs[i].tickUpdate();
-  }
-
   for (i = 0; i < gridArrows.size(); i++) {
     gridArrows[i]->tickUpdate();
   }
@@ -42,6 +38,10 @@ void compute_tick(){
 	break;
       }
     }
+  }
+
+  for (i=0; i < inputs.size(); i++) {
+    inputs[i]->tickUpdate();
   }
 
   for (i=0; i < outputs.size(); i++) {

@@ -50,7 +50,8 @@ enum STATUS{
   SET,
   READY,
   WAIT,
-  INVALID
+  INVALID,
+	GOT
 };
 
 enum STATE {
@@ -86,6 +87,9 @@ class arrowType{
 		virtual void updateValues() {
 			return;
 		}
+		virtual void reset() {
+			return;
+		}
 
 		WINDOW *win;
 };
@@ -99,6 +103,7 @@ class arrow: public arrowType {
 		void nodeSet(int8_t id, int16_t number);
 		void tickUpdate();
 		void updateValues();
+		void reset();
 };
 
 class node{
@@ -139,6 +144,7 @@ class inputArrow: public arrowType {
 		void nodeSet(int8_t id, int16_t number);
 		void tickUpdate();
 		void updateValues();
+		void reset();
 };
 
 class outputArrow: public arrowType {
@@ -150,6 +156,7 @@ class outputArrow: public arrowType {
 		void nodeSet(int8_t id, int16_t number);
 		void tickUpdate();
 		void updateValues();
+		void reset();
 };
 
 int get_code(ifstream *file, std::vector<node> &grid);
@@ -168,11 +175,9 @@ void drawSystemContent();
 extern bool stop;
 extern int state;
 extern int tickDelay;
-//extern std::vector<io> inputs, outputs;
 extern std::vector<node> grid;
 extern vector<arrowType *> gridArrows;
 extern void drawHighlight(int i);
-//extern void updateArrow(int, int);
 extern string makeThreeDigit(int n);
 extern bool isNum(string);
 extern int x;

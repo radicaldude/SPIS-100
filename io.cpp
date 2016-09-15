@@ -1,6 +1,6 @@
 #include "spis.h"
 
-vector<input> inputs;
+vector<input *> inputs;
 vector<output> outputs;
 
 void input::loadValue() {
@@ -21,7 +21,10 @@ void input::inputInt(int input) {
 void input::tickUpdate() {
 	if (inList.size() > 0 && inArr->setRequest(INPUT_ID))
 		loadValue();
+	return;
+}
 
+void input::reset() {
 	return;
 }
 
