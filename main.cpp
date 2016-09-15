@@ -34,7 +34,7 @@ int main(int argc, char *argv[]){
 
   refresh();
 
-  get_code(&file, grid);
+  get_code(&file);
 	initSystem(2, 2);
 
 
