@@ -16,7 +16,7 @@ vector<arrowType *> gridArrows;
 int  state = OFF;
 bool stop;
 
-int selectedNode = 0;
+int selectedNode = -1;
 int selectedLine = 0;
 int selectedIndex = 0;
 
@@ -167,8 +167,9 @@ bool systemInput(int input, MEVENT event) {
 		if (input >= 97) {
 			input -= 32;
 		}
-
-		if (grid[selectedNode].inputCode[selectedLine].length() < CODE_WIDTH - 3) {
+		if(selectedNode<0)
+		  return true;
+		else if (grid[selectedNode].inputCode[selectedLine].length() < CODE_WIDTH - 3) {
 			grid[selectedNode].inputChar(selectedLine, selectedIndex, static_cast<char>(input));
 			selectedIndex++;
 			x++;
