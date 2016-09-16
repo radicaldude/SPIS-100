@@ -1,25 +1,18 @@
 #include "spis.h"
 
-listOutput::listOutput(int startX, int startY, string label, int maxNum, vector<int> numbers) {
+consoleOutput::consoleOutput(int startX, int startY, string label, int maxNum) {
 	win = newwin(maxNum + 1 + 2, INPUT_LIST_WIDTH + 2, startY, startX);
 	mvwprintw(win, 0, 0, label.c_str());
 	wrefresh(win);
-	outWin = winBorder(maxNum, INPUT_LIST_WIDTH, startY + 2, startX + 6);
-	numWin = winBorder(maxNum, INPUT_LIST_WIDTH, startY + 2, startX + 1);
+	outWin = new_bwin(maxNum + 2, INPUT_LIST_WIDTH + 2, startY + 1, startX);
 
-	numStorage = numbers;
 	current = 0;
+	max = maxNum;
 
 	lbl = label;
-
-	for (int i = 0; i < numStorage.size(); i++) {
-		mvwprintw(numWin, i, 0, makeThreeDigit(numStorage[i]).c_str());
-	}
-
-	wrefresh(numWin);
 }
 
-outputArrow *listOutput::initArrow(int8_t nodeIndex, int8_t arrowIndex) {
+outputArrow *consoleOutput::initArrow(int8_t nodeIndex, int8_t arrowIndex) {
 	int y, x;
 	getbegyx(grid[nodeIndex].w_main, y, x);
 
@@ -40,35 +33,23 @@ outputArrow *listOutput::initArrow(int8_t nodeIndex, int8_t arrowIndex) {
 	return outArr;
 }
 
-void listOutput::takeValue() {
+void consoleOutput::takeValue() {
 	int val = outArr->nodeGet(OUTPUT_ID);
 	mvwprintw(outWin, current + 1, 1, makeThreeDigit(val).c_str());
 	wrefresh(outWin);
 
-	if (val != numStorage[current])
-		drawFalse();
-
 	return;
 }
 
-void listOutput::tickUpdate() {
-	if (outArr->getRequest(INPUT_ID)) {
+void consoleOutput::tickUpdate() {
+	if (outArr->getRequest(INPUT_ID) && current <= max) {
 		takeValue();
 		current++;
-		drawHighlight();
 	}
 
 	return;
 }
-void listOutput::reset() {
+void consoleOutput::reset() {
 	current = 0;
 	werase(outWin);
-}
-
-void listOutput::drawHighlight() {
-
-}
-
-void listOutput::drawFalse() {
-	flash();
 }

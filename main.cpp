@@ -2,6 +2,7 @@
 int y, x = 0;
 bool cursorVisible = false;
 int tickDelay = 1024;
+vector<runtimeInput *> runtimeInputs;
 
 void editLoop();
 void *runtimeInputLoop(void *ptr);
@@ -57,6 +58,15 @@ int main(int argc, char *argv[]){
 	listOutput lOut = listOutput(128, 25, "OU.A", 20, outNums);
 	lOut.initArrow(15, 2);
 	outputs.push_back(&lOut);
+
+	consoleOutput cOut = consoleOutput(145, 25, "OU.B", 20);
+	cOut.initArrow(14, 2);
+	outputs.push_back(&cOut);
+
+	consoleInput cIn = consoleInput(145, 1, "IN.B", 18);
+	cIn.initArrow(1, 0);
+	inputs.push_back(&cIn);
+	runtimeInputs.push_back(&cIn);
 
 
 
@@ -116,6 +126,9 @@ void runtimeLoop() {
   for (int i = 0; i < inputs.size(); i++) {
   	inputs[i]->reset();
   }
+	for (int i = 0; i < outputs.size(); i++) {
+		outputs[i]->reset();
+	}
 
   int i = 0;
   while (state == RUNNING) {
@@ -144,6 +157,9 @@ void runtimeLoop() {
 	for (int i = 0; i < inputs.size(); i++) {
 		inputs[i]->reset();
 	}
+	for (int i = 0; i < outputs.size(); i++) {
+		outputs[i]->reset();
+	}
 
   redrawContent();
   pthread_cancel(*thread);
@@ -153,9 +169,15 @@ void runtimeLoop() {
 void *runtimeInputLoop(void *ptr) {
 	MEVENT event;
 
-	curs_set(0);
+	setCursor(false);
 	while (true) {
-	  runtimeSystemInput(event);
+		int input = getch();
+	  runtimeSystemInput(event, input);
+	  for (int i = 0; i < runtimeInputs.size(); i++) {
+	  	if (runtimeInputs[i]->processInput(input, event)) {
+	  		break;
+	  	}
+	  }
 	}
 }
 
@@ -163,6 +185,19 @@ WINDOW *new_bwin(int height, int width, int starty, int startx){
   WINDOW *win;
   win=newwin(height, width, starty, startx);
   box(win,0,0);
+  wrefresh(win);
+  return win;
+}
+
+WINDOW *winBorder(int height, int width, int starty, int startx) {
+  WINDOW *win;
+  win = newwin(height, width, starty, startx);
+
+  WINDOW *tmpWin;
+  tmpWin = newwin(height + 2, width + 2, starty - 1, startx - 1);
+
+  box(tmpWin,0,0);
+  wrefresh(tmpWin);
   wrefresh(win);
   return win;
 }

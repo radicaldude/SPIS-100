@@ -32,18 +32,18 @@
 
 #ifdef _ascii_only
 #define H_ARROW "\n---><---"
-#define V_ARROW "    v^"
-#define UP_ARROW "    ^"
-#define RI_ARROW "    >"
-#define DO_ARROW "    v"
-#define LE_ARROW "    <"
+#define V_ARROW "     v^"
+#define UP_ARROW "     ^"
+#define RI_ARROW "     >"
+#define DO_ARROW "     v"
+#define LE_ARROW "     <"
 #else
 #define V_ARROW "   ⇧⇩"
 #define H_ARROW "\n ⇨\n ⇦"
-#define UP_ARROW "    ⇧"
-#define RI_ARROW "    ⇨"
-#define DO_ARROW "    ⇩"
-#define LE_ARROW "    ⇦"
+#define UP_ARROW "     ⇧"
+#define RI_ARROW "     ⇨"
+#define DO_ARROW "     ⇩"
+#define LE_ARROW "     ⇦"
 #endif
 
 using namespace std;
@@ -52,6 +52,8 @@ const string SIM_OPS[] = { "NOP", "SWP", "SAV", "NEG" };  // Operations with no 
 const string SRC_OPS[] = { "ADD", "SUB", "JRO" };  // Operations with only SRC as a parameter
 const string SD_OPS[] = { "MOV" };  // Operations with both SRC and DST as parameters
 const string LAB_OPS[] = { "JMP", "JEZ", "JNZ", "JGZ", "JLZ"}; // Operations with only SRC as a parameter
+
+const string PROMPT = ">";
 
 const int INPUT_ID = -1;
 const int OUTPUT_ID = -2;
@@ -145,6 +147,16 @@ class node{
   arrowType *arrows[4];
 };
 
+class runtimeInput {
+	public:
+		virtual bool processInput(int input, MEVENT event) {
+			return false;
+		}
+		virtual WINDOW *getInputWin() {
+			return NULL;
+		}
+};
+
 class inputArrow: public arrowType {
 	public:
 		inputArrow(int8_t id, int startY, int startX, int arrowIndex, string label);
@@ -175,10 +187,11 @@ bool is_whitespace(string string);
 
 bool pointInWindow(WINDOW *win, int x, int y);
 WINDOW *new_bwin(int height, int width, int starty, int startx);
+WINDOW *winBorder(int height, int width, int starty, int startx);
 string intToString (int a);
 
 void initSystem(int begX, int begY);
-void runtimeSystemInput(MEVENT event);
+void runtimeSystemInput(MEVENT event, int input);
 void drawNodeContent();
 bool systemInput(int input, MEVENT event);
 void drawSystemContent();
@@ -189,6 +202,7 @@ extern int state;
 extern int tickDelay;
 extern std::vector<node> grid;
 extern vector<arrowType *> gridArrows;
+extern vector<runtimeInput *> runtimeInputs;
 extern void drawHighlight(int i);
 extern string makeThreeDigit(int n);
 extern bool isNum(string);

@@ -1,10 +1,10 @@
 #include "spis.h"
 
 listInput::listInput(int startX, int startY, string label, int maxNum, vector<int> numbers) {
-	win = newwin(maxNum + 1 + 2, inputListWidth + 2, startY, startX);
+	win = newwin(maxNum + 1 + 2, INPUT_LIST_WIDTH + 2, startY, startX);
 	mvwprintw(win, 0, 0, label.c_str());
 	wrefresh(win);
-	numWin = new_bwin(maxNum + 2, inputListWidth + 2, startY + 1, startX);
+	numWin = new_bwin(maxNum + 2, INPUT_LIST_WIDTH + 2, startY + 1, startX);
 
 	numStorage = numbers;
 	current = 0;
@@ -65,7 +65,7 @@ void listInput::reset() {
 }
 
 void listInput::drawHighlight() {
-	highlight = newwin(1, inputListWidth, getbegy(numWin) + current, getbegx(numWin));
+	highlight = newwin(1, INPUT_LIST_WIDTH, getbegy(numWin) + current, getbegx(numWin));
 	wbkgd(highlight, COLOR_PAIR(1));
 	wbkgd(numWin, COLOR_PAIR(5));
 	wprintw(highlight, makeThreeDigit(numStorage[current]).c_str());

@@ -269,28 +269,6 @@ bool systemInput(int input, MEVENT event) {
 			move(y, x);
 			setCursor(true);
 		}
-	} else if (input == KEY_UP) {
-		if (selectedLine > 0) {
-			selectedLine--;
-			y--;
-			if (selectedIndex > grid[selectedNode].inputCode[selectedLine].length()) {
-				selectedIndex = grid[selectedNode].inputCode[selectedLine].length();
-				x = getbegx(grid[selectedNode].w_code) + selectedIndex;
-			}
-			move(y, x);
-			setCursor(true);
-		}
-	} else if (input == KEY_DOWN) {
-		if (selectedLine < grid[selectedNode].inputCode.size() - 1) {
-			selectedLine++;
-			y++;
-			if (selectedIndex > grid[selectedNode].inputCode[selectedLine].length()) {
-				selectedIndex = grid[selectedNode].inputCode[selectedLine].length();
-				x = getbegx(grid[selectedNode].w_code) + selectedIndex;
-			}
-			move(y, x);
-			setCursor(true);
-		}
 	} else if (input == KEY_MOUSE && getmouse(&event) == OK) {
 
 		for (int i = 0; i < grid.size(); i++) {
@@ -351,8 +329,6 @@ bool systemInput(int input, MEVENT event) {
 				return true;
 		}
 
-		flash();
-
 
 	} else {
 		//mvwprintw(stdscr, 0, 0, to_string(input).c_str());
@@ -360,8 +336,7 @@ bool systemInput(int input, MEVENT event) {
 	}
 }
 
-void runtimeSystemInput(MEVENT event) {
-	int input = getch();
+void runtimeSystemInput(MEVENT event, int input) {
 	if (getmouse(&event) == OK && pointInWindow(stopButton, event.x, event.y)) {
 		state = EDIT;
 	}

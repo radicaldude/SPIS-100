@@ -1,4 +1,4 @@
-const int inputListWidth = 4;
+const int INPUT_LIST_WIDTH = 4;
 
 class input {
 	protected:
@@ -65,6 +65,46 @@ class listOutput: public output {
 		listOutput(int startX, int startY, string label, int maxNum, vector<int> numbers);
 		void drawHighlight();
 		void drawFalse();
+};
+
+class consoleOutput: public output {
+	protected:
+		int current;
+		int max;
+		WINDOW *win;
+		WINDOW *outWin;
+	public:
+		void takeValue();
+		outputArrow *initArrow(int8_t nodeIndex, int8_t arrowIndex);
+		void tickUpdate();
+		void reset();
+
+		consoleOutput(int startX, int startY, string label, int maxNum);
+};
+
+class consoleInput: public input, public runtimeInput {
+	protected:
+		int current;
+		int max;
+		string inStr;
+		bool inReady;
+		int inValue;
+		int cursorX;
+		WINDOW *win;
+		WINDOW *numWin;
+		WINDOW *inWin;
+	public:
+		void loadValue();
+		void inputInt(int input);
+		inputArrow *initArrow(int8_t nodeIndex, int8_t arrowIndex);
+		void tickUpdate();
+		void reset();
+
+		bool processInput(int input, MEVENT event);
+		WINDOW *getInputWin();
+
+		consoleInput(int startX, int startY, string label, int maxNum);
+		void updateValues();
 };
 
 extern vector<input *> inputs;
