@@ -1,5 +1,4 @@
 #include "spis.h"
-
 node::node(uint8_t nId){
   nodeId = nId;
   acc = 0;
@@ -22,10 +21,11 @@ bool node::runline(){
     return true;
   }
   string line = code[pc];
-  if(!strncmp("NOP", line.c_str(), 3)){
+  string operation = line.substr(0,line.find(" "));
+  if(!strcmp("NOP", operation.c_str())){
     pc++;
     return true;
-  } else if(!strncmp("MOV", line.c_str(), 3)){
+  } else if(!strcmp("MOV", operation.c_str())){
     int c;
     std::string src, dst;
     pair<int8_t, uint16_t> p;
@@ -48,13 +48,13 @@ bool node::runline(){
 	
     }else{
       unsigned int a_num;
-      if(!strncmp("LEF", dst.c_str(), 3)){
+      if(!strcmp("LEFT", dst.c_str())){
 	a_num=3;
-      } else if(!strncmp(dst.c_str(), "RIG", 3)) {
+      } else if(!strcmp(dst.c_str(), "RIGHT")) {
 	a_num=1;;
-      } else if(!strncmp(dst.c_str(), "UP",2)) {
+      } else if(!strcmp(dst.c_str(), "UP")) {
 	a_num=0;
-      } else if(!strncmp(dst.c_str(),"DOW", 3)) {
+      } else if(!strcmp(dst.c_str(),"DOWN")) {
     	a_num=2;
       }
       else
@@ -72,28 +72,27 @@ bool node::runline(){
     pc++;
     return true;
   }
-    else if(!strncmp("SWP", line.c_str(), 3)){
+    else if(!strcmp("SWP", operation.c_str())){
     int16_t tmpAcc = acc;
     acc = bak;
     bak = tmpAcc;
     pc++;
     return true;
     
-  } else if(!strncmp("SAV", line.c_str(), 3)){
+  } else if(!strcmp("SAV", operation.c_str())){
     bak = acc;
     pc++;
     return true;
 
-  } else if(!strncmp("ADD", line.c_str(), 3)){
+    }else if(!strcmp("ADD", operation.c_str())){
     string src = line.substr(4);
     pair<bool, int16_t> p = getFromSrc(src);
     acc += p.second;
     pc++;
     return true;
-    } else if(!strncmp("SUB", line.c_str(), 3)){
+    } else if(!strcmp("SUB", operation.c_str())){
     string src = line.substr(4);
     pair<int8_t, int16_t> p = getFromSrc(src);
-    
     int16_t input;
  
     if (!p.first) {
@@ -107,14 +106,14 @@ bool node::runline(){
       return true;
     }
     
-  } else if(!strncmp("NEG", line.c_str(), 3)){
+  } else if(!strcmp("NEG", operation.c_str())){
     acc = -acc;
     pc++;
     return true;   
     }
-  else if(!strncmp("J",line.c_str(),1)){
+  else if(!strncmp("J",operation.c_str(),1)){
     unsigned int p;
-    if(!strncmp("JRO", line.c_str(), 3)){
+    if(!strcmp("JRO", operation.c_str())){
       string operands = line.substr(4);
       string src = operands.substr(0);
       pair<int8_t, int16_t> p = getFromSrc(src);
@@ -128,19 +127,19 @@ bool node::runline(){
       p=getLine(line.substr(4));
       if(p<0)
 	return false;
-      if(strncmp("JGZ", line.c_str(),3) && strncmp("JLZ", line.c_str(),3)
-	 && strncmp("JEZ", line.c_str(),3) && strncmp("JNZ", line.c_str(),3)&& strncmp("JEZ", line.c_str(), 3) && strncmp("JMP", line.c_str(),3))
+      if(strcmp("JGZ", operation.c_str()) && strcmp("JLZ", operation.c_str())
+	 && strcmp("JEZ", operation.c_str()) && strcmp("JNZ", operation.c_str())&& strcmp("JEZ", operation.c_str()) && strcmp("JMP", operation.c_str()))
 	return false;
       
-      else if(!strncmp("JGZ", line.c_str(),3)&&this->acc>0)
+      else if(strcmp("JGZ", operation.c_str())&&this->acc>0)
 	pc=p;
-      else if(!strncmp("JLZ", line.c_str(),3) &&this->acc<0)
+      else if(!strcmp("JLZ", operation.c_str()) &&this->acc<0)
 	pc=p;
-      else if(!strncmp("JEZ", line.c_str(),3)&&this->acc==0)
+      else if(!strcmp("JEZ", operation.c_str())&&this->acc==0)
 	pc=p;
-      else if(!strncmp("JNZ", line.c_str(),3)&&this->acc!=0)
+      else if(!strcmp("JNZ", operation.c_str())&&this->acc!=0)
 	pc=p;
-      else if(!strncmp("JMP", line.c_str(),3))
+      else if(!strcmp("JMP", operation.c_str()))
 	pc=p;
       else
 	pc++;
@@ -190,7 +189,34 @@ bool node::runPrepare(){
     if(label_exists==false)
       return false;
   }
-  //TODO remove extra whitespace
+  for(unsigned int i=0;i<code.size();i++){
+    bool space=false;
+    int  remove_count=0;
+    for(int j=0; j<code[i].length();j++){
+      char ch=code[i].c_str()[j];
+      if(ch == ' '||ch==','){
+	if(space){
+	  code[i].erase(j, 1);              //get rid of whitespace
+	  j--;
+	}
+	space=true;
+      }
+      if(ch==':')
+	return false;
+      else
+	space=false;
+    }
+    for(int j=code[i].length()-1;j>=0;j--){
+      char ch=code[i].c_str()[j];
+      if(ch==' '||ch==',')
+	remove_count++;
+      else{
+	code[i].erase(j+1, remove_count);
+	break;
+      }
+    }
+  }
+  return true;
 }
 
 void node::inputChar(int line, int index, char ch) {

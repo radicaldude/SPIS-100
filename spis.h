@@ -38,7 +38,7 @@
 #define DO_ARROW "     v"
 #define LE_ARROW "     <"
 #else
-#define V_ARROW "   ⇧⇩"
+#define V_ARROW "    ⇧⇩"
 #define H_ARROW "\n ⇨\n ⇦"
 #define UP_ARROW "     ⇧"
 #define RI_ARROW "     ⇨"
