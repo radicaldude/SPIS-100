@@ -186,7 +186,7 @@ void drawSystemContent() {
 bool systemInput(int input, MEVENT event) {
 	if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122)
 			|| (input >= 48 && input <= 57) || input == 44
-			|| input == 32 || input == 58) {
+			|| input == 32 || input == 58 || input == 45) {
 		if (input >= 97) {
 			input -= 32;
 		}
