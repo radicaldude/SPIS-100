@@ -8,11 +8,10 @@ void editLoop();
 void *runtimeInputLoop(void *ptr);
 void runtimeLoop();
 void redrawContent();
-
 int main(int argc, char *argv[]){
   std::ifstream file;
   
-  signal(SIGWINCH, resizeSystem);
+  signal(SIGWINCH, redrawSystem);
   if(argc>=2)
     file.open(argv[1]);
   
@@ -35,41 +34,38 @@ int main(int argc, char *argv[]){
 
   refresh();
 
-  get_code(&file);
-	initSystem(2, 2);
-
-
-	// TEST INPUTS AND OUTPUTS
-
-	vector<int> inNums;
-	for (int i = 0; i < 20; i++) {
-		inNums.push_back((rand() % 500) + 100);
-	}
-
-	listInput lIn = listInput(128, 1, "IN.A", 20, inNums);
-	lIn.initArrow(0, 0);
-	inputs.push_back(&lIn);
-
-	vector<int> outNums;
-	for (int i = 0; i < 20; i++) {
-		outNums.push_back(inNums[i] % 10);
-	}
-
-	listOutput lOut = listOutput(128, 25, "OU.A", 20, outNums);
-	lOut.initArrow(15, 2);
-	outputs.push_back(&lOut);
-
-	consoleOutput cOut = consoleOutput(145, 25, "OU.B", 20);
-	cOut.initArrow(14, 2);
-	outputs.push_back(&cOut);
-
-	consoleInput cIn = consoleInput(145, 1, "IN.B", 18);
-	cIn.initArrow(1, 0);
-	inputs.push_back(&cIn);
-	runtimeInputs.push_back(&cIn);
-
-
-
+  initSystem(2, 2);
+  
+  
+  // TEST INPUTS AND OUTPUTS
+  
+  vector<int> inNums;
+  for (int i = 0; i < 20; i++) {
+    inNums.push_back((rand() % 500) + 100);
+  }
+	
+  listInput lIn = listInput(128, 1, "IN.A", 20, inNums);
+  lIn.initArrow(0, 0);
+  inputs.push_back(&lIn);
+  
+  vector<int> outNums;
+  for (int i = 0; i < 20; i++) {
+    outNums.push_back(inNums[i] % 10);
+  }
+  
+  listOutput lOut = listOutput(128, 25, "OU.A", 20, outNums);
+  lOut.initArrow(15, 2);
+  outputs.push_back(&lOut);
+  
+  consoleOutput cOut = consoleOutput(145, 25, "OU.B", 20);
+  cOut.initArrow(14, 2);
+  outputs.push_back(&cOut);
+  
+  consoleInput cIn = consoleInput(145, 1, "IN.B", 18);
+  cIn.initArrow(1, 0);
+  inputs.push_back(&cIn);
+  runtimeInputs.push_back(&cIn);
+	  
   state = EDIT;
 
   endwin();
