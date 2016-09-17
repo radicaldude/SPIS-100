@@ -208,5 +208,5 @@ extern string makeThreeDigit(int n);
 extern bool isNum(string);
 extern int x;
 extern int y;
-
+extern void resizeSystem(int n);
 #include "io.h"

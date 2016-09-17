@@ -35,7 +35,7 @@ void initSystem(int begX, int begY) {
   int nID=0;
   WINDOW *menu;
 
-	getmaxyx(stdscr, max_y, max_x);
+  getmaxyx(stdscr, max_y, max_x);
 
   y = startY;
   for(int i=0;i<grid_size[0]; i++){
@@ -181,7 +181,17 @@ void drawSystemContent() {
   }
   updateArrows();
 }
-
+void redrawSystem(){
+  clear();
+  refresh();
+  for(unsigned int i=0;i<grid.size();i++){
+    wrefresh(grid[i].w_main);
+    wrefresh(grid[i].w_reg);
+    wrefresh(grid[i].w_code);
+  }
+  drawSystemContent();
+  return;
+}
 // INPUT AND RUNTIME
 bool systemInput(int input, MEVENT event) {
 	if ((input >= 65 && input <= 90) || (input >= 97 && input <= 122)
@@ -347,4 +357,10 @@ void runtimeSystemInput(MEVENT event, int input) {
 bool isNum(string str){
   //TODO
   return true;
+}
+
+void resizeSystem(int n){
+  refresh();
+  redrawSystem();
+  return;
 }

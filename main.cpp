@@ -10,16 +10,16 @@ void runtimeLoop();
 void redrawContent();
 
 int main(int argc, char *argv[]){
-	std::ifstream file;
-
-	if(argc>=2)
-		file.open(argv[1]);
-
-	setlocale(LC_ALL, "");
-	initscr();
-	signal(SIGWINCH, NULL);
-	start_color();
-
+  std::ifstream file;
+  
+  signal(SIGWINCH, resizeSystem);
+  if(argc>=2)
+    file.open(argv[1]);
+  
+  setlocale(LC_ALL, "");
+  initscr();
+  start_color();
+  
   noecho();
   cbreak();
   mousemask(ALL_MOUSE_EVENTS, NULL);
