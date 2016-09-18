@@ -180,6 +180,18 @@ class outputArrow: public arrowType {
 		void updateValues();
 		void reset();
 };
+// Used for reading file
+
+typedef struct{
+  int console_type;
+  int position;
+}console_info;
+
+typedef struct{
+  int type;
+  std::vector<console_info> consoles;
+  vector<vector<string> >   code;
+}level_settings;
 
 int get_code(ifstream *file);
 void compute_tick();

@@ -1,0 +1,28 @@
+type=sandbox           //Note: Case insensitive.
+size=4 4 // Space seperated values. Width then Height.
+in{
+	position=0            //Specifies the position in the x direction
+	type=console	
+}
+in{
+	position=1
+	type=list
+	list=-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 //List is space seperated, and extra whitespace is ignored
+}
+
+out{
+	position = 3
+	type=colour
+}
+
+out{
+	position 2
+	type=puzzle
+	answers=-22 -3 0 1 2 3 4 5 6 2 3 2 1 1 2 3 3
+}
+
+0{              //0 Is the top left, 1 is the node to the right of this and node 4 is one down from the top on the left.
+THIS IS SOME
+CODE
+}
+	

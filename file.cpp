@@ -82,3 +82,13 @@ int save_code(ofstream *file){
     *file << '}' << std::endl;
   } 
 }
+
+level_settings read_file(istream *file){
+  string line;
+  
+  do{getline(*file, line);
+    
+  }while(file->good());
+  
+  return rc;
+}
