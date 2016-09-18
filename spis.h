@@ -127,6 +127,8 @@ class node{
   WINDOW *w_code;
   WINDOW *w_reg;
   WINDOW *w_highlight;
+  WINDOW *w_divider;
+  
   node(uint8_t nId);
   int16_t acc;
   int16_t bak;
