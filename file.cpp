@@ -85,6 +85,7 @@ int save_code(ofstream *file){
 
 level_settings read_file(istream *file){
   string line;
+  level_settings rc;
   
   do{getline(*file, line);
     
