@@ -170,6 +170,9 @@ void *runtimeInputLoop(void *ptr) {
 	int s = 0;
 	while (true) {
 		int input = getch();
+		if (input == KEY_MOUSE)
+			getmouse(&event);
+
 	  runtimeSystemInput(event, input);
 	  for (int i = 0; i < runtimeInputs.size(); i++) {
 	  	if (runtimeInputs[(i + s) % runtimeInputs.size()]->processInput(input, event)) {

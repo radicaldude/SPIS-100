@@ -67,28 +67,26 @@ void consoleInput::reset() {
 }
 
 bool consoleInput::processInput(int input, MEVENT event) {
-	if ((input == KEY_MOUSE) == selected)
+	if ((input != KEY_MOUSE) && !selected)
 		return false;
 
 	if (input == KEY_MOUSE) {
 
-		//cout << makeThreeDigit(getbegx(inWin));
-
 		if (!pointInWindow(inWin, event.x, event.y))
 			return false;
-		flash();
 
 		selected = true;
-		cursorX = event.x - getbegx(inWin);
-		if (cursorX == 0)
-			cursorX = 1;
+		cursorX = event.x - getbegx(inWin) - 1;
+		if (cursorX < 0)
+			cursorX = 0;
+		else if (cursorX > inStr.length())
+			cursorX = inStr.length();
 
-		x = getbegx(inWin) + cursorX;
+		x = getbegx(inWin) + cursorX + 1;
 		y = getbegy(inWin);
 
 		move(y, x);
 		setCursor(true);
-
 		return true;
 	}
 
