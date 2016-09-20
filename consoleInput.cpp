@@ -114,65 +114,35 @@ bool consoleInput::processInput(int input, MEVENT event) {
 		updateValues();
 	} else if(input == KEY_BACKSPACE || input == 127) {
 		// BACKSPACE
-		/*int tmpLength = grid[selectedNode].inputCode[selectedLine].length();
-		int status = grid[selectedNode].backspace(selectedLine, selectedIndex);
+		if (cursorX <= 0)
+			return true;
 
-
-		switch(status) {
-		case 1:
-			selectedIndex--;
-			x--;
-			break;
-		case 2:
-			selectedLine--;
-			y--;
-			selectedIndex = grid[selectedNode].inputCode[selectedLine].length() - tmpLength;
-			x = getbegx(grid[selectedNode].w_code) + selectedIndex;
-			break;
-		}
-
-		drawCode(selectedNode);
+		inStr = inStr.substr(0, cursorX - 1) + inStr.substr(cursorX);
+		cursorX--;
+		x = getbegx(inWin) + cursorX + 1;
 		move(y, x);
+		updateValues();
 		setCursor(true);
-
 	} else if (input == KEY_LEFT) {
-		if (selectedIndex == 0) {
-			if (selectedLine != 0) {
-				selectedLine--;
-				y--;
-				selectedIndex = grid[selectedNode].inputCode[selectedLine].length();
-				x = getbegx(grid[selectedNode].w_code) + selectedIndex;
-
-				move(y, x);
-				setCursor(true);
-			}
-		} else {
-			selectedIndex--;
-			x--;
+		if (cursorX != 0) {
+			cursorX--;
+			x = getbegx(inWin) + cursorX + 1;
 
 			move(y, x);
 			setCursor(true);
 		}
+		return true;
 	} else if (input == KEY_RIGHT) {
-		if (selectedIndex != grid[selectedNode].inputCode[selectedLine].length()) {
-			selectedIndex++;
-			x++;
+		if (cursorX <= 4 && cursorX <= inStr.length()) {
+			cursorX++;
+			x = getbegx(inWin) + cursorX + 1;
 
 			move(y, x);
 			setCursor(true);
-		} else if (selectedLine < grid[selectedNode].inputCode.size() - 1) {
-			selectedLine++;
-			y++;
-			selectedIndex = 0;
-			x = getbegx(grid[selectedNode].w_code);
-
-			move(y, x);
-			setCursor(true);
-		}*/
-	} else {
-		//mvwprintw(stdscr, 0, 0, to_string(input).c_str());
-		return false;
+		}
+		return true;
 	}
+	return false;
 }
 
 WINDOW *consoleInput::getInputWin() {
