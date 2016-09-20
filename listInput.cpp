@@ -65,8 +65,11 @@ void listInput::reset() {
 }
 
 void listInput::drawHighlight() {
-	highlight = newwin(1, INPUT_LIST_WIDTH, getbegy(numWin) + current, getbegx(numWin));
-	wbkgd(highlight, COLOR_PAIR(1));
-	wbkgd(numWin, COLOR_PAIR(5));
-	wprintw(highlight, makeThreeDigit(numStorage[current]).c_str());
+  int y,x;
+  getbegyx(numWin, y, x);
+  highlight = newwin(1, INPUT_LIST_WIDTH,y + current, x);
+  wbkgd(numWin, COLOR_PAIR(5));
+  wbkgd(highlight, COLOR_PAIR(1));
+  wprintw(highlight, makeThreeDigit(numStorage[current]).c_str());
+  wrefresh(highlight);
 }

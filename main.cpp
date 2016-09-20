@@ -11,7 +11,7 @@ void redrawContent();
 int main(int argc, char *argv[]){
   std::ifstream file;
   
-  signal(SIGWINCH, redrawSystem);
+  //  signal(SIGWINCH, redrawSystem);
   if(argc>=2)
     file.open(argv[1]);
   
@@ -28,9 +28,9 @@ int main(int argc, char *argv[]){
   init_pair(2, COLOR_BLACK, COLOR_GREEN);
   init_pair(3, COLOR_BLACK, COLOR_RED);
   init_pair(4, COLOR_BLACK, COLOR_YELLOW);
-	init_pair(5, COLOR_WHITE, COLOR_BLACK);
+  init_pair(5, COLOR_WHITE, COLOR_BLACK);
 
-	setCursor(false);
+  setCursor(false);
 
   refresh();
 
