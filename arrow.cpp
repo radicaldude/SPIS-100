@@ -19,6 +19,9 @@ arrow::arrow(int8_t nodeId1, int8_t nodeId2, int startY, int startX, bool vertic
 
   value[0] = 0;
   value[1] = 0;
+
+  vert = vertical;
+
   if (vert) {
   	win = win=newwin(ARROW_V_HEIGHT, ARROW_V_WIDTH, startY, startX);
   	wprintw(win, V_ARROW);
