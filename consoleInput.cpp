@@ -60,11 +60,38 @@ void consoleInput::reset() {
 	werase(numWin);
 	wrefresh(numWin);
 
+	selected = false;
+
 	inStr = "";
 	updateValues();
 }
 
 bool consoleInput::processInput(int input, MEVENT event) {
+	if ((input == KEY_MOUSE) == selected)
+		return false;
+
+	if (input == KEY_MOUSE) {
+
+		//cout << makeThreeDigit(getbegx(inWin));
+
+		if (!pointInWindow(inWin, event.x, event.y))
+			return false;
+		flash();
+
+		selected = true;
+		cursorX = event.x - getbegx(inWin);
+		if (cursorX == 0)
+			cursorX = 1;
+
+		x = getbegx(inWin) + cursorX;
+		y = getbegy(inWin);
+
+		move(y, x);
+		setCursor(true);
+
+		return true;
+	}
+
 	if (input >= 48 && input <= 57) {
 		if (inStr.length() >= 4)
 			return true;

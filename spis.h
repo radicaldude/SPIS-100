@@ -150,6 +150,8 @@ class node{
 };
 
 class runtimeInput {
+	protected:
+		bool selected;
 	public:
 		virtual bool processInput(int input, MEVENT event) {
 			return false;

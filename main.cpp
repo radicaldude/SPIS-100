@@ -10,8 +10,10 @@ void runtimeLoop();
 void redrawContent();
 int main(int argc, char *argv[]){
   std::ifstream file;
+
   
-  //  signal(SIGWINCH, redrawSystem);
+  signal(SIGWINCH, redrawSystem);
+
   if(argc>=2)
     file.open(argv[1]);
   
@@ -164,13 +166,14 @@ void runtimeLoop() {
 
 void *runtimeInputLoop(void *ptr) {
 	MEVENT event;
-
-	setCursor(false);
+	setCursor(true);
+	int s = 0;
 	while (true) {
 		int input = getch();
 	  runtimeSystemInput(event, input);
 	  for (int i = 0; i < runtimeInputs.size(); i++) {
-	  	if (runtimeInputs[i]->processInput(input, event)) {
+	  	if (runtimeInputs[(i + s) % runtimeInputs.size()]->processInput(input, event)) {
+	  		s = i;
 	  		break;
 	  	}
 	  }
