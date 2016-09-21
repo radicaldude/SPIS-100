@@ -62,12 +62,14 @@ void listInput::tickUpdate() {
 
 void listInput::reset() {
 	current = 0;
+	werase(numWin);
 }
 
 void listInput::drawHighlight() {
   int y,x;
   getbegyx(numWin, y, x);
-  highlight = newwin(1, INPUT_LIST_WIDTH,y + current, x);
+  werase(highlight);
+  highlight = newwin(1, INPUT_LIST_WIDTH,y + current + 1, x + 1);
   wbkgd(numWin, COLOR_PAIR(5));
   wbkgd(highlight, COLOR_PAIR(1));
   wprintw(highlight, makeThreeDigit(numStorage[current]).c_str());
