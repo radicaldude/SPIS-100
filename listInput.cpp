@@ -5,10 +5,10 @@ listInput::listInput(int startX, int startY, string label, int maxNum, vector<in
 	mvwprintw(win, 0, 0, label.c_str());
 	wrefresh(win);
 	numWin = new_bwin(maxNum + 2, INPUT_LIST_WIDTH + 2, startY + 1, startX);
-
+	
 	numStorage = numbers;
 	current = 0;
-
+	
 	lbl = label;
 
 	for (int i = 0; i < numStorage.size(); i++) {
@@ -16,7 +16,8 @@ listInput::listInput(int startX, int startY, string label, int maxNum, vector<in
 	}
 
 	wrefresh(numWin);
-
+	highlight=NULL;
+	return;
 }
 
 inputArrow *listInput::initArrow(int8_t nodeIndex, int8_t arrowIndex) {
@@ -54,6 +55,7 @@ void listInput::tickUpdate() {
 	if (inArr->setRequest(INPUT_ID) && current < numStorage.size()) {
 		loadValue();
 		current++;
+		wrefresh(numWin);
 		drawHighlight();
 	}
 
@@ -62,16 +64,19 @@ void listInput::tickUpdate() {
 
 void listInput::reset() {
 	current = 0;
-	werase(numWin);
+	werase(highlight);
 }
 
 void listInput::drawHighlight() {
   int y,x;
   getbegyx(numWin, y, x);
-  werase(highlight);
-  highlight = newwin(1, INPUT_LIST_WIDTH,y + current + 1, x + 1);
+  if(highlight){
+    werase(highlight);
+    delwin(highlight);
+  }
+  highlight = newwin(1, INPUT_LIST_WIDTH,y + current, x + 1);
   wbkgd(numWin, COLOR_PAIR(5));
   wbkgd(highlight, COLOR_PAIR(1));
-  wprintw(highlight, makeThreeDigit(numStorage[current]).c_str());
+  wprintw(highlight, makeThreeDigit(numStorage[current+1]).c_str());
   wrefresh(highlight);
 }

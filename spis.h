@@ -30,7 +30,7 @@
 #define BUTTON_HEIGHT 3
 #define STOP_CHECK_DELAY 10000
 
-#ifdef _ascii_only
+#ifdef  ASCII_ONLY
 #define H_ARROW "\n---><---"
 #define V_ARROW "     v^"
 #define UP_ARROW "     ^"
@@ -52,7 +52,6 @@ const string SIM_OPS[] = { "NOP", "SWP", "SAV", "NEG" };  // Operations with no 
 const string SRC_OPS[] = { "ADD", "SUB", "JRO" };  // Operations with only SRC as a parameter
 const string SD_OPS[] = { "MOV" };  // Operations with both SRC and DST as parameters
 const string LAB_OPS[] = { "JMP", "JEZ", "JNZ", "JGZ", "JLZ"}; // Operations with only SRC as a parameter
-
 const string PROMPT = ">";
 
 const int INPUT_ID = -1;

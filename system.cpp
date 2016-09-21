@@ -95,7 +95,7 @@ void initSystem(int begX, int begY) {
 	wbkgd(decreaseDelayButton, COLOR_PAIR(1));
 	mvwprintw(decreaseDelayButton, 1, 2, "–");
 	wrefresh(decreaseDelayButton);
-
+	
   x += BUTTON_WIDTH + GAP_WIDTH_H;
   increaseDelayButton = newwin(BUTTON_HEIGHT, BUTTON_WIDTH, y, x);
   wbkgd(increaseDelayButton, COLOR_PAIR(1));
