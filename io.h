@@ -107,5 +107,21 @@ class consoleInput: public input, public runtimeInput {
 		void updateValues();
 };
 
+class visualOutput: public output {
+	protected:
+		int width, height;
+		vector<int> in;
+		WINDOW *win;
+		WINDOW *visualWin;
+		WINDOW *highlight;
+	public:
+		void takeValue();
+		outputArrow *initArrow(int8_t nodeIndex, int8_t arrowIndex);
+		void tickUpdate();
+		void reset();
+
+		visualOutput(int startX, int startY, string label, int w, int h);
+};
+
 extern vector<input *> inputs;
 extern vector<output *> outputs;

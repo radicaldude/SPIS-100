@@ -29,6 +29,8 @@
 #define BUTTON_WIDTH 5
 #define BUTTON_HEIGHT 3
 #define STOP_CHECK_DELAY 10000
+#define COLOR_DARK_GREY 8
+#define COLOR_BRIGHT_GREY 9
 
 #ifdef  ASCII_ONLY
 #define H_ARROW "\n---><---"
