@@ -53,7 +53,7 @@ bool arrow::getRequest(int8_t id) {
 int16_t arrow::nodeGet(int8_t id) {
   uint8_t nodeIndex = !getNodeIndex(id);
   int16_t tmpValue = value[nodeIndex];
-
+  grid[nodeIndex].clear_arrows=grid[nodeIndex].clear_arrows|1<<4;
   status[nodeIndex] = WAIT;
   return tmpValue;
 }

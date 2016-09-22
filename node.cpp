@@ -5,19 +5,29 @@ node::node(uint8_t nId){
   bak = 0;
   pc=0;
   no_code=FALSE;
-
+  
   for (int i = 0; i < 4; i++)
   	arrows[i] = NULL;
 }
 
 bool node::runline(){
-  //string line = sanitize(code[this.pc]);
+  if(clear_arrows&(1<<4)){
+    for(int i=0;i<4;i++){
+      if(arrows[i]){
+	if(clear_arrows&(1<i)){
+	    int index=arrows[i]->getNodeIndex(nodeId);
+	    arrows[i]->status[index]=WAIT;
+	  }
+	}
+      }
+      clear_arrows=0;
+  }
   if(code.size()==0)
     return true;
   if(is_whitespace(code[pc]) || code[pc].length() == 0){
-  	pc++;
-  	if(pc>=code.size()-1)
-  	    pc=0;
+    pc++;
+    if(pc>=code.size()-1)
+      pc=0;
     return true;
   }
   string line = code[pc];
@@ -51,13 +61,16 @@ bool node::runline(){
 	for(int i=0;i<4;i++){
 	  if(arrows[i]){
 	    if(arrows[i]->setRequest(nodeId)){
+	      clear_arrows=clear_arrows|(1<<i);
 	      arrows[i]->nodeSet(nodeId, input);
 	      arrows[i]->updateValues();
 	      nextLine=true;
-	      break;
 	    }
 	  }
 	}
+	if(nextLine)
+	  pc++;
+	return true;
       }else if(!strcmp(dst.c_str(), "LAST")){
 	int num;
 	if(last==4)
@@ -173,7 +186,7 @@ bool node::runline(){
   else
     return false;
 }
-              
+  
 bool node::runPrepare(){
   std::vector<int> labelLines;
   labels.clear();

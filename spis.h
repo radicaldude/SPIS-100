@@ -136,6 +136,7 @@ class node{
   int16_t bak;
   int8_t  pc;
   bool no_code;
+  uint8_t clear_arrows=0;         //Used for the ANY port. bit 0 is arrows[0] etc ... when bit 4 is 1 the arrows will be cleared
   std::vector<string> inputCode;
   std::vector<string> code;
   bool runline();
