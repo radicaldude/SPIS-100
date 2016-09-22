@@ -32,6 +32,15 @@ int main(int argc, char *argv[]){
   init_pair(4, COLOR_BLACK, COLOR_YELLOW);
   init_pair(5, COLOR_WHITE, COLOR_BLACK);
 
+  init_color(COLOR_DARK_GREY, 250, 250, 250);
+  init_color(COLOR_BRIGHT_GREY, 500, 500, 500);
+
+  init_pair(6, COLOR_WHITE, COLOR_BLACK);
+  init_pair(7, COLOR_WHITE, COLOR_DARK_GREY);
+  init_pair(8, COLOR_WHITE, COLOR_BRIGHT_GREY);
+  init_pair(9, COLOR_WHITE, COLOR_WHITE);
+  init_pair(10, COLOR_WHITE, COLOR_RED);
+
   setCursor(false);
 
   refresh();
@@ -67,6 +76,10 @@ int main(int argc, char *argv[]){
   cIn.initArrow(1, 0);
   inputs.push_back(&cIn);
   runtimeInputs.push_back(&cIn);
+
+  visualOutput vOu = visualOutput(155, 25, "OU.C", 36, 22);
+  vOu.initArrow(13, 2);
+  outputs.push_back(&vOu);
 	  
   state = EDIT;
 
