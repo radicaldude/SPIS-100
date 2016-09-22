@@ -129,6 +129,7 @@ class node{
   WINDOW *w_divider;
   
   node(uint8_t nId);
+  uint8_t last=4;
   int16_t acc;
   int16_t bak;
   int8_t  pc;

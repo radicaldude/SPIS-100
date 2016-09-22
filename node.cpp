@@ -42,11 +42,35 @@ bool node::runline(){
       return true;
     }
     input = p.second;
-    if(!strncmp(dst.c_str(), "ACC", 3)) {
+    if(!strcmp(dst.c_str(), "ACC")) {
       acc = input;
-    } else if(!strncmp(dst.c_str(), "NIL",3)) {
+    } else if(!strcmp(dst.c_str(), "NIL")) {
 	
-    }else{
+    } else if(!strcmp(dst.c_str(),"ANY")){
+	bool nextLine=false;
+	for(int i=0;i<4;i++){
+	  if(arrows[i]){
+	    if(arrows[i]->setRequest(nodeId)){
+	      arrows[i]->nodeSet(nodeId, input);
+	      arrows[i]->updateValues();
+	      nextLine=true;
+	      break;
+	    }
+	  }
+	}
+      }else if(!strcmp(dst.c_str(), "LAST")){
+	int num;
+	if(last==4)
+	  num=0;
+	else
+	  num=last;
+	if(arrows[num]->setRequest(nodeId)){
+	  arrows[num]->nodeSet(nodeId, input);
+	  arrows[num]->updateValues();
+	  pc++;
+	}
+	return true;
+      }else{
       unsigned int a_num;
       if(!strcmp("LEFT", dst.c_str())){
 	a_num=3;
@@ -56,7 +80,7 @@ bool node::runline(){
 	a_num=0;
       } else if(!strcmp(dst.c_str(),"DOWN")) {
     	a_num=2;
-      }
+      }      
       else
 	return false;
       a=arrows[a_num];
@@ -266,7 +290,38 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
     }
     return p;
   } else {
-    if (src == "ACC") {
+    if(src=="ANY"){
+      pair<bool, int16_t> p;
+      for(int i=0;i<4;i++){
+	int num=abs((i+3)%4-(int)floor((i+1)/2)%2);            //Ask Tyler
+	if (arrows[num]->getRequest(nodeId)){
+	  p.first = true;
+	  p.second = arrows[num]->nodeGet(nodeId);
+	  return p;
+	}
+      }
+      p.first=false;
+      return p;
+    }
+    if(src=="LAST"){
+      if(last==5){
+	pair<bool, int16_t> p;
+	p.first=true;
+	p.second=0;
+	return p;
+      }
+      else{
+	if(last==0)
+	  src="UP";
+	else if(last==1)
+	  src="RIGHT";
+	else if(last==2)
+	  src="DOWN";
+	else if(last==3)
+	  src="LEFT";
+      }
+    }
+    if(src == "ACC") {
       pair<bool, int16_t> p;
       p.first = true;
       p.second = this->acc;

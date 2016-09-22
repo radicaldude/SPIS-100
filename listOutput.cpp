@@ -17,6 +17,8 @@ listOutput::listOutput(int startX, int startY, string label, int maxNum, vector<
 	}
 
 	wrefresh(numWin);
+	highlight=NULL;
+	return;
 }
 
 outputArrow *listOutput::initArrow(int8_t nodeIndex, int8_t arrowIndex) {
@@ -62,11 +64,21 @@ void listOutput::tickUpdate() {
 }
 void listOutput::reset() {
 	current = 0;
-	werase(outWin);
+	if(highlight)
+	  werase(highlight);
 }
 
 void listOutput::drawHighlight() {
-
+  getbegyx(numWin, y, x);
+  if(highlight){
+    werase(highlight);
+    delwin(highlight);
+  }
+  highlight = newwin(1, INPUT_LIST_WIDTH,y + current, x + 1);
+  wbkgd(numWin, COLOR_PAIR(5));
+  wbkgd(highlight, COLOR_PAIR(1));
+  wprintw(highlight, makeThreeDigit(numStorage[current+1]).c_str());
+  wrefresh(highlight);
 }
 
 void listOutput::drawFalse() {
