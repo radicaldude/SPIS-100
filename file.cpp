@@ -1,8 +1,11 @@
 #include "spis.h"
+#include <fstream>
 
 #define CODE_BUF 512
 
 bool is_whitespace(string string){
+  if(string.size()==0)
+    return true;
   for(unsigned int i=0;i>string.size();i++){
     if(string[i]!=' '&& string[i]!= '\n' && string[i]!='\r' && string[i]!='\t')
       return true;
@@ -10,7 +13,7 @@ bool is_whitespace(string string){
   return false;
 }
 
-int get_code(ifstream *file, std::vector<node> &grid){
+int get_code(ifstream *file){
   char ch;
   char nID_buf[4];
   string code;
@@ -18,8 +21,10 @@ int get_code(ifstream *file, std::vector<node> &grid){
   string line;
 
   nID_buf[4]='\0';
-  if(!file->is_open())
+  if(!file->is_open()){
+    //printf("Warning couldn't open file!\n");
     return 1;
+  }
   file->get(ch);
   while(ch!=EOF){
     if(ch>='0'&&ch<='9'){
@@ -57,7 +62,6 @@ int get_code(ifstream *file, std::vector<node> &grid){
 	  
 	  if(!is_whitespace(line)) {
 	    grid[nID].inputCode.push_back(line);
-	    //printf((line + "\n").c_str());
 	  }
 	  j = i + 1;
 	}
@@ -67,4 +71,25 @@ int get_code(ifstream *file, std::vector<node> &grid){
     ch=file->get();
   }
   return 0;
+}
+
+int save_code(ofstream *file){
+  for(unsigned int i=0;i<grid.size();i++){
+    *file << i << '{';
+    for(unsigned int j=0;j<grid[i].inputCode.size();j++){
+      *file << grid[i].inputCode[j] << std::endl;
+    }
+    *file << '}' << std::endl;
+  } 
+}
+
+level_settings read_file(istream *file){
+  string line;
+  level_settings rc;
+  
+  do{getline(*file, line);
+    
+  }while(file->good());
+  
+  return rc;
 }
