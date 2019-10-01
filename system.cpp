@@ -216,7 +216,6 @@ bool systemInput(int input, MEVENT event) {
 		int tmpLength = grid[selectedNode].inputCode[selectedLine].length();
 		int status = grid[selectedNode].backspace(selectedLine, selectedIndex);
 
-
 		switch(status) {
 		case 1:
 			selectedIndex--;
@@ -333,6 +332,7 @@ bool systemInput(int input, MEVENT event) {
 		//mvwprintw(stdscr, 0, 0, to_string(input).c_str());
 		return false;
 	}
+	return false;
 }
 
 void runtimeSystemInput(MEVENT event, int input) {
