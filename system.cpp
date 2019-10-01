@@ -211,14 +211,10 @@ bool systemInput(int input, MEVENT event) {
 			drawCode(selectedNode);
 			setCursor(true);
 		}
-	} else if(input == KEY_BACKSPACE || input == 127 || input == KEY_DC) {
+	} else if(input == KEY_BACKSPACE || input == 127) {
 		// BACKSPACE
 		int tmpLength = grid[selectedNode].inputCode[selectedLine].length();
 		int status = grid[selectedNode].backspace(selectedLine, selectedIndex);
-		if (input == 127 || input == KEY_DC){
-            		selectedIndex++;
-            		x++;
-        	}
 
 		switch(status) {
 		case 1:
