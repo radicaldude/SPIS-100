@@ -336,6 +336,7 @@ bool systemInput(int input, MEVENT event) {
 		//mvwprintw(stdscr, 0, 0, to_string(input).c_str());
 		return false;
 	}
+	return false;
 }
 
 void runtimeSystemInput(MEVENT event, int input) {

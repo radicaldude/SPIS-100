@@ -394,7 +394,9 @@ pair<int8_t, int16_t> node::getFromSrc(string src) {
       return p;
     }
   }
+  return std::make_pair(0,0);
   // ANY and LAST are for the future (hopefully not)
+
 }
 
 void node::first_instruction(){

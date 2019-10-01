@@ -73,7 +73,7 @@ int get_code(ifstream *file){
   return 0;
 }
 
-int save_code(ofstream *file){
+void save_code(ofstream *file){
   for(unsigned int i=0;i<grid.size();i++){
     *file << i << '{';
     for(unsigned int j=0;j<grid[i].inputCode.size();j++){
